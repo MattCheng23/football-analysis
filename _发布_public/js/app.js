@@ -21,6 +21,7 @@ let calOpen = false;
 function renderCalendar() {
   const keys = Object.keys(BATCHES).sort();
   const el = document.getElementById("calendar");
+  if (!el) return; // 非日历页面（如避雷名单页）跳过
   const first = new Date(calYear, calMonth, 1);
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
   const startDow = first.getDay(); // 0=周日
@@ -100,16 +101,18 @@ function renderPredict(batch) {
   if (!el) return; // 复盘页无预测视图，跳过
   const p = batch.predict;
 
-  // 预测清单（含假赛评分列）
+  // 预测清单（含假赛评分列）；按北京时间开球排序
+  const tMin = t => { if (!t) return 9999; const d = t.indexOf("次日") >= 0 ? 1440 : 0; const m = t.match(/(\d+):(\d+)/); return d + (m ? +m[1] * 60 + +m[2] : 0); };
+  const sorted = p.matches.slice().sort((a, b) => tMin(a.time) - tMin(b.time));
   const riskTag = r => r >= 7 ? `<span class="tag tag-red">🔴 ${r}</span>`
     : r >= 5 ? `<span class="tag tag-orange">🟠 ${r}</span>`
     : `<span class="tag tag-green">🟢 ${r}</span>`;
-  const rows = p.matches.map(m => {
+  const rows = sorted.map(m => {
     const revHtml = m.scores.replace(/(\d+-\d+)\*/g, '<span class="rev-score">$1*</span>');
     const revHt = m.ht.replace(/([胜负平]{2})\*/g, '<span class="rev-score">$1*</span>');
     return `<tr>
     <td><span class="no-badge">${m.no}</span></td>
-    <td>${m.home} vs ${m.away} <span class="lg ${m.lg}">${m.league}</span></td>
+    <td>${m.home} vs ${m.away}<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time || "-"}</span></span></td>
     <td class="${m.dc}">${m.dir}</td>
     <td class="score-nums">${revHtml}</td>
     <td>${revHt}</td>
@@ -145,9 +148,9 @@ function renderPredict(batch) {
   </tr>`).join("");
 
   // 核心逻辑速览（一句话/场）
-  const logicRows = p.matches.map(m => `<tr>
+  const logicRows = sorted.map(m => `<tr>
     <td><span class="no-badge">${m.no}</span></td>
-    <td>${m.home} vs ${m.away}</td>
+    <td>${m.home} vs ${m.away}${m.time ? `<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time}</span></span>` : ""}</td>
     <td>${m.logic || "-"}</td>
   </tr>`).join("");
 
@@ -161,7 +164,7 @@ function renderPredict(batch) {
         <span style="margin-left:auto">A 级 = 高置信正路 ｜ B 级 = 中置信正路 ｜ C 级 = 低置信（含 1 反向比分，标 <span class="rev-score">*</span>）</span>
       </div>
       <div class="table-wrap"><table>
-        <thead><tr><th>场次</th><th>对阵</th><th>方向</th><th>比分 TOP3</th><th>半全场 TOP3</th><th>总进球</th><th>假赛分</th></tr></thead>
+        <thead><tr><th>场次</th><th>对阵（北京时间）</th><th>方向</th><th>比分 TOP3</th><th>半全场 TOP3</th><th>总进球</th><th>假赛分</th></tr></thead>
         <tbody>${rows}</tbody>
       </table></div>
     </div>
@@ -205,49 +208,92 @@ function renderPredict(batch) {
 function renderReview(batch) {
   const el = document.getElementById("review-view");
   if (!el) return; // 预测页无复盘视图，跳过
-  if (!batch.reviewed) {
+  const r = batch.review;
+  if (!r || (!batch.reviewed && (!r.results || r.results.length === 0))) {
     el.innerHTML = `<div class="card"><h2><span class="icon">⏳</span> 复盘未开始</h2>
       <div class="note">该批次预测已发布，比赛结束后复盘数据将在此显示。</div></div>`;
     return;
   }
-  const r = batch.review;
   const okT = `<span class="tag tag-green">✅</span>`, noT = `<span class="tag tag-red">❌</span>`;
   const dTag = d => d === "ok" ? okT : noT;
 
-  const rows = r.results.map(m => `<tr>
-    <td><span class="no-badge">${m.no}</span></td>
-    <td>${m.teams} <span class="lg ${m.lg}">${m.league}</span></td>
-    <td><b>${m.score}</b></td>
-    <td>${dTag(m.d)}</td><td>${dTag(m.s)}</td><td>${dTag(m.h)}</td>
-    <td><span class="tag ${m.sc === "danger" ? "tag-red" : m.sc === "watch" ? "tag-yellow" : "tag-green"}">${m.signal}</span></td>
-  </tr>`).join("");
+  // 工具：赛果串 → 半全场；命中 TOP 几；预警命中判定
+  const htFromScore = s => {
+    const m = s.match(/^(\d+)-(\d+)（(\d+)-(\d+)）/);
+    if (!m) return "";
+    const f = m[1] > m[2] ? "胜" : m[1] < m[2] ? "负" : "平";
+    const h = m[3] > m[4] ? "胜" : m[3] < m[4] ? "负" : "平";
+    return h + f;
+  };
+  const topOf = (actual, listStr) => {
+    const i = (listStr || "").split("/").map(s => s.trim()).indexOf(actual);
+    return i >= 0 ? i + 1 : null;
+  };
+  const hitTag = top => top ? `<span class="tag tag-green">✅ TOP${top}</span>` : noT;
+  const alertOf = m => {
+    const actualHt = htFromScore(m.score);
+    const scoreMain = m.score.split("（")[0];
+    if (batch.alerts) {
+      const a = batch.alerts.find(x => x.no === m.no);
+      if (a && a.script === actualHt) return `🎯 ${a.script}（${a.lvTxt}）`;
+    }
+    if (batch.zeroZero) {
+      const z = batch.zeroZero.find(x => x.no === m.no);
+      if (z && scoreMain === "0-0") return `🎯 0-0（预警${z.p}%）`;
+    }
+    return "";
+  };
 
-  const evRows = r.evidence.map(e => `<tr>
-    <td><b>${e.no} ${e.teams}</b><br><span class="lg ${e.lg}">${e.league}</span></td>
-    <td>${e.stats}</td>
-    <td><span class="tag ${e.sc === "danger" ? "tag-red" : e.sc === "watch" ? "tag-yellow" : "tag-green"}">${e.signal}</span> ${e.txt}</td>
-  </tr>`).join("");
-
-  const highCards = r.avoidHigh.map(a => `<div class="avoid-card high">
-    <div class="team-icon">🚫</div><div>
-      <div class="team-name">${a.team} <span class="tag tag-red">🔴 高</span></div>
-      <div class="team-league">${a.league}</div>
-      <div class="team-reason">${a.reason}</div>
-    </div></div>`).join("");
-  const watchCards = r.avoidWatch.map(a => `<div class="avoid-card watch">
-    <div class="team-icon">👀</div><div>
-      <div class="team-name">${a.team} <span class="tag tag-yellow">🟡 观察</span></div>
-      <div class="team-league">${a.league}</div>
-      <div class="team-reason">${a.reason}</div>
-    </div></div>`).join("");
-
-  el.innerHTML = `
-    <div class="card">
-      <h2><span class="icon">📊</span> 批次命中统计（${batch.title}）</h2>
-      <div class="kpi-row">
+  const totalN = batch.predict.matches.length;
+  const confirmedN = r.results.length;
+  const alertCount = r.results.filter(m => alertOf(m) !== "").length;
+  const alertKpi = `<div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${alertCount}</div><div class="lbl">🎯 预警命中（不计正式）</div></div>`;
+  const statusTag = batch.reviewed
+    ? `<span class="tag tag-green">完整复盘</span>`
+    : `<span class="tag tag-yellow">部分复盘（已确认 ${confirmedN}/${totalN} 场）</span>`;
+  const kpiHtml = batch.reviewed ? `
         <div class="kpi"><div class="num">${batch.stats.dir}</div><div class="lbl">方向命中率 ${batch.stats.dirPct}</div></div>
         <div class="kpi"><div class="num">${batch.stats.score}</div><div class="lbl">比分 TOP3 ${batch.stats.scorePct}</div></div>
         <div class="kpi"><div class="num">${batch.stats.ht}</div><div class="lbl">半全场 TOP3 ${batch.stats.htPct}</div></div>
+        ${alertKpi}` : `
+        <div class="kpi"><div class="num">${confirmedN}/${totalN}</div><div class="lbl">已确认场次</div></div>
+        <div class="kpi"><div class="num">${r.results.filter(m => m.d === "ok").length}</div><div class="lbl">方向已命中</div></div>
+        <div class="kpi"><div class="num">${r.results.filter(m => m.s === "ok").length}</div><div class="lbl">比分已命中</div></div>
+        <div class="kpi"><div class="num">${r.results.filter(m => m.h === "ok").length}</div><div class="lbl">半全场已命中</div></div>
+        ${alertKpi}`;
+
+  const rows = r.results.map(m => {
+    const pm = batch.predict.matches.find(x => x.no === m.no);
+    const scoreMain = m.score.split("（")[0];
+    const sTop = pm ? topOf(scoreMain, pm.scores) : null;
+    const hTop = pm ? topOf(htFromScore(m.score), pm.ht) : null;
+    const hCell = hTop ? hitTag(hTop) : (m.h === "ok" ? okT : noT); // 无半场数据时按 h 判定
+    const aw = alertOf(m);
+    return `<tr>
+      <td><span class="no-badge">${m.no}</span></td>
+      <td>${m.teams} <span class="lg ${m.lg}">${m.league}</span></td>
+      <td><b>${m.score}</b></td>
+      <td>${dTag(m.d)}</td>
+      <td>${hitTag(sTop)}</td>
+      <td>${hCell}</td>
+      <td>${aw ? `<span class="tag tag-yellow">${aw}</span>` : `<span class="tag tag-gray">—</span>`}</td>
+      <td><span class="tag ${m.sc === "danger" ? "tag-red" : m.sc === "watch" ? "tag-yellow" : "tag-green"}">${m.signal}</span></td>
+    </tr>`;
+  }).join("");
+
+  // 控分排查结论仅本地保留（合规），网页只展示演戏排查部分
+  const cleanTxt = t => (t || "").split("控分排查：")[0].trim();
+  const evRows = r.evidence.map(e => `<tr>
+    <td><b>${e.no} ${e.teams}</b><br><span class="lg ${e.lg}">${e.league}</span></td>
+    <td>${e.stats}</td>
+    <td><span class="tag ${e.sc === "danger" ? "tag-red" : e.sc === "watch" ? "tag-yellow" : "tag-green"}">${e.signal}</span> ${cleanTxt(e.txt)}</td>
+  </tr>`).join("");
+
+  el.innerHTML = `
+    <div class="card">
+      <h2><span class="icon">📊</span> 批次命中统计（${batch.title}）${statusTag}</h2>
+      <div class="kpi-row">
+        ${kpiHtml}
       </div>
     </div>
 
@@ -256,7 +302,7 @@ function renderReview(batch) {
       <div class="table-wrap"><table data-sort>
         <thead><tr>
           <th data-sortable>场次</th><th>对阵</th><th data-sortable>赛果（半场）</th>
-          <th data-sortable>方向</th><th data-sortable>比分</th><th data-sortable>半全场</th><th>演戏信号</th>
+          <th data-sortable>方向</th><th data-sortable>比分</th><th data-sortable>半全场</th><th data-sortable>预警命中</th><th>演戏信号</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table></div>
@@ -268,15 +314,6 @@ function renderReview(batch) {
         <thead><tr><th>场次</th><th>技术统计</th><th>信号解读</th></tr></thead>
         <tbody>${evRows}</tbody>
       </table></div>
-    </div>
-
-    <div class="card">
-      <h2><span class="icon">🚨</span> 队伍级避雷名单（全联赛统一）</h2>
-      <div class="note">避雷队伍参与的比赛预测置信度降一级 + 强制"避雷预警"标记；名单动态维护。</div>
-      <h3>🔴 高信号</h3>
-      <div class="avoid-grid">${highCards}</div>
-      <h3>🟡 观察</h3>
-      <div class="avoid-grid">${watchCards}</div>
     </div>`;
 }
 
@@ -436,7 +473,7 @@ function renderGlobal() {
 function renderBatchHeader() {
   const b = BATCHES[currentKey];
   const el = document.getElementById("batch-header");
-  if (b) {
+  if (el && b) {
     el.innerHTML = `
       <span class="badge badge-soft">📅 ${fmtDate(currentKey)}</span>
       <span class="badge badge-solid">${b.title}</span>
@@ -446,12 +483,44 @@ function renderBatchHeader() {
   }
 }
 
+/* ---------- 避雷名单（独立子页面，跨批次聚合） ---------- */
+function renderAvoid() {
+  const el = document.getElementById("avoid-view");
+  if (!el) return;
+  // 跨批次聚合 avoidHigh / avoidWatch，按队伍去重（保留最新 reason）
+  const highMap = {}, watchMap = {};
+  Object.keys(BATCHES).forEach(k => {
+    const r = BATCHES[k].review;
+    if (!r) return;
+    (r.avoidHigh || []).forEach(a => { highMap[a.team] = a; });
+    (r.avoidWatch || []).forEach(a => { watchMap[a.team] = a; });
+  });
+  const highList = Object.values(highMap), watchList = Object.values(watchMap);
+  const card = (a, kind) => `<div class="avoid-card ${kind}">
+    <div class="team-icon">${kind === "high" ? "🚫" : "👀"}</div><div>
+      <div class="team-name">${a.team} <span class="tag ${kind === "high" ? "tag-red" : "tag-yellow"}">${kind === "high" ? "🔴 高" : "🟡 观察"}</span></div>
+      <div class="team-league">${a.league}</div>
+      <div class="team-reason">${a.reason}</div>
+    </div></div>`;
+  const srcCount = Object.keys(BATCHES).filter(k => BATCHES[k].review && ((BATCHES[k].review.avoidHigh && BATCHES[k].review.avoidHigh.length) || (BATCHES[k].review.avoidWatch && BATCHES[k].review.avoidWatch.length))).length;
+  el.innerHTML = `
+    <div class="card">
+      <h2><span class="icon">🚨</span> 队伍级避雷名单（全联赛统一）</h2>
+      <div class="note">避雷队伍参与的比赛预测置信度降一级 + 强制"避雷预警"标记；名单动态维护，跨批次累计（当前 ${highList.length + watchList.length} 队，来自 ${srcCount} 个批次）。</div>
+      <h3>🔴 高信号（${highList.length}）</h3>
+      <div class="avoid-grid">${highList.map(a => card(a, "high")).join("") || '<div class="note">暂无</div>'}</div>
+      <h3>🟡 观察（${watchList.length}）</h3>
+      <div class="avoid-grid">${watchList.map(a => card(a, "watch")).join("") || '<div class="note">暂无</div>'}</div>
+    </div>`;
+}
+
 /* ---------- 入口 ---------- */
 function renderAll() {
   const b = BATCHES[currentKey];
   renderBatchHeader();
   renderGlobal();
   renderSiteStats();
+  renderAvoid();
   if (b) {
     renderPredict(b);
     renderReview(b);

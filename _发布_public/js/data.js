@@ -4,13 +4,1001 @@
    ============================================================ */
 
 const BATCHES = {
+  "2026-08-12": {
+    title: "8/12 周二批次（副本4补录·竞彩校正）",
+    model: "V10.0",
+    predictDate: "2026-08-12",
+    reviewed: true,
+    stats: { dir: "6/7", dirPct: "85.7%", score: "3/7", scorePct: "42.9%", ht: "6/7", htPct: "85.7%" },
+    predict: {
+      matches: [
+        { no: "003", home: "博德闪耀", away: "圣吉罗斯", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-1 / 2-0 / 3-2", ht: "胜胜/平胜/平平" },
+        { no: "004", home: "萨巴赫", away: "奥胡斯", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-0 / 1-1 / 2-1", ht: "平胜/平平/胜胜" },
+        { no: "005", home: "奈梅亨", away: "奥林匹亚科斯", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "0-1 / 1-1 / 0-2", ht: "平平/平负/负负" },
+        { no: "006", home: "采列", away: "阿拉拉特亚美尼亚", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 1-2 / 0-1", ht: "平平/平负/负负" },
+        { no: "007", home: "布拉迪斯拉发", away: "米亚尔比", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "胜（B级）", dc: "dir-win", scores: "2-0 / 2-1 / 1-0", ht: "胜胜/平胜/平平" },
+        { no: "008", home: "格拉茨风暴", away: "费内巴切", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "0-1 / 1-1 / 0-2", ht: "平负/负负/平平" },
+        { no: "009", home: "里昂", away: "布拉格斯巴达", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "胜（B级）", dc: "dir-win", scores: "2-0 / 3-1 / 2-1", ht: "胜胜/平胜/平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "003", teams: "博德闪耀 vs 圣吉罗斯", league: "欧冠资格赛", lg: "lg-ucl", score: "2-2（0-0）", d: "ok", s: "no", h: "ok", signal: "正常（加时3-2晋级，平平TOP3）", sc: "ok" },
+        { no: "004", teams: "萨巴赫 vs 奥胡斯", league: "欧冠资格赛", lg: "lg-ucl", score: "4-0（0-0）", d: "ok", s: "no", h: "ok", signal: "正常（胜胜TOP3，4-0未覆盖）", sc: "ok" },
+        { no: "005", teams: "奈梅亨 vs 奥林匹亚科斯", league: "欧冠资格赛", lg: "lg-ucl", score: "1-1（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（1-1=TOP2+平平TOP1）", sc: "ok" },
+        { no: "006", teams: "采列 vs 阿拉拉特亚美尼亚", league: "欧冠资格赛", lg: "lg-ucl", score: "2-0（0-0）", d: "no", s: "no", h: "no", signal: "全错（首回合1-2落败主场2-0逆转，R211）", sc: "ok" },
+        { no: "007", teams: "布拉迪斯拉发 vs 米亚尔比", league: "欧冠资格赛", lg: "lg-ucl", score: "2-0（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（2-0=TOP1+胜胜TOP1）", sc: "ok" },
+        { no: "008", teams: "格拉茨风暴 vs 费内巴切", league: "欧冠资格赛", lg: "lg-ucl", score: "0-1（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（0-1=TOP1+负负TOP2）", sc: "ok" },
+        { no: "009", teams: "里昂 vs 布拉格斯巴达", league: "欧冠资格赛", lg: "lg-ucl", score: "3-0（1-0）", d: "ok", s: "no", h: "ok", signal: "正常（34'客队红牌崩盘，胜胜TOP1）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-08-13": {
+    title: "8/13 批次（竞彩校正：周三轮001-003）",
+    model: "V10.2",
+    predictDate: "2026-08-13",
+    reviewed: true,
+    stats: { dir: "2/3", dirPct: "66.7%", score: "2/3", scorePct: "66.7%", ht: "1/3", htPct: "33.3%" },
+    predict: {
+      matches: [
+        { no: "001", home: "巴黎圣日耳曼", away: "阿斯顿维拉", league: "欧超杯", lg: "lg-ucl",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 1-2 / 2-2", ht: "平平/平负/负负" },
+        { no: "002", home: "普拉滕斯", away: "科金博联", league: "解放者杯", lg: "lg-bras",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "0-0 / 1-1 / 0-1", ht: "平平/平负/负负" },
+        { no: "003", home: "帕尔梅拉斯", away: "波特诺山丘", league: "解放者杯", lg: "lg-bras",
+          dir: "胜/平（B+级）", dc: "dir-windraw", scores: "1-0 / 1-1 / 0-0", ht: "平胜/平平/胜胜" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "巴黎圣日耳曼 vs 阿斯顿维拉", league: "欧超杯", lg: "lg-ucl", score: "2-1（1-1）", d: "no", s: "no", h: "no", signal: "全错（维拉7人残阵，巴黎下半场调整逆转）", sc: "ok" },
+        { no: "002", teams: "普拉滕斯 vs 科金博联", league: "解放者杯", lg: "lg-bras", score: "1-1（1-0）", d: "ok", s: "ok", h: "no", signal: "🟡 部分命中（1-1=TOP2，半全场胜平未覆盖）", sc: "watch" },
+        { no: "003", teams: "帕尔梅拉斯 vs 波特诺山丘", league: "解放者杯", lg: "lg-bras", score: "1-1（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（1-1=TOP2+平平TOP2）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-08-05": {
+    title: "8/5 周二批次（欧冠首回合·竞彩校正）",
+    model: "V10.0",
+    predictDate: "2026-08-05",
+    reviewed: true,
+    stats: { dir: "3/5", dirPct: "60%", score: "2/5", scorePct: "40%", ht: "4/5", htPct: "80%" },
+    predict: {
+      matches: [
+        { no: "001", home: "雷莫", away: "桑托斯", league: "巴西杯", lg: "lg-bras",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "0-0 / 1-1 / 0-1", ht: "平平/平负/负负" },
+        { no: "002", home: "米亚尔比", away: "布拉迪斯拉发", league: "欧冠", lg: "lg-ucl",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 1-0 / 1-2", ht: "平平/胜胜/平负" },
+        { no: "003", home: "奥林匹亚科斯", away: "奈梅亨", league: "欧冠", lg: "lg-ucl",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-1 / 1-0 / 1-1", ht: "胜胜/平胜/平平" },
+        { no: "004", home: "圣吉罗斯", away: "博德闪耀", league: "欧冠", lg: "lg-ucl",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 0-1 / 0-0", ht: "平平/平负/负负" },
+        { no: "005", home: "布拉格斯巴达", away: "里昂", league: "欧冠", lg: "lg-ucl",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "1-2 / 0-2 / 1-1", ht: "负负/平负/平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "雷莫 vs 桑托斯", league: "巴西杯", lg: "lg-bras", score: "0-1（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（0-1=TOP3+平平TOP1，竞彩权威补录）", sc: "ok" },
+        { no: "002", teams: "米亚尔比 vs 布拉迪斯拉发", league: "欧冠", lg: "lg-ucl", score: "1-2（0-0）", d: "ok", s: "ok", h: "ok", signal: "正常（1-2=TOP3+平负）", sc: "ok" },
+        { no: "003", teams: "奥林匹亚科斯 vs 奈梅亨", league: "欧冠", lg: "lg-ucl", score: "0-0（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 闷平（平平TOP3，A级未兑现）", sc: "watch" },
+        { no: "004", teams: "圣吉罗斯 vs 博德闪耀", league: "欧冠", lg: "lg-ucl", score: "3-3（2-2）", d: "ok", s: "no", h: "ok", signal: "🟡 大球平局（平平TOP1）", sc: "watch" },
+        { no: "005", teams: "布拉格斯巴达 vs 里昂", league: "欧冠", lg: "lg-ucl", score: "2-1（0-1）", d: "no", s: "no", h: "no", signal: "全错（负胜逆转未覆盖）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-07-21": {
+    title: "07-21 批次（历史补录·竞彩校正）",
+    model: "V8-V9",
+    predictDate: "2026-07-21",
+    reviewed: true,
+    stats: { dir: "0/3", dirPct: "0%", score: "1/3", scorePct: "33%", ht: "3/3", htPct: "100%" },
+    predict: {
+      matches: [
+        { no: "001", home: "济州SK", away: "江原FC", league: "韩职", lg: "lg-k1",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "0-1 / 1-1 / 0-2", ht: "平负 / 平平 / 负负" },
+        { no: "002", home: "全北现代", away: "大田市民", league: "韩职", lg: "lg-k1",
+          dir: "胜（B+级）", dc: "dir-win", scores: "1-0 / 1-1 / 2-1", ht: "平胜 / 胜胜 / 平平" },
+        { no: "003", home: "蔚山现代", away: "仁川联", league: "韩职", lg: "lg-k1",
+          dir: "胜（A-级）", dc: "dir-win", scores: "2-0 / 2-1 / 1-0", ht: "胜胜 / 平胜 / 平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "济州SK vs 江原FC", league: "韩职", lg: "lg-k1", score: "1-1（1-1）", d: "no", s: "ok", h: "ok", signal: "🟡 部分命中（1-1=TOP2+平平TOP2，竞彩权威）", sc: "watch" },
+        { no: "002", teams: "全北现代 vs 大田市民", league: "韩职", lg: "lg-k1", score: "0-0（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（平平TOP3，竞彩权威）", sc: "watch" },
+        { no: "003", teams: "蔚山现代 vs 仁川联", league: "韩职", lg: "lg-k1", score: "1-2（1-1）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（平平TOP3，竞彩权威）", sc: "watch" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-07-22": {
+    title: "07-22 批次（历史补录·竞彩校正）",
+    model: "V8-V9",
+    predictDate: "2026-07-22",
+    reviewed: true,
+    stats: { dir: "3/7", dirPct: "43%", score: "2/7", scorePct: "29%", ht: "4/7", htPct: "57%" },
+    predict: {
+      matches: [
+        { no: "001", home: "首尔FC", away: "浦项制铁", league: "韩职", lg: "lg-k1",
+          dir: "胜", dc: "dir-win", scores: "-", ht: "-" },
+        { no: "002", home: "富川FC", away: "安养FC", league: "韩职", lg: "lg-k1",
+          dir: "平", dc: "dir-draw", scores: "-", ht: "-" },
+        { no: "003", home: "光州FC", away: "金泉尚武", league: "韩职", lg: "lg-k1",
+          dir: "负", dc: "dir-drawloss", scores: "-", ht: "-" },
+        { no: "004", home: "米内罗竞技", away: "巴伊亚", league: "巴甲", lg: "lg-bras",
+          dir: "胜（A-级）", dc: "dir-win", scores: "1-0 / 2-0 / 1-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "005", home: "萨巴赫", away: "库奥皮奥", league: "欧冠", lg: "lg-ucl",
+          dir: "平（B+级）", dc: "dir-draw", scores: "1-1 / 0-0 / 1-0", ht: "平平 / 平胜 / 胜胜" },
+        { no: "006", home: "奥胡斯", away: "波兹南莱赫", league: "欧冠", lg: "lg-ucl",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "0-1 / 1-1 / 0-2", ht: "平负 / 平平 / 负负" },
+        { no: "007", home: "格风暴", away: "哈茨", league: "欧冠", lg: "lg-ucl",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 2-1 / 1-0", ht: "胜胜 / 平胜 / 平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "首尔FC vs 浦项制铁", league: "韩职", lg: "lg-k1", score: "3-1（1-0）", d: "ok", s: "no", h: "no", signal: "🟡 部分命中（竞彩权威）", sc: "watch" },
+        { no: "002", teams: "富川FC vs 安养FC", league: "韩职", lg: "lg-k1", score: "2-3（1-1）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "003", teams: "光州FC vs 金泉尚武", league: "韩职", lg: "lg-k1", score: "1-1（1-1）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "004", teams: "米内罗竞技 vs 巴伊亚", league: "巴甲", lg: "lg-bras", score: "1-1（1-0）", d: "no", s: "ok", h: "ok", signal: "🟡 部分命中（1-1=TOP3+平胜TOP2，竞彩权威）", sc: "watch" },
+        { no: "005", teams: "萨巴赫 vs 库奥皮奥", league: "欧冠", lg: "lg-ucl", score: "1-0（1-0）", d: "no", s: "ok", h: "ok", signal: "🟡 部分命中（1-0=TOP3+胜胜TOP3，竞彩权威）", sc: "watch" },
+        { no: "006", teams: "奥胡斯 vs 波兹南莱赫", league: "欧冠", lg: "lg-ucl", score: "1-4（0-2）", d: "ok", s: "no", h: "ok", signal: "🟡 部分命中（负负TOP3，竞彩权威）", sc: "watch" },
+        { no: "007", teams: "格风暴 vs 哈茨", league: "欧冠", lg: "lg-ucl", score: "4-0（1-0）", d: "ok", s: "no", h: "ok", signal: "🟡 部分命中（胜胜TOP1，竞彩权威）", sc: "watch" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-07-23": {
+    title: "07-23 批次（历史补录·竞彩校正）",
+    model: "V8-V9",
+    predictDate: "2026-07-23",
+    reviewed: true,
+    stats: { dir: "3/9", dirPct: "33%", score: "0/9", scorePct: "0%", ht: "0/9", htPct: "0%" },
+    predict: {
+      matches: [
+        { no: "001", home: "博德闪耀", away: "汉坎", league: "挪超", lg: "lg-nor",
+          dir: "平", dc: "dir-draw", scores: "-", ht: "-" },
+        { no: "002", home: "利勒斯特罗姆", away: "维京", league: "挪超", lg: "lg-nor",
+          dir: "负", dc: "dir-drawloss", scores: "-", ht: "-" },
+        { no: "003", home: "迈阿密国际", away: "芝加哥火焰", league: "美职联", lg: "lg-mls",
+          dir: "负", dc: "dir-drawloss", scores: "-", ht: "-" },
+        { no: "004", home: "沙佩科恩斯", away: "弗拉门戈", league: "巴甲", lg: "lg-bras",
+          dir: "平", dc: "dir-draw", scores: "-", ht: "-" },
+        { no: "005", home: "圣保罗", away: "巴拉纳竞技", league: "巴甲", lg: "lg-bras",
+          dir: "胜", dc: "dir-win", scores: "-", ht: "-" },
+        { no: "006", home: "洛杉矶FC", away: "盐湖城", league: "美职联", lg: "lg-mls",
+          dir: "胜", dc: "dir-win", scores: "-", ht: "-" },
+        { no: "007", home: "奥莫尼亚", away: "阿拉木图凯拉特", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "平", dc: "dir-draw", scores: "-", ht: "-" },
+        { no: "008", home: "科林蒂安", away: "雷莫", league: "巴甲", lg: "lg-bras",
+          dir: "胜", dc: "dir-win", scores: "1-0 / 1-1 / 2-0", ht: "-" },
+        { no: "009", home: "博塔弗戈", away: "维多利亚", league: "巴甲", lg: "lg-bras",
+          dir: "胜", dc: "dir-win", scores: "2-1 / 1-0 / 2-0", ht: "-" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "博德闪耀 vs 汉坎", league: "挪超", lg: "lg-nor", score: "3-0（1-0）", d: "no", s: "no", h: "no", signal: "全错（主胜未覆盖，竞彩权威）", sc: "ok" },
+        { no: "002", teams: "利勒斯特罗姆 vs 维京", league: "挪超", lg: "lg-nor", score: "1-2（0-1）", d: "ok", s: "no", h: "no", signal: "🟡 部分命中（竞彩权威）", sc: "watch" },
+        { no: "003", teams: "迈阿密国际 vs 芝加哥火焰", league: "美职联", lg: "lg-mls", score: "3-2（1-1）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "004", teams: "沙佩科恩斯 vs 弗拉门戈", league: "巴甲", lg: "lg-bras", score: "0-4（0-2）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "005", teams: "圣保罗 vs 巴拉纳竞技", league: "巴甲", lg: "lg-bras", score: "1-2（1-0）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "006", teams: "洛杉矶FC vs 盐湖城", league: "美职联", lg: "lg-mls", score: "3-1（2-0）", d: "ok", s: "no", h: "no", signal: "🟡 部分命中（竞彩权威）", sc: "watch" },
+        { no: "007", teams: "奥莫尼亚 vs 阿拉木图凯拉特", league: "欧冠资格赛", lg: "lg-ucl", score: "1-0（1-0）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "008", teams: "科林蒂安 vs 雷莫", league: "巴甲", lg: "lg-bras", score: "3-0（3-0）", d: "ok", s: "no", h: "no", signal: "🟡 部分命中（竞彩权威）", sc: "watch" },
+        { no: "009", teams: "博塔弗戈 vs 维多利亚", league: "巴甲", lg: "lg-bras", score: "0-0（0-0）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-07-24": {
+    title: "07-24 批次（历史补录·竞彩校正）",
+    model: "V8-V9",
+    predictDate: "2026-07-24",
+    reviewed: true,
+    stats: { dir: "1/5", dirPct: "20%", score: "2/5", scorePct: "40%", ht: "0/5", htPct: "0%" },
+    predict: {
+      matches: [
+        { no: "001", home: "哈马比", away: "安德莱赫特", league: "欧罗巴资格赛", lg: "lg-uel",
+          dir: "胜", dc: "dir-win", scores: "2-0 / 2-1 / 3-1", ht: "-" },
+        { no: "002", home: "圣加仑", away: "本菲卡", league: "欧罗巴资格赛", lg: "lg-uel",
+          dir: "平", dc: "dir-draw", scores: "0-1 / 0-2 / 1-2", ht: "-" },
+        { no: "003", home: "贝西克塔斯", away: "中日德兰", league: "欧罗巴资格赛", lg: "lg-uel",
+          dir: "平", dc: "dir-draw", scores: "1-1 / 0-1 / 1-0", ht: "-" },
+        { no: "004", home: "特温特", away: "费伦茨瓦罗斯", league: "欧罗巴资格赛", lg: "lg-uel",
+          dir: "胜", dc: "dir-win", scores: "2-0 / 2-1 / 3-1", ht: "-" },
+        { no: "005", home: "斯普利特海杜克", away: "帕福斯", league: "欧罗巴资格赛", lg: "lg-uel",
+          dir: "胜", dc: "dir-win", scores: "2-0 / 2-1 / 3-0", ht: "-" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "哈马比 vs 安德莱赫特", league: "欧罗巴资格赛", lg: "lg-uel", score: "1-1（0-1）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "002", teams: "圣加仑 vs 本菲卡", league: "欧罗巴资格赛", lg: "lg-uel", score: "2-1（1-1）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "003", teams: "贝西克塔斯 vs 中日德兰", league: "欧罗巴资格赛", lg: "lg-uel", score: "1-0（1-0）", d: "no", s: "ok", h: "no", signal: "🟡 部分命中（1-0=TOP3，竞彩权威）", sc: "watch" },
+        { no: "004", teams: "特温特 vs 费伦茨瓦罗斯", league: "欧罗巴资格赛", lg: "lg-uel", score: "1-2（1-1）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "005", teams: "斯普利特海杜克 vs 帕福斯", league: "欧罗巴资格赛", lg: "lg-uel", score: "2-0（0-0）", d: "ok", s: "ok", h: "no", signal: "🟡 部分命中（2-0=TOP1，竞彩权威）", sc: "watch" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-07-25": {
+    title: "07-25 批次（历史补录·竞彩校正）",
+    model: "V8-V9",
+    predictDate: "2026-07-25",
+    reviewed: true,
+    stats: { dir: "4/9", dirPct: "44%", score: "4/9", scorePct: "44%", ht: "6/9", htPct: "67%" },
+    predict: {
+      matches: [
+        { no: "001", home: "金泉尚武", away: "大田市民", league: "韩职", lg: "lg-k1",
+          dir: "负", dc: "dir-drawloss", scores: "1-1 / 0-1 / 0-0", ht: "平负 / 平平 / 负负" },
+        { no: "002", home: "浦项制铁", away: "全北现代", league: "韩职", lg: "lg-k1",
+          dir: "平", dc: "dir-draw", scores: "0-0 / 1-1 / 0-1", ht: "平平 / 平胜 / 负负" },
+        { no: "003", home: "代格福什", away: "佐加顿斯", league: "瑞超", lg: "lg-swe",
+          dir: "负", dc: "dir-drawloss", scores: "0-2 / 1-2 / 0-1", ht: "负负 / 平负 / 平平" },
+        { no: "004", home: "玛丽港", away: "AC奥卢", league: "芬超", lg: "lg-fin",
+          dir: "负", dc: "dir-drawloss", scores: "0-1 / 0-2 / 1-2", ht: "平负 / 平平 / 负负" },
+        { no: "005", home: "克里斯蒂安松", away: "斯达", league: "挪超", lg: "lg-nor",
+          dir: "胜", dc: "dir-win", scores: "1-0 / 2-0 / 2-1", ht: "胜胜 / 平胜 / 胜平" },
+        { no: "006", home: "库奥皮奥", away: "VPS瓦萨", league: "芬超", lg: "lg-fin",
+          dir: "胜", dc: "dir-win", scores: "2-1 / 2-0 / 3-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "007", home: "卡尔马", away: "米亚尔比", league: "瑞超", lg: "lg-swe",
+          dir: "胜", dc: "dir-win", scores: "1-0 / 2-1 / 1-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "008", home: "雅罗", away: "塞伊奈约基", league: "芬超", lg: "lg-fin",
+          dir: "负", dc: "dir-drawloss", scores: "0-1 / 1-1 / 0-0", ht: "平负 / 平平 / 负负" },
+        { no: "009", home: "韦斯特罗斯", away: "厄格里特", league: "瑞超", lg: "lg-swe",
+          dir: "胜", dc: "dir-win", scores: "2-0 / 2-1 / 1-0", ht: "胜胜 / 平胜 / 平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "金泉尚武 vs 大田市民", league: "韩职", lg: "lg-k1", score: "3-2（1-1）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（平平TOP2，竞彩权威）", sc: "watch" },
+        { no: "002", teams: "浦项制铁 vs 全北现代", league: "韩职", lg: "lg-k1", score: "0-2（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（平平TOP1，竞彩权威）", sc: "watch" },
+        { no: "003", teams: "代格福什 vs 佐加顿斯", league: "瑞超", lg: "lg-swe", score: "0-1（0-1）", d: "ok", s: "ok", h: "ok", signal: "正常（竞彩权威）", sc: "ok" },
+        { no: "004", teams: "玛丽港 vs AC奥卢", league: "芬超", lg: "lg-fin", score: "1-1（1-0）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "005", teams: "克里斯蒂安松 vs 斯达", league: "挪超", lg: "lg-nor", score: "1-2（1-1）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "006", teams: "库奥皮奥 vs VPS瓦萨", league: "芬超", lg: "lg-fin", score: "3-1（3-0）", d: "ok", s: "ok", h: "ok", signal: "正常（竞彩权威）", sc: "ok" },
+        { no: "007", teams: "卡尔马 vs 米亚尔比", league: "瑞超", lg: "lg-swe", score: "2-1（1-1）", d: "ok", s: "ok", h: "ok", signal: "正常（竞彩权威）", sc: "ok" },
+        { no: "008", teams: "雅罗 vs 塞伊奈约基", league: "芬超", lg: "lg-fin", score: "2-1（1-0）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "009", teams: "韦斯特罗斯 vs 厄格里特", league: "瑞超", lg: "lg-swe", score: "2-0（1-0）", d: "ok", s: "ok", h: "ok", signal: "正常（2-0=TOP1+胜胜TOP1，竞彩权威）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-07-26": {
+    title: "07-26 批次（历史补录·竞彩校正）",
+    model: "V8-V9",
+    predictDate: "2026-07-26",
+    reviewed: true,
+    stats: { dir: "10/19", dirPct: "52.6%", score: "9/19", scorePct: "47.4%", ht: "14/19", htPct: "73.7%" },
+    predict: {
+      matches: [
+        { no: "001", home: "首尔", away: "蔚山", league: "韩职", lg: "lg-k1",
+          dir: "胜", dc: "dir-win", scores: "2-1 / 1-0 / 1-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "002", home: "仁川", away: "富川", league: "韩职", lg: "lg-k1",
+          dir: "胜", dc: "dir-win", scores: "1-0 / 1-1 / 2-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "003", home: "光州", away: "济州", league: "韩职", lg: "lg-k1",
+          dir: "负", dc: "dir-drawloss", scores: "0-1 / 1-2 / 1-1", ht: "平负 / 负负 / 平平" },
+        { no: "004", home: "安养", away: "江原", league: "韩职", lg: "lg-k1",
+          dir: "平", dc: "dir-draw", scores: "1-1 / 0-1 / 0-0", ht: "平平 / 平负 / 负负" },
+        { no: "005", home: "布洛马", away: "哈马比", league: "瑞超", lg: "lg-swe",
+          dir: "平", dc: "dir-draw", scores: "1-1 / 0-0 / 1-0", ht: "平平 / 平负 / 平胜" },
+        { no: "006", home: "天狼星", away: "哥德堡", league: "瑞超", lg: "lg-swe",
+          dir: "平", dc: "dir-draw", scores: "2-1 / 1-1 / 1-0", ht: "平胜 / 胜胜 / 平平" },
+        { no: "007", home: "图尔库国际", away: "赫尔火花", league: "芬超", lg: "lg-fin",
+          dir: "负", dc: "dir-drawloss", scores: "1-2 / 0-1 / 1-1", ht: "平负 / 负负 / 平平" },
+        { no: "008", home: "埃尔维斯", away: "拉赫蒂", league: "芬超", lg: "lg-fin",
+          dir: "胜", dc: "dir-win", scores: "1-0 / 2-1 / 1-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "009", home: "布兰", away: "瓦勒伦加", league: "挪超", lg: "lg-nor",
+          dir: "胜", dc: "dir-win", scores: "2-1 / 1-0 / 2-0", ht: "胜胜 / 平胜 / 平平" },
+        { no: "010", home: "赫尔辛基", away: "TPS图尔库", league: "芬超", lg: "lg-fin",
+          dir: "胜", dc: "dir-win", scores: "1-0 / 2-0 / 2-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "011", home: "哥德堡盖斯", away: "哈姆斯塔德", league: "瑞超", lg: "lg-swe",
+          dir: "胜", dc: "dir-win", scores: "2-0 / 2-1 / 3-0", ht: "胜胜 / 平胜 / 平平" },
+        { no: "012", home: "马尔默", away: "埃尔夫斯堡", league: "瑞超", lg: "lg-swe",
+          dir: "负", dc: "dir-drawloss", scores: "1-2 / 1-1 / 0-1", ht: "平负 / 负负 / 平平" },
+        { no: "013", home: "萨普斯堡", away: "汉坎", league: "挪超", lg: "lg-nor",
+          dir: "胜", dc: "dir-win", scores: "2-0 / 2-1 / 1-0", ht: "胜胜 / 平胜 / 平平" },
+        { no: "014", home: "桑德菲杰", away: "博德闪耀", league: "挪超", lg: "lg-nor",
+          dir: "负", dc: "dir-drawloss", scores: "0-2 / 0-3 / 1-2", ht: "负负 / 平负 / 平平" },
+        { no: "015", home: "KFUM奥斯陆", away: "莫尔德", league: "挪超", lg: "lg-nor",
+          dir: "负", dc: "dir-drawloss", scores: "1-2 / 1-1 / 0-1", ht: "平负 / 负负 / 平平" },
+        { no: "016", home: "巴拉纳竞技", away: "巴西国际", league: "巴甲", lg: "lg-bras",
+          dir: "胜", dc: "dir-win", scores: "1-0 / 2-1 / 1-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "017", home: "桑托斯", away: "沙佩科恩斯", league: "巴甲", lg: "lg-bras",
+          dir: "胜", dc: "dir-win", scores: "2-0 / 3-0 / 2-1", ht: "胜胜 / 胜胜 / 平胜" },
+        { no: "018", home: "圣迭戈FC", away: "达拉斯FC", league: "美职联", lg: "lg-mls",
+          dir: "负", dc: "dir-drawloss", scores: "1-1 / 2-1 / 1-2", ht: "平胜 / 平平 / 胜胜" },
+        { no: "019", home: "圣何塞地震", away: "洛杉矶银河", league: "美职联", lg: "lg-mls",
+          dir: "胜", dc: "dir-win", scores: "2-1 / 3-2 / 1-0", ht: "胜胜 / 平胜 / 平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "首尔 vs 蔚山", league: "韩职", lg: "lg-k1", score: "1-3（0-2）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "002", teams: "仁川 vs 富川", league: "韩职", lg: "lg-k1", score: "1-1（0-1）", d: "no", s: "ok", h: "no", signal: "🟡 部分命中（1-1=TOP2，竞彩权威）", sc: "watch" },
+        { no: "003", teams: "光州 vs 济州", league: "韩职", lg: "lg-k1", score: "1-2（1-1）", d: "ok", s: "ok", h: "ok", signal: "正常（竞彩权威）", sc: "ok" },
+        { no: "004", teams: "安养 vs 江原", league: "韩职", lg: "lg-k1", score: "2-1（2-0）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "005", teams: "布洛马 vs 哈马比", league: "瑞超", lg: "lg-swe", score: "1-1（0-0）", d: "ok", s: "ok", h: "ok", signal: "正常（竞彩权威）", sc: "ok" },
+        { no: "006", teams: "天狼星 vs 哥德堡", league: "瑞超", lg: "lg-swe", score: "4-1（2-1）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（胜胜TOP2，竞彩权威）", sc: "watch" },
+        { no: "007", teams: "图尔库国际 vs 赫尔火花", league: "芬超", lg: "lg-fin", score: "1-2（0-2）", d: "ok", s: "ok", h: "ok", signal: "正常（1-2=TOP1+负负TOP2，竞彩权威）", sc: "ok" },
+        { no: "008", teams: "埃尔维斯 vs 拉赫蒂", league: "芬超", lg: "lg-fin", score: "1-0（1-0）", d: "ok", s: "ok", h: "ok", signal: "正常（竞彩权威）", sc: "ok" },
+        { no: "009", teams: "布兰 vs 瓦勒伦加", league: "挪超", lg: "lg-nor", score: "2-3（0-3）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "010", teams: "赫尔辛基 vs TPS图尔库", league: "芬超", lg: "lg-fin", score: "1-0（1-0）", d: "ok", s: "ok", h: "ok", signal: "正常（竞彩权威）", sc: "ok" },
+        { no: "011", teams: "哥德堡盖斯 vs 哈姆斯塔德", league: "瑞超", lg: "lg-swe", score: "1-1（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（平平TOP3，竞彩权威）", sc: "watch" },
+        { no: "012", teams: "马尔默 vs 埃尔夫斯堡", league: "瑞超", lg: "lg-swe", score: "1-2（1-2）", d: "ok", s: "ok", h: "ok", signal: "正常（竞彩权威）", sc: "ok" },
+        { no: "013", teams: "萨普斯堡 vs 汉坎", league: "挪超", lg: "lg-nor", score: "1-0（1-0）", d: "ok", s: "ok", h: "ok", signal: "正常（竞彩权威）", sc: "ok" },
+        { no: "014", teams: "桑德菲杰 vs 博德闪耀", league: "挪超", lg: "lg-nor", score: "0-3（0-1）", d: "ok", s: "ok", h: "ok", signal: "正常（竞彩权威）", sc: "ok" },
+        { no: "015", teams: "KFUM奥斯陆 vs 莫尔德", league: "挪超", lg: "lg-nor", score: "2-4（1-1）", d: "ok", s: "no", h: "ok", signal: "🟡 部分命中（平平TOP3，竞彩权威）", sc: "watch" },
+        { no: "016", teams: "巴拉纳竞技 vs 巴西国际", league: "巴甲", lg: "lg-bras", score: "2-0（1-0）", d: "ok", s: "no", h: "ok", signal: "🟡 部分命中（胜胜TOP1，竞彩权威）", sc: "watch" },
+        { no: "017", teams: "桑托斯 vs 沙佩科恩斯", league: "巴甲", lg: "lg-bras", score: "2-2（1-0）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（胜胜TOP1，竞彩权威）", sc: "watch" },
+        { no: "018", teams: "圣迭戈FC vs 达拉斯FC", league: "美职联", lg: "lg-mls", score: "1-0（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（平平TOP2，竞彩权威）", sc: "watch" },
+        { no: "019", teams: "圣何塞地震 vs 洛杉矶银河", league: "美职联", lg: "lg-mls", score: "1-1（0-1）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-07-27": {
+    title: "07-27 批次（历史补录·竞彩校正）",
+    model: "V8-V9",
+    predictDate: "2026-07-27",
+    reviewed: true,
+    stats: { dir: "1/3", dirPct: "33%", score: "1/3", scorePct: "33%", ht: "3/3", htPct: "100%" },
+    predict: {
+      matches: [
+        { no: "001", home: "弗拉门戈", away: "圣保罗", league: "巴甲", lg: "lg-bras",
+          dir: "胜", dc: "dir-win", scores: "2-0/2-1/3-1", ht: "胜胜/平胜/平平" },
+        { no: "002", home: "格雷米奥", away: "弗鲁米嫩塞", league: "巴甲", lg: "lg-bras",
+          dir: "负", dc: "dir-drawloss", scores: "1-1/0-1/1-0", ht: "平平/平负/负负" },
+        { no: "003", home: "奥勒松", away: "维京", league: "挪超", lg: "lg-nor",
+          dir: "负", dc: "dir-drawloss", scores: "1-2/0-2/1-3", ht: "负负/平负/负平" },
+        { no: "004", home: "新加坡", away: "东帝汶", league: "东南亚锦标赛", lg: "lg-asean",
+          dir: "胜", dc: "dir-win", scores: "3-0/4-0/2-0", ht: "胜胜/平胜/胜平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "弗拉门戈 vs 圣保罗", league: "巴甲", lg: "lg-bras", score: "1-1（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（平平TOP3，竞彩权威）", sc: "watch" },
+        { no: "002", teams: "格雷米奥 vs 弗鲁米嫩塞", league: "巴甲", lg: "lg-bras", score: "1-1（0-0）", d: "ok", s: "ok", h: "ok", signal: "正常（竞彩权威）", sc: "ok" },
+        { no: "003", teams: "奥勒松 vs 维京", league: "挪超", lg: "lg-nor", score: "1-1（0-1）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（负平TOP3，竞彩权威）", sc: "watch" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-07-28": {
+    title: "07-28 批次（历史补录·竞彩校正）",
+    model: "V8-V9",
+    predictDate: "2026-07-28",
+    reviewed: true,
+    stats: { dir: "2/3", dirPct: "66.7%", score: "0/3", scorePct: "0%", ht: "3/3", htPct: "100%" },
+    predict: {
+      matches: [
+        { no: "001", home: "古比斯", away: "萨巴赫", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "负", dc: "dir-drawloss", scores: "1-1/0-1/0-0", ht: "平平/平负/负负" },
+        { no: "002", home: "赫根", away: "索尔纳", league: "瑞超", lg: "lg-swe",
+          dir: "胜", dc: "dir-win", scores: "2-1/1-1/2-2", ht: "平胜/平平/胜胜" },
+        { no: "003", home: "罗森博格", away: "腓特烈斯塔", league: "挪超", lg: "lg-nor",
+          dir: "胜", dc: "dir-win", scores: "2-0/2-1/1-0", ht: "胜胜/平胜/平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "古比斯 vs 萨巴赫", league: "欧冠资格赛", lg: "lg-ucl", score: "0-2（0-0）", d: "ok", s: "no", h: "ok", signal: "🟡 部分命中（方向✅+平平TOP3，竞彩权威）", sc: "watch" },
+        { no: "002", teams: "赫根 vs 索尔纳", league: "瑞超", lg: "lg-swe", score: "0-0（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（平平TOP2，竞彩权威）", sc: "watch" },
+        { no: "003", teams: "罗森博格 vs 腓特烈斯塔", league: "挪超", lg: "lg-nor", score: "4-0（2-0）", d: "ok", s: "no", h: "ok", signal: "正常（方向✅+胜胜TOP1，4-0未覆盖，竞彩权威）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-07-29": {
+    title: "07-29 批次（历史补录·竞彩校正）",
+    model: "V8-V9",
+    predictDate: "2026-07-29",
+    reviewed: true,
+    stats: { dir: "2/2", dirPct: "100%", score: "1/2", scorePct: "50%", ht: "2/2", htPct: "100%" },
+    predict: {
+      matches: [
+        { no: "001", home: "佩利根", away: "伊格纳迪亚", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "胜", dc: "dir-win", scores: "2-1/1-1/2-2", ht: "平胜/胜胜/平平" },
+        { no: "002", home: "凯拉特", away: "奥莫尼亚", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "胜", dc: "dir-win", scores: "2-1/1-0/1-1", ht: "胜胜/平胜/平平" },
+        { no: "003", home: "哈茨", away: "格拉茨风暴", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "负", dc: "dir-drawloss", scores: "1-1/0-1/1-2", ht: "平平/平负/负负" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "002", teams: "凯拉特 vs 奥莫尼亚", league: "欧冠资格赛", lg: "lg-ucl", score: "1-0（1-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（1-0=TOP2+胜胜TOP1，竞彩权威补录）", sc: "ok" },
+        { no: "003", teams: "哈茨 vs 格拉茨风暴", league: "欧冠资格赛", lg: "lg-ucl", score: "0-2（0-0）", d: "ok", s: "no", h: "ok", signal: "正常（方向✅+平平TOP1，0-2未覆盖，竞彩权威补录）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-07-30": {
+    title: "07-30 批次（历史补录·竞彩校正）",
+    model: "V9.6",
+    predictDate: "2026-07-30",
+    reviewed: true,
+    stats: { dir: "2/5", dirPct: "40%", score: "1/5", scorePct: "20%", ht: "3/5", htPct: "60%" },
+    predict: {
+      matches: [
+        { no: "001", home: "波兹南莱赫", away: "奥胡斯", league: "欧冠", lg: "lg-ucl",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0/2-1/3-0", ht: "胜胜/平胜/平平" },
+        { no: "002", home: "米拉索尔", away: "里莫", league: "巴甲", lg: "lg-bras",
+          dir: "胜（B级）", dc: "dir-win", scores: "1-0/2-1/1-1", ht: "平胜/胜胜/平平" },
+        { no: "003", home: "巴西国际", away: "弗拉门戈", league: "巴甲", lg: "lg-bras",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "0-2/1-2/0-3", ht: "负负/平负/平平" },
+        { no: "004", home: "弗鲁米嫩塞", away: "巴伊亚", league: "巴甲", lg: "lg-bras",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0/2-1/1-0", ht: "胜胜/平胜/平平" },
+        { no: "005", home: "维多利亚", away: "帕尔梅拉斯", league: "巴甲", lg: "lg-bras",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "0-2/1-2/0-1", ht: "负负/平负/平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "波兹南莱赫 vs 奥胡斯", league: "欧冠", lg: "lg-ucl", score: "0-3（0-1）", d: "no", s: "no", h: "no", signal: "全错（预测胜实际0-3大冷门）", sc: "ok" },
+        { no: "002", teams: "米拉索尔 vs 里莫", league: "巴甲", lg: "lg-bras", score: "2-1（1-1）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（2-1=TOP2+平平TOP3）", sc: "ok" },
+        { no: "003", teams: "巴西国际 vs 弗拉门戈", league: "巴甲", lg: "lg-bras", score: "1-1（1-0）", d: "no", s: "no", h: "no", signal: "全错（主胜未覆盖）", sc: "ok" },
+        { no: "004", teams: "弗鲁米嫩塞 vs 巴伊亚", league: "巴甲", lg: "lg-bras", score: "0-0（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 闷平（平平TOP3，0-0未覆盖）", sc: "watch" },
+        { no: "005", teams: "维多利亚 vs 帕尔梅拉斯", league: "巴甲", lg: "lg-bras", score: "0-4（0-2）", d: "ok", s: "no", h: "ok", signal: "正常（负负TOP1，0-4未覆盖）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-07-31": {
+    title: "07-31 批次（历史补录·竞彩校正）",
+    model: "V10.1",
+    predictDate: "2026-07-31",
+    reviewed: true,
+    stats: { dir: "2/6", dirPct: "33.3%", score: "0/6", scorePct: "0%", ht: "2/6", htPct: "33.3%" },
+    predict: {
+      matches: [
+        { no: "001", home: "中日德兰", away: "贝西克塔斯", league: "欧联资格赛", lg: "lg-uel",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-1/1-0/0-0", ht: "平平/平胜/胜胜" },
+        { no: "002", home: "帕福斯FC", away: "哈伊杜克", league: "欧联资格赛", lg: "lg-uel",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "0-1/1-1/0-2", ht: "平负/负负/平平" },
+        { no: "003", home: "安德莱赫特", away: "哈马比", league: "欧联资格赛", lg: "lg-uel",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1/1-2/2-1", ht: "平平/平胜/负负" },
+        { no: "004", home: "费伦茨瓦罗斯", away: "特温特", league: "欧联资格赛", lg: "lg-uel",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0/2-1/1-0", ht: "胜胜/平胜/平平" },
+        { no: "005", home: "本菲卡", away: "圣加仑", league: "欧联资格赛", lg: "lg-uel",
+          dir: "胜（A级）", dc: "dir-win", scores: "3-0/2-0/3-1", ht: "胜胜/平胜/平平" },
+        { no: "006", home: "科林蒂安", away: "巴拉纳竞技", league: "巴甲", lg: "lg-bras",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-0/1-1/2-1", ht: "平胜/胜胜/平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "中日德兰 vs 贝西克塔斯", league: "欧联资格赛", lg: "lg-uel", score: "0-2（0-0）", d: "no", s: "no", h: "no", signal: "全错（客胜未覆盖）", sc: "ok" },
+        { no: "002", teams: "帕福斯FC vs 哈伊杜克", league: "欧联资格赛", lg: "lg-uel", score: "2-0（1-0）", d: "no", s: "no", h: "no", signal: "全错（主胜未覆盖）", sc: "ok" },
+        { no: "003", teams: "安德莱赫特 vs 哈马比", league: "欧联资格赛", lg: "lg-uel", score: "3-1（0-1）", d: "no", s: "no", h: "no", signal: "全错（负胜逆转未覆盖）", sc: "ok" },
+        { no: "004", teams: "费伦茨瓦罗斯 vs 特温特", league: "欧联资格赛", lg: "lg-uel", score: "2-2", d: "no", s: "no", h: "no", signal: "冷平（2-2未覆盖）", sc: "watch" },
+        { no: "005", teams: "本菲卡 vs 圣加仑", league: "欧联资格赛", lg: "lg-uel", score: "5-0（1-0）", d: "ok", s: "no", h: "ok", signal: "正常（胜胜TOP1，5-0未覆盖）", sc: "ok" },
+        { no: "006", teams: "科林蒂安 vs 巴拉纳竞技", league: "巴甲", lg: "lg-bras", score: "0-0（0-0）", d: "ok", s: "no", h: "ok", signal: "正常（方向✅+平平TOP3，0-0防范命中）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-08-01": {
+    title: "8/1 批次（竞彩校正：周五轮001-003+周六轮001-007）",
+    model: "V9.6",
+    predictDate: "2026-08-01",
+    reviewed: true,
+    stats: { dir: "6/10", dirPct: "60%", score: "4/10", scorePct: "40%", ht: "8/10", htPct: "80%" },
+    predict: {
+      matches: [
+        { no: "001", home: "瓦勒伦加", away: "汉坎", league: "挪超", lg: "lg-nor",
+          dir: "胜（B级）", dc: "dir-win", scores: "2-1 / 3-1 / 1-0", ht: "胜胜 / 平胜 / 平平" },
+        { no: "002", home: "博德闪耀", away: "利勒斯特罗姆", league: "挪超", lg: "lg-nor",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 1-0 / 2-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "003", home: "纽约城", away: "多伦多FC", league: "美职联", lg: "lg-mls",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 3-0 / 2-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "004", home: "江原FC", away: "富川FC", league: "韩职", lg: "lg-k1",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 1-0 / 2-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "005", home: "全北现代", away: "首尔FC", league: "韩职", lg: "lg-k1",
+          dir: "平/让平（B级）", dc: "dir-draw", scores: "1-1 / 1-0 / 0-1", ht: "平平 / 平胜 / 平负" },
+        { no: "006", home: "浦项制铁", away: "金泉尚武", league: "韩职", lg: "lg-k1",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 0-1 / 0-0", ht: "平平 / 平负 / 负负" },
+        { no: "007", home: "TPS图尔库", away: "玛丽港", league: "芬超", lg: "lg-fin",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 3-0 / 2-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "008", home: "赫根", away: "卡尔马", league: "瑞超", lg: "lg-swe",
+          dir: "胜（A级）", dc: "dir-win", scores: "1-0 / 2-0 / 2-1", ht: "胜胜 / 平胜 / 平平" },
+        { no: "009", home: "腓特烈斯塔", away: "桑纳菲", league: "挪超", lg: "lg-nor",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-0 / 1-1 / 0-1", ht: "平胜 / 胜胜 / 平平" },
+        { no: "010", home: "拉赫蒂", away: "雅罗", league: "芬超", lg: "lg-fin",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 2-1 / 1-0", ht: "胜胜 / 平胜 / 平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "瓦勒伦加 vs 汉坎", league: "挪超", lg: "lg-nor", score: "0-3（0-1）", d: "no", s: "no", h: "no", signal: "全错（16'红牌黑天鹅，竞彩权威）", sc: "ok" },
+        { no: "002", teams: "博德闪耀 vs 利勒斯特罗姆", league: "挪超", lg: "lg-nor", score: "4-0（2-0）", d: "ok", s: "no", h: "ok", signal: "🟡 部分命中（胜胜TOP1，竞彩权威）", sc: "watch" },
+        { no: "003", teams: "纽约城 vs 多伦多FC", league: "美职联", lg: "lg-mls", score: "1-1（1-1）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（平平TOP3，竞彩权威）", sc: "watch" },
+        { no: "004", teams: "江原FC vs 富川FC", league: "韩职", lg: "lg-k1", score: "0-3（0-1）", d: "no", s: "no", h: "no", signal: "全错（保级队客场爆冷R108，竞彩权威）", sc: "ok" },
+        { no: "005", teams: "全北现代 vs 首尔FC", league: "韩职", lg: "lg-k1", score: "0-0（0-0）", d: "ok", s: "no", h: "ok", signal: "🟡 部分命中（平平TOP1，竞彩权威）", sc: "watch" },
+        { no: "006", teams: "浦项制铁 vs 金泉尚武", league: "韩职", lg: "lg-k1", score: "0-1（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（0-1=TOP2+平负TOP2，竞彩权威）", sc: "ok" },
+        { no: "007", teams: "TPS图尔库 vs 玛丽港", league: "芬超", lg: "lg-fin", score: "3-0（2-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（3-0=TOP2+胜胜TOP1，竞彩权威）", sc: "ok" },
+        { no: "008", teams: "赫根 vs 卡尔马", league: "瑞超", lg: "lg-swe", score: "1-1（1-1）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（平平TOP3，竞彩权威）", sc: "watch" },
+        { no: "009", teams: "腓特烈斯塔 vs 桑纳菲", league: "挪超", lg: "lg-nor", score: "1-0（1-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（1-0=TOP1+胜胜TOP2，竞彩权威）", sc: "ok" },
+        { no: "010", teams: "拉赫蒂 vs 雅罗", league: "芬超", lg: "lg-fin", score: "2-0（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（2-0=TOP1+平胜TOP2，竞彩权威）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-08-02": {
+    title: "8/2 批次（竞彩校正：周六轮008-016+周日轮001-011）",
+    model: "V8.x",
+    predictDate: "2026-08-02",
+    reviewed: true,
+    stats: { dir: "15/20", dirPct: "75%", score: "9/20", scorePct: "45%", ht: "17/20", htPct: "85%" },
+    predict: {
+      matches: [
+        { no: "001", home: "蔚山HD", away: "安养FC", league: "韩职", lg: "lg-k1",
+          dir: "胜（A-级）", dc: "dir-win", scores: "2-0 / 2-1 / 1-0", ht: "胜胜/平胜/平平" },
+        { no: "002", home: "济州SK", away: "仁川联", league: "韩职", lg: "lg-k1",
+          dir: "胜（B级）", dc: "dir-win", scores: "1-0 / 0-0 / 0-1", ht: "平胜/平平/胜胜" },
+        { no: "003", home: "大田市民", away: "光州FC", league: "韩职", lg: "lg-k1",
+          dir: "胜（B+级）", dc: "dir-win", scores: "1-0 / 2-0 / 1-1", ht: "平胜/胜胜/平平" },
+        { no: "004", home: "布洛马波卡纳", away: "马尔默", league: "瑞超", lg: "lg-swe",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "0-2 / 1-2 / 0-3", ht: "负负/平负/平平" },
+        { no: "005", home: "哥德堡", away: "代格福什", league: "瑞超", lg: "lg-swe",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 2-1 / 1-0", ht: "胜胜/平胜/平平" },
+        { no: "006", home: "VPS瓦萨", away: "图尔库国际", league: "芬超", lg: "lg-fin",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "1-2 / 1-1 / 0-1", ht: "平负/平平/负负" },
+        { no: "007", home: "奥卢", away: "埃尔维斯", league: "芬超", lg: "lg-fin",
+          dir: "平/胜（B级）", dc: "dir-windraw", scores: "1-1 / 1-0 / 0-0", ht: "平平/平胜/胜胜" },
+        { no: "008", home: "索尔纳", away: "奥尔格里特", league: "瑞超", lg: "lg-swe",
+          dir: "胜（B级）", dc: "dir-win", scores: "2-0 / 2-1 / 1-0", ht: "胜胜/平胜/平平" },
+        { no: "009", home: "KFUM奥斯陆", away: "克里斯蒂安松", league: "挪超", lg: "lg-nor",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-0 / 1-1 / 0-0", ht: "平平/胜胜/平胜" },
+        { no: "010", home: "莫尔德", away: "萨普斯堡", league: "挪超", lg: "lg-nor",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 1-2 / 2-2", ht: "平平/平负/负负" },
+        { no: "011", home: "奥勒松", away: "特罗姆瑟", league: "挪超", lg: "lg-nor",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 1-2 / 0-1", ht: "平平/平负/负负" },
+        { no: "015", home: "斯达", away: "维京", league: "挪超", lg: "lg-nor",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "0-2/1-3/0-3", ht: "负负/平负/平平" },
+        { no: "016", home: "赫尔火花", away: "库奥皮奥", league: "芬超", lg: "lg-fin",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "1-2/1-1/0-1", ht: "平负/负负/平平" },
+        { no: "017", home: "迈阿密国际", away: "哥伦布机员", league: "美职联", lg: "lg-mls",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "2-1/1-0/3-1", ht: "胜胜/平胜/平平" },
+        { no: "018", home: "温哥华白浪", away: "洛杉矶FC", league: "美职联", lg: "lg-mls",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "2-1/1-1/2-2", ht: "胜胜/平平/平胜" },
+        { no: "019", home: "桑托斯", away: "雷莫", league: "巴西杯", lg: "lg-bras",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0/3-0/2-1", ht: "胜胜/平胜/平平" },
+        { no: "020", home: "芝加哥火焰", away: "夏洛特FC", league: "美职联", lg: "lg-mls",
+          dir: "胜（B-级）", dc: "dir-win", scores: "2-1/1-0/1-1", ht: "胜胜/平胜/平平" },
+        { no: "021", home: "圣路易斯城", away: "皇家盐湖城", league: "美职联", lg: "lg-mls",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0/2-1/1-0", ht: "胜胜/平胜/平平" },
+        { no: "022", home: "洛杉矶银河", away: "达拉斯FC", league: "美职联", lg: "lg-mls",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-2/1-1/2-2", ht: "平负/平平/负负" },
+        { no: "023", home: "波特兰伐木工", away: "西雅图海湾人", league: "美职联", lg: "lg-mls",
+          dir: "胜（A级）", dc: "dir-win", scores: "3-0/2-0/3-1", ht: "胜胜/平胜/平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "蔚山HD vs 安养FC", league: "韩职", lg: "lg-k1", score: "3-1（0-0）", d: "ok", s: "no", h: "ok", signal: "正常（半场0-0=平平TOP3，半全场✅）", sc: "ok" },
+        { no: "002", teams: "济州SK vs 仁川联", league: "韩职", lg: "lg-k1", score: "3-3（2-2）", d: "no", s: "no", h: "ok", signal: "🟡 大球平局（2-2半场=平平TOP2）", sc: "watch" },
+        { no: "003", teams: "大田市民 vs 光州FC", league: "韩职", lg: "lg-k1", score: "2-0（0-0）", d: "ok", s: "ok", h: "ok", signal: "正常（2-0=TOP2+平胜TOP1，竞彩权威）", sc: "ok" },
+        { no: "004", teams: "布洛马波卡纳 vs 马尔默", league: "瑞超", lg: "lg-swe", score: "1-2（0-0）", d: "ok", s: "ok", h: "ok", signal: "正常（1-2=TOP2+平负TOP2，半场待核）", sc: "ok" },
+        { no: "005", teams: "哥德堡 vs 代格福什", league: "瑞超", lg: "lg-swe", score: "2-0（1-0）", d: "ok", s: "ok", h: "ok", signal: "正常（2-0=TOP1+胜胜TOP1，半场待核）", sc: "ok" },
+        { no: "006", teams: "VPS瓦萨 vs 图尔库国际", league: "芬超", lg: "lg-fin", score: "0-1（0-1）", d: "ok", s: "ok", h: "ok", signal: "正常（0-1=TOP3+负负TOP3，竞彩权威补录）", sc: "ok" },
+        { no: "007", teams: "奥卢 vs 埃尔维斯", league: "芬超", lg: "lg-fin", score: "1-0（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（1-0=TOP2+平胜TOP2，71'定位球）", sc: "ok" },
+        { no: "008", teams: "索尔纳 vs 奥尔格里特", league: "瑞超", lg: "lg-swe", score: "0-3（0-2）", d: "no", s: "no", h: "no", signal: "全错（10人伤缺2'即丢球，R126）", sc: "watch" },
+        { no: "009", teams: "KFUM奥斯陆 vs 克里斯蒂安松", league: "挪超", lg: "lg-nor", score: "2-1（2-0）", d: "ok", s: "no", h: "ok", signal: "正常（方向✅+2-0半场=胜胜TOP2）", sc: "ok" },
+        { no: "010", teams: "莫尔德 vs 萨普斯堡", league: "挪超", lg: "lg-nor", score: "3-3（1-1）", d: "ok", s: "no", h: "ok", signal: "🟡 大球平局（1-1半场=平平TOP1）", sc: "watch" },
+        { no: "011", teams: "奥勒松 vs 特罗姆瑟", league: "挪超", lg: "lg-nor", score: "2-6（1-1）", d: "no", s: "no", h: "ok", signal: "🟡 客队大胜（1-1半场=平平TOP1）", sc: "watch" },
+        { no: "015", teams: "斯达 vs 维京", league: "挪超", lg: "lg-nor", score: "0-3（0-3）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（0-3=TOP3+负负TOP1）", sc: "ok" },
+        { no: "016", teams: "赫尔火花 vs 库奥皮奥", league: "芬超", lg: "lg-fin", score: "0-1（0-1）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（0-1=TOP3+负负TOP2）", sc: "ok" },
+        { no: "017", teams: "迈阿密国际 vs 哥伦布机员", league: "美职联", lg: "lg-mls", score: "2-2（2-1）", d: "ok", s: "no", h: "no", signal: "🟡 平局（胜平覆盖，2-2未覆盖）", sc: "watch" },
+        { no: "018", teams: "温哥华白浪 vs 洛杉矶FC", league: "美职联", lg: "lg-mls", score: "1-1（0-1）", d: "ok", s: "ok", h: "no", signal: "正常（1-1=TOP2，半场0-1=负平未覆盖）", sc: "ok" },
+        { no: "019", teams: "桑托斯 vs 雷莫", league: "巴西杯", lg: "lg-bras", score: "0-0（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 冷平（0-0未覆盖，平平TOP3）", sc: "watch" },
+        { no: "020", teams: "芝加哥火焰 vs 夏洛特FC", league: "美职联", lg: "lg-mls", score: "2-1（1-1）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（2-1=TOP1+平平TOP3）", sc: "ok" },
+        { no: "021", teams: "圣路易斯城 vs 皇家盐湖城", league: "美职联", lg: "lg-mls", score: "1-1（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 冷平（1-1未覆盖，平平TOP3）", sc: "watch" },
+        { no: "022", teams: "洛杉矶银河 vs 达拉斯FC", league: "美职联", lg: "lg-mls", score: "0-0（0-0）", d: "ok", s: "no", h: "ok", signal: "正常（方向✅+平平TOP2）", sc: "ok" },
+        { no: "023", teams: "波特兰伐木工 vs 西雅图海湾人", league: "美职联", lg: "lg-mls", score: "2-1（1-1）", d: "ok", s: "no", h: "ok", signal: "正常（方向✅+平平TOP3，2-1未覆盖）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-08-03": {
+    title: "8/3 批次（竞彩校正：周日轮012-014）",
+    model: "V8.x",
+    predictDate: "2026-08-03",
+    reviewed: true,
+    stats: { dir: "1/3", dirPct: "33.3%", score: "0/3", scorePct: "0%", ht: "2/3", htPct: "66.7%" },
+    predict: {
+      matches: [
+        { no: "012", home: "布兰", away: "罗森博格", league: "挪超", lg: "lg-nor",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "1-2 / 1-1 / 0-2", ht: "平负/平平/负负" },
+        { no: "013", home: "米拉索尔", away: "格雷米奥", league: "巴西杯", lg: "lg-bras",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 1-0 / 2-1", ht: "胜胜/平胜/平平" },
+        { no: "014", home: "巴西国际", away: "科林蒂安", league: "巴西杯", lg: "lg-bras",
+          dir: "平/胜（B级）", dc: "dir-windraw", scores: "1-1 / 1-0 / 0-0", ht: "平平/平胜/胜胜" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "012", teams: "布兰 vs 罗森博格", league: "挪超", lg: "lg-nor", score: "3-2（1-0）", d: "no", s: "no", h: "no", signal: "全错（主胜未覆盖，竞彩权威补录）", sc: "ok" },
+        { no: "013", teams: "米拉索尔 vs 格雷米奥", league: "巴西杯", lg: "lg-bras", score: "1-1（1-0）", d: "no", s: "no", h: "ok", signal: "🟡 冷平（方向❌比分❌半全场平胜=TOP2✅，竞彩权威补录）", sc: "watch" },
+        { no: "014", teams: "巴西国际 vs 科林蒂安", league: "巴西杯", lg: "lg-bras", score: "2-0（0-0）", d: "ok", s: "no", h: "ok", signal: "正常（方向✅胜覆盖，2-0不在TOP3，半场0-0=平平TOP1）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-08-04": {
+    title: "8/4 批次（竞彩校正：周一轮001-004）",
+    model: "V9.x",
+    predictDate: "2026-08-04",
+    reviewed: true,
+    stats: { dir: "3/4", dirPct: "75%", score: "2/4", scorePct: "50%", ht: "4/4", htPct: "100%" },
+    predict: {
+      matches: [
+        { no: "001", home: "塞那乔其", away: "赫尔辛基", league: "芬超", lg: "lg-fin",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "0-2/1-2/1-1", ht: "负负/平负/平平" },
+        { no: "002", home: "哈姆斯塔德", away: "天狼星", league: "瑞超", lg: "lg-swe",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "0-2/0-3/1-3", ht: "负负/平负/平平" },
+        { no: "003", home: "佐加顿斯", away: "韦斯特罗斯", league: "瑞超", lg: "lg-swe",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-0 / 1-1 / 2-1", ht: "平胜/平平/胜胜" },
+        { no: "004", home: "巴拉纳竞技", away: "维多利亚", league: "巴西杯", lg: "lg-bras",
+          dir: "胜（A级）", dc: "dir-win", scores: "1-0/2-0/2-1", ht: "胜胜/平胜/平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "塞那乔其 vs 赫尔辛基", league: "芬超", lg: "lg-fin", score: "3-0（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（0-0半场=平平TOP3，竞彩权威）", sc: "watch" },
+        { no: "002", teams: "哈姆斯塔德 vs 天狼星", league: "瑞超", lg: "lg-swe", score: "0-2（0-2）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（0-2=TOP1+负负TOP1，竞彩权威）", sc: "ok" },
+        { no: "003", teams: "佐加顿斯 vs 韦斯特罗斯", league: "瑞超", lg: "lg-swe", score: "6-0（3-0）", d: "ok", s: "no", h: "ok", signal: "🟡 部分命中（胜胜TOP3，竞彩权威）", sc: "watch" },
+        { no: "004", teams: "巴拉纳竞技 vs 维多利亚", league: "巴西杯", lg: "lg-bras", score: "2-0（1-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（2-0=TOP2+胜胜TOP1，竞彩权威）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-08-07": {
+    title: "8/7 批次（竞彩校正：周五轮001-010跨8/7-8/8+欧联首回合）",
+    model: "V10.2",
+    predictDate: "2026-08-07",
+    reviewed: true,
+    stats: { dir: "7/14", dirPct: "50%", score: "2/14", scorePct: "14.3%", ht: "4/14", htPct: "28.6%" },
+    predict: {
+      matches: [
+        { no: "001", home: "横滨水手", away: "鹿岛鹿角", league: "日职联", lg: "lg-j1",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "1-2 / 0-1 / 1-1", ht: "平负/负负/平平" },
+        { no: "002", home: "大阪钢巴", away: "浦和红钻", league: "日职联", lg: "lg-j1",
+          dir: "负（B级）", dc: "dir-drawloss", scores: "0-1 / 1-2 / 0-0", ht: "负负/平负/平平" },
+        { no: "003", home: "塞那乔其", away: "格尼斯坦", league: "芬超", lg: "lg-fin",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "2-1 / 1-1 / 1-0", ht: "平胜/平平/胜胜" },
+        { no: "004", home: "桑德菲杰", away: "KFUM奥斯陆", league: "挪超", lg: "lg-nor",
+          dir: "胜（B级）", dc: "dir-win", scores: "1-0 / 2-0 / 2-1", ht: "平胜/胜胜/平平" },
+        { no: "005", home: "坎布尔", away: "SBV精英", league: "荷甲", lg: "lg-ered",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "1-3 / 0-2 / 1-2", ht: "负负/平负/平平" },
+        { no: "006", home: "奥斯", away: "布雷达", league: "荷乙", lg: "lg-eers",
+          dir: "负（B级）", dc: "dir-drawloss", scores: "1-2 / 1-1 / 0-2", ht: "平负/负负/平平" },
+        { no: "007", home: "埃门", away: "罗达JC", league: "荷乙", lg: "lg-eers",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "1-1 / 0-1 / 2-2", ht: "平平/平负/负负" },
+        { no: "008", home: "波鸿", away: "柏林赫塔", league: "德乙", lg: "lg-bundes2",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "2-1 / 1-1 / 2-2", ht: "平胜/胜胜/平平" },
+        { no: "009", home: "米德尔斯堡", away: "雷克瑟姆", league: "英联杯", lg: "lg-champ",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 2-1 / 1-0", ht: "胜胜/平胜/平平" },
+        { no: "010", home: "埃斯托里尔", away: "法马利康", league: "葡超", lg: "lg-prime",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "0-1 / 1-2 / 0-2", ht: "负负/平负/平平" },
+        { no: "011", home: "维多利亚", away: "巴拉纳竞技", league: "巴西杯", lg: "lg-bras",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "0-1/1-1/0-2", ht: "平负/负负/平平" },
+        { no: "012", home: "雅盖隆", away: "流浪者", league: "欧联资格赛", lg: "lg-uel",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-1/1-0/0-0", ht: "平平/平胜/胜胜" },
+        { no: "013", home: "塞萨洛尼基", away: "安德莱赫特", league: "欧联资格赛", lg: "lg-uel",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "2-1/1-0/1-1", ht: "胜胜/平胜/平平" },
+        { no: "014", home: "本菲卡", away: "哈茨", league: "欧联资格赛", lg: "lg-uel",
+          dir: "胜（A级）", dc: "dir-win", scores: "3-0/2-0/4-0", ht: "胜胜/平胜/平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "横滨水手 vs 鹿岛鹿角", league: "日职联", lg: "lg-j1", score: "3-4（2-1）", d: "ok", s: "no", h: "no", signal: "正常（方向✅，比分/半全场未覆盖）", sc: "ok" },
+        { no: "002", teams: "大阪钢巴 vs 浦和红钻", league: "日职联", lg: "lg-j1", score: "4-3（2-1）", d: "no", s: "no", h: "no", signal: "全错（浦和22'红牌少打70分钟）", sc: "ok" },
+        { no: "003", teams: "塞那乔其 vs 格尼斯坦", league: "芬超", lg: "lg-fin", score: "2-2（1-2）", d: "ok", s: "no", h: "no", signal: "正常（方向✅平覆盖）", sc: "ok" },
+        { no: "004", teams: "桑德菲杰 vs KFUM奥斯陆", league: "挪超", lg: "lg-nor", score: "0-1（0-1）", d: "no", s: "no", h: "no", signal: "全错（客胜未覆盖）", sc: "ok" },
+        { no: "005", teams: "坎布尔 vs SBV精英", league: "荷甲", lg: "lg-ered", score: "0-4（0-3）", d: "ok", s: "no", h: "ok", signal: "正常（负负TOP1，0-4未覆盖）", sc: "ok" },
+        { no: "006", teams: "奥斯 vs 布雷达", league: "荷乙", lg: "lg-eers", score: "1-2（1-0）", d: "ok", s: "ok", h: "no", signal: "正常（1-2=TOP1）", sc: "ok" },
+        { no: "007", teams: "埃门 vs 罗达JC", league: "荷乙", lg: "lg-eers", score: "1-0（0-0）", d: "no", s: "no", h: "no", signal: "全错（主胜未覆盖）", sc: "ok" },
+        { no: "008", teams: "波鸿 vs 柏林赫塔", league: "德乙", lg: "lg-bundes2", score: "0-1（0-1）", d: "no", s: "no", h: "no", signal: "全错（客胜未覆盖，竞彩权威补录）", sc: "ok" },
+        { no: "009", teams: "米德尔斯堡 vs 雷克瑟姆", league: "英联杯", lg: "lg-champ", score: "1-0（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（1-0=TOP3+平平TOP3，竞彩权威补录）", sc: "ok" },
+        { no: "010", teams: "埃斯托里尔 vs 法马利康", league: "葡超", lg: "lg-prime", score: "1-1（0-1）", d: "no", s: "no", h: "no", signal: "全错（竞彩权威）", sc: "ok" },
+        { no: "011", teams: "维多利亚 vs 巴拉纳竞技", league: "巴西杯", lg: "lg-bras", score: "4-0（2-0）", d: "no", s: "no", h: "no", signal: "全错（主胜未覆盖，竞彩权威补录）", sc: "ok" },
+        { no: "012", teams: "雅盖隆 vs 流浪者", league: "欧联资格赛", lg: "lg-uel", score: "2-1（2-1）", d: "ok", s: "no", h: "ok", signal: "正常（方向✅+胜胜TOP3，2-1未覆盖）", sc: "ok" },
+        { no: "013", teams: "塞萨洛尼基 vs 安德莱赫特", league: "欧联资格赛", lg: "lg-uel", score: "0-1（0-1）", d: "no", s: "no", h: "no", signal: "全错（客胜未覆盖）", sc: "ok" },
+        { no: "014", teams: "本菲卡 vs 哈茨", league: "欧联资格赛", lg: "lg-uel", score: "6-1（3-0）", d: "ok", s: "no", h: "ok", signal: "正常（胜胜TOP1，6-1未覆盖）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-08-08": {
+    title: "8/8 批次（竞彩校正：周六轮001-025跨8/8-8/9）",
+    model: "V10.2",
+    predictDate: "2026-08-08",
+    reviewed: true,
+    stats: { dir: "16/25", dirPct: "64%", score: "12/25", scorePct: "48%", ht: "17/25", htPct: "68%" },
+    predict: {
+      matches: [
+        { no: "001", home: "大阪樱花", away: "冈山绿雉", league: "日职联", lg: "lg-j1",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 1-0 / 2-1", ht: "胜胜/平胜/平平" },
+        { no: "002", home: "RB大宫松鼠", away: "新潟天鹅", league: "日职乙", lg: "lg-j2",
+          dir: "平/胜（B级）", dc: "dir-windraw", scores: "1-1 / 2-1 / 1-0", ht: "平平/平胜/胜胜" },
+        { no: "003", home: "安养FC", away: "大田市民", league: "韩职", lg: "lg-k1",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-1 / 1-0 / 2-1", ht: "平平/平胜/胜胜" },
+        { no: "004", home: "全北现代", away: "济州SK", league: "韩职", lg: "lg-k1",
+          dir: "胜（A级）", dc: "dir-win", scores: "1-0 / 2-0 / 2-1", ht: "胜胜/平胜/平平" },
+        { no: "005", home: "金泉尚武", away: "FC首尔", league: "韩职", lg: "lg-k1",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "0-1 / 1-1 / 0-2", ht: "平负/负负/平平" },
+        { no: "006", home: "瓦勒伦加", away: "博德闪耀", league: "挪超", lg: "lg-nor",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "1-2 / 0-2 / 1-3", ht: "平负/负负/平平" },
+        { no: "007", home: "女王公园巡游者", away: "米尔沃尔", league: "英联杯", lg: "lg-champ",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "1-2 / 1-1 / 0-1", ht: "平负/平平/负负" },
+        { no: "008", home: "奥尔格里特", away: "AIK索尔纳", league: "瑞超", lg: "lg-swe",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-1 / 2-1 / 1-0", ht: "平平/平胜/胜胜" },
+        { no: "009", home: "西汉姆联", away: "朴茨茅斯", league: "英联杯", lg: "lg-champ",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 3-0 / 2-1", ht: "胜胜/平胜/平平" },
+        { no: "010", home: "斯旺西", away: "伯明翰", league: "英联杯", lg: "lg-champ",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "1-1/0-1/1-2", ht: "平平/平负/负负" },
+        { no: "011", home: "维京", away: "萨普斯堡", league: "挪超", lg: "lg-nor",
+          dir: "胜（B级）", dc: "dir-win", scores: "2-1/3-1/2-0", ht: "胜胜/平胜/平平" },
+        { no: "012", home: "奈梅亨", away: "特尔斯达", league: "荷甲", lg: "lg-ered",
+          dir: "胜（B级）", dc: "dir-win", scores: "2-0/2-1/1-0", ht: "胜胜/平胜/平平" },
+        { no: "013", home: "马里迪莫", away: "卡萨比亚", league: "葡超", lg: "lg-prime",
+          dir: "胜", dc: "dir-win", scores: "1-0/2-0/2-1", ht: "胜胜/平胜/平平" },
+        { no: "014", home: "米亚尔比", away: "埃尔夫斯堡", league: "瑞超", lg: "lg-swe",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "1-1/0-1/1-2", ht: "平平/平负/负负" },
+        { no: "015", home: "雅罗", away: "VPS瓦萨", league: "芬超", lg: "lg-fin",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "0-1/1-1/1-2", ht: "平负/负负/平平" },
+        { no: "016", home: "前进之鹰", away: "威廉二世", league: "荷甲", lg: "lg-ered",
+          dir: "胜（B级）", dc: "dir-win", scores: "2-0/1-0/2-1", ht: "胜胜/平胜/平平" },
+        { no: "017", home: "吉马良斯", away: "阿罗卡", league: "葡超", lg: "lg-prime",
+          dir: "胜", dc: "dir-win", scores: "2-0/1-0/2-1", ht: "胜胜/平胜/平平" },
+        { no: "018", home: "埃因霍温", away: "福图纳锡塔德", league: "荷甲", lg: "lg-ered",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0/3-0/2-1", ht: "胜胜/平胜/平平" },
+        { no: "019", home: "波城FC", away: "昂纳西", league: "法乙", lg: "lg-l2",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "0-1/1-1/1-2", ht: "平负/负负/平平" },
+        { no: "020", home: "蒙彼利埃", away: "第戎", league: "法乙", lg: "lg-l2",
+          dir: "胜（B级）", dc: "dir-win", scores: "2-0/1-0/2-1", ht: "胜胜/平胜/平平" },
+        { no: "021", home: "南特", away: "圣旺红星", league: "法乙", lg: "lg-l2",
+          dir: "胜（B级）", dc: "dir-win", scores: "2-0/2-1/1-0", ht: "胜胜/平胜/平平" },
+        { no: "022", home: "阿尔克马", away: "海牙", league: "荷甲", lg: "lg-ered",
+          dir: "胜（B级）", dc: "dir-win", scores: "2-0/3-0/2-1", ht: "胜胜/平胜/平平" },
+        { no: "023", home: "格雷米奥", away: "圣保罗", league: "巴甲", lg: "lg-bras",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-0/1-1/2-1", ht: "平胜/胜胜/平平" },
+        { no: "024", home: "阿马多拉之星", away: "葡萄牙体育", league: "葡超", lg: "lg-prime",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "0-2/0-3/1-3", ht: "负负/平负/平平" },
+        { no: "025", home: "博塔弗戈", away: "弗鲁米嫩塞", league: "巴甲", lg: "lg-bras",
+          dir: "平/胜（B级）", dc: "dir-windraw", scores: "1-1/1-0/0-0", ht: "平平/平胜/胜胜" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "大阪樱花 vs 冈山绿雉", league: "日职联", lg: "lg-j1", score: "2-1（2-1）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（2-1=TOP3+胜胜TOP1）", sc: "ok" },
+        { no: "002", teams: "RB大宫松鼠 vs 新潟天鹅", league: "日职乙", lg: "lg-j2", score: "1-0（1-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（1-0=TOP3+胜胜TOP3）", sc: "ok" },
+        { no: "003", teams: "安养FC vs 大田市民", league: "韩职", lg: "lg-k1", score: "1-2（0-2）", d: "no", s: "no", h: "no", signal: "全错（核心停赛体系崩塌）", sc: "ok" },
+        { no: "004", teams: "全北现代 vs 济州SK", league: "韩职", lg: "lg-k1", score: "1-3（0-1）", d: "no", s: "no", h: "no", signal: "全错（刚复出≠即战力）", sc: "ok" },
+        { no: "005", teams: "金泉尚武 vs FC首尔", league: "韩职", lg: "lg-k1", score: "0-0（0-0）", d: "ok", s: "no", h: "ok", signal: "正常（方向✅+平平TOP3）", sc: "ok" },
+        { no: "006", teams: "瓦勒伦加 vs 博德闪耀", league: "挪超", lg: "lg-nor", score: "1-2（0-1）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（1-2=TOP1+负负TOP2）", sc: "ok" },
+        { no: "007", teams: "女王公园巡游者 vs 米尔沃尔", league: "英联杯", lg: "lg-champ", score: "1-1（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（1-1=TOP2+平平TOP2）", sc: "ok" },
+        { no: "008", teams: "奥尔格里特 vs AIK索尔纳", league: "瑞超", lg: "lg-swe", score: "3-4（2-1）", d: "no", s: "no", h: "no", signal: "全错（残阵哀兵反弹）", sc: "ok" },
+        { no: "009", teams: "西汉姆联 vs 朴茨茅斯", league: "英联杯", lg: "lg-champ", score: "3-1（2-1）", d: "ok", s: "no", h: "ok", signal: "正常（胜胜TOP1，3-1未覆盖）", sc: "ok" },
+        { no: "010", teams: "斯旺西 vs 伯明翰", league: "英联杯", lg: "lg-champ", score: "0-1（0-1）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（0-1=TOP2+负负TOP3，竞彩权威）", sc: "ok" },
+        { no: "011", teams: "维京 vs 萨普斯堡", league: "挪超", lg: "lg-nor", score: "2-1（1-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（2-1=TOP1+胜胜TOP1）", sc: "ok" },
+        { no: "012", teams: "奈梅亨 vs 特尔斯达", league: "荷甲", lg: "lg-ered", score: "1-2（0-2）", d: "no", s: "no", h: "no", signal: "全错（客胜未覆盖，竞彩权威）", sc: "ok" },
+        { no: "013", teams: "马里迪莫 vs 卡萨比亚", league: "葡超", lg: "lg-prime", score: "1-0（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（1-0=TOP1+平平TOP3，竞彩权威）", sc: "ok" },
+        { no: "014", teams: "米亚尔比 vs 埃尔夫斯堡", league: "瑞超", lg: "lg-swe", score: "0-1（0-1）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（0-1=TOP2+负负TOP3，竞彩权威）", sc: "ok" },
+        { no: "015", teams: "雅罗 vs VPS瓦萨", league: "芬超", lg: "lg-fin", score: "1-3（1-2）", d: "ok", s: "no", h: "ok", signal: "正常（方向✅+负负TOP2，1-3未覆盖）", sc: "ok" },
+        { no: "016", teams: "前进之鹰 vs 威廉二世", league: "荷甲", lg: "lg-ered", score: "4-1（1-1）", d: "ok", s: "no", h: "no", signal: "正常（方向✅，4-1未覆盖）", sc: "ok" },
+        { no: "017", teams: "吉马良斯 vs 阿罗卡", league: "葡超", lg: "lg-prime", score: "0-1（0-0）", d: "no", s: "no", h: "no", signal: "全错（客胜未覆盖，竞彩权威）", sc: "ok" },
+        { no: "018", teams: "埃因霍温 vs 福图纳锡塔德", league: "荷甲", lg: "lg-ered", score: "2-2（0-1）", d: "no", s: "no", h: "no", signal: "冷平（2-2未覆盖）", sc: "watch" },
+        { no: "019", teams: "波城FC vs 昂纳西", league: "法乙", lg: "lg-l2", score: "0-1（0-1）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（0-1=TOP1+负负TOP2，竞彩权威）", sc: "ok" },
+        { no: "020", teams: "蒙彼利埃 vs 第戎", league: "法乙", lg: "lg-l2", score: "1-1（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 冷平（平平TOP3，0-0防范命中）", sc: "watch" },
+        { no: "021", teams: "南特 vs 圣旺红星", league: "法乙", lg: "lg-l2", score: "0-1（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 冷门客胜（平平TOP3，0-0防范命中）", sc: "watch" },
+        { no: "022", teams: "阿尔克马 vs 海牙", league: "荷甲", lg: "lg-ered", score: "2-0（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（2-0=TOP1+平平TOP3）", sc: "ok" },
+        { no: "023", teams: "格雷米奥 vs 圣保罗", league: "巴甲", lg: "lg-bras", score: "2-1（0-1）", d: "ok", s: "ok", h: "no", signal: "正常（2-1=TOP3，半场0-1=负胜未覆盖）", sc: "ok" },
+        { no: "024", teams: "阿马多拉之星 vs 葡萄牙体育", league: "葡超", lg: "lg-prime", score: "2-2（0-0）", d: "no", s: "no", h: "ok", signal: "🟡 冷平（平平TOP3，0-0防范命中）", sc: "watch" },
+        { no: "025", teams: "博塔弗戈 vs 弗鲁米嫩塞", league: "巴甲", lg: "lg-bras", score: "1-1（1-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（1-1=TOP1+胜胜TOP3）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-08-06": {
+    title: "8/6 批次（竞彩校正：周三轮001-003+周四002）",
+    model: "V10.1",
+    predictDate: "2026-08-06",
+    reviewed: true,
+    stats: { dir: "2/4", dirPct: "50%", score: "2/4", scorePct: "50%", ht: "1/4", htPct: "25%" },
+    predict: {
+      matches: [
+        { no: "001", home: "弗鲁米嫩塞", away: "瓦斯科达伽马", league: "巴西杯", lg: "lg-bras",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "0-0 / 1-1 / 1-0", ht: "平平/平胜/胜胜" },
+        { no: "002", home: "奥胡斯", away: "萨巴赫", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "0-1 / 1-1 / 0-0", ht: "平平/平负/负负" },
+        { no: "003", home: "费内巴切", away: "格拉茨风暴", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 3-0 / 2-1", ht: "胜胜/平胜/平平" },
+        { no: "004", home: "古比斯", away: "克拉约瓦大学", league: "欧联资格赛", lg: "lg-uel",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1/0-1/0-0", ht: "平平/平负/负负" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "弗鲁米嫩塞 vs 瓦斯科达伽马", league: "巴西杯", lg: "lg-bras", score: "1-3（0-1）", d: "no", s: "no", h: "no", signal: "全错（主胜未覆盖）", sc: "ok" },
+        { no: "002", teams: "奥胡斯 vs 萨巴赫", league: "欧冠资格赛", lg: "lg-ucl", score: "2-1（1-0）", d: "no", s: "no", h: "no", signal: "全错（客队博格尔双响仍负）", sc: "ok" },
+        { no: "003", teams: "费内巴切 vs 格拉茨风暴", league: "欧冠资格赛", lg: "lg-ucl", score: "2-0（2-0）", d: "ok", s: "ok", h: "ok", signal: "正常（2-0=TOP1，塔利斯卡/格林伍德破门）", sc: "ok" },
+        { no: "004", teams: "古比斯 vs 克拉约瓦大学", league: "欧联资格赛", lg: "lg-uel", score: "1-1（0-1）", d: "ok", s: "ok", h: "no", signal: "正常（1-1=TOP1+方向✅，半场0-1=负平未覆盖）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-08-09": {
+    title: "8/9 批次（竞彩校正：周日轮001-016）",
+    model: "V10.3.x",
+    predictDate: "2026-08-09",
+    reviewed: true,
+    stats: { dir: "9/13", dirPct: "69.2%", score: "6/13", scorePct: "46.2%", ht: "8/13", htPct: "61.5%" },
+    predict: {
+      matches: [
+        { no: "001", home: "东京绿茵", away: "川崎前锋", league: "日职联", lg: "lg-j1",
+          dir: "平/胜（B级）", dc: "dir-windraw", scores: "1-1 / 0-0 / 1-0", ht: "平平/平胜/胜胜" },
+        { no: "002", home: "长崎航海", away: "京都不死鸟", league: "日职", lg: "lg-j1",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 0-1 / 0-0", ht: "平平/平负/负负" },
+        { no: "003", home: "山形山神", away: "枥木城", league: "日乙", lg: "lg-j2",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "0-1 / 1-1 / 0-0", ht: "平负/负负/平平" },
+        { no: "004", home: "鹿斯巴达", away: "费耶诺德", league: "荷甲", lg: "lg-ered",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 0-1 / 1-2", ht: "平平/平负/负负" },
+        { no: "005", home: "圣保利", away: "菲尔特", league: "德乙", lg: "lg-bundes2",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-1 / 2-1 / 1-0", ht: "平平/平胜/胜胜" },
+        { no: "006", home: "纽伦堡", away: "德累斯顿", league: "德乙", lg: "lg-bundes2",
+          dir: "胜（B级）", dc: "dir-win", scores: "2-0 / 2-1 / 1-0", ht: "胜胜/平胜/平平" },
+        { no: "007", home: "哈马比", away: "赫根", league: "瑞超", lg: "lg-swe",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-1 / 1-0 / 2-0", ht: "胜胜/平胜/平平" },
+        { no: "008", home: "库奥皮奥", away: "TPS图尔库", league: "芬超", lg: "lg-fin",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 0-0 / 0-1", ht: "平平/平负/负负" },
+        { no: "011", home: "利勒斯特罗姆", away: "罗森博格", league: "挪超", lg: "lg-nor",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-1 / 2-1 / 2-0", ht: "平平/平胜/胜胜" },
+        { no: "012", home: "国际图尔库", away: "拉赫蒂", league: "芬超", lg: "lg-fin",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 0-1 / 0-0", ht: "平平/平负/负负" },
+        { no: "013", home: "哈尔姆斯塔德", away: "哥德堡盖斯", league: "瑞超", lg: "lg-swe",
+          dir: "平/胜（B级）", dc: "dir-windraw", scores: "1-1 / 1-0 / 0-0", ht: "平平/平胜/胜胜" },
+        { no: "014", home: "哥德堡", away: "卡尔马", league: "瑞超", lg: "lg-swe",
+          dir: "胜（B级）", dc: "dir-win", scores: "2-0 / 1-0 / 2-1", ht: "胜胜/平胜/平平" },
+        { no: "016", home: "汉坎", away: "奥勒松", league: "挪超", lg: "lg-nor",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 0-1 / 0-0", ht: "平平/平负/负负" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "东京绿茵 vs 川崎前锋", league: "日职联", lg: "lg-j1", score: "1-1（0-0）", d: "ok", s: "ok", h: "ok", signal: "正常", sc: "ok" },
+        { no: "002", teams: "长崎航海 vs 京都不死鸟", league: "日职", lg: "lg-j1", score: "2-1（2-0）", d: "no", s: "no", h: "no", signal: "冷门主胜", sc: "ok" },
+        { no: "003", teams: "山形山神 vs 枥木城", league: "日乙", lg: "lg-j2", score: "2-0（1-0）", d: "no", s: "no", h: "no", signal: "冷门主胜", sc: "ok" },
+        { no: "004", teams: "鹿斯巴达 vs 费耶诺德", league: "荷甲", lg: "lg-ered", score: "0-1（0-1）", d: "ok", s: "ok", h: "ok", signal: "正常（0-1=TOP2，确认版TOP3录错已修正）", sc: "ok" },
+        { no: "005", teams: "圣保利 vs 菲尔特", league: "德乙", lg: "lg-bundes2", score: "1-1（0-0）", d: "ok", s: "ok", h: "ok", signal: "正常", sc: "ok" },
+        { no: "006", teams: "纽伦堡 vs 德累斯顿", league: "德乙", lg: "lg-bundes2", score: "3-0（2-0）", d: "ok", s: "no", h: "ok", signal: "正常（3-0未覆盖）", sc: "ok" },
+        { no: "007", teams: "哈马比 vs 赫根", league: "瑞超", lg: "lg-swe", score: "3-0（2-0）", d: "ok", s: "no", h: "ok", signal: "正常（3-0未覆盖）", sc: "ok" },
+        { no: "008", teams: "库奥皮奥 vs TPS图尔库", league: "芬超", lg: "lg-fin", score: "1-1（1-0）", d: "ok", s: "ok", h: "ok", signal: "正常", sc: "ok" },
+        { no: "011", teams: "利勒斯特罗姆 vs 罗森博格", league: "挪超", lg: "lg-nor", score: "0-2", d: "no", s: "no", h: "no", signal: "全错（0-2未覆盖）", sc: "ok" },
+        { no: "012", teams: "国际图尔库 vs 拉赫蒂", league: "芬超", lg: "lg-fin", score: "0-0（0-0）", d: "ok", s: "ok", h: "ok", signal: "正常（0-0=TOP3）", sc: "ok" },
+        { no: "013", teams: "哈尔姆斯塔德 vs 哥德堡盖斯", league: "瑞超", lg: "lg-swe", score: "0-2（0-0）", d: "no", s: "no", h: "no", signal: "全错（客胜未覆盖）", sc: "ok" },
+        { no: "014", teams: "哥德堡 vs 卡尔马", league: "瑞超", lg: "lg-swe", score: "3-2（1-1）", d: "ok", s: "no", h: "ok", signal: "正常（3-2未覆盖）", sc: "ok" },
+        { no: "016", teams: "汉坎 vs 奥勒松", league: "挪超", lg: "lg-nor", score: "1-1（0-1）", d: "ok", s: "ok", h: "no", signal: "🟡 半全场负平未覆盖", sc: "watch" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-08-10": {
+    title: "8/10 批次（竞彩校正：周日轮017-024）",
+    model: "V10.3.x",
+    predictDate: "2026-08-10",
+    reviewed: true,
+    stats: { dir: "6/8", dirPct: "75%", score: "6/8", scorePct: "75%", ht: "4/8", htPct: "50%" },
+    predict: {
+      matches: [
+        { no: "017", home: "AC奥卢", away: "赫尔辛基", league: "芬超", lg: "lg-fin",
+          dir: "负（B级）", dc: "dir-drawloss", scores: "0-2 / 1-2 / 0-1", ht: "负负/平负/平平" },
+        { no: "018", home: "波尔图", away: "阿尔维卡", league: "葡超", lg: "lg-prime",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 1-0 / 3-0", ht: "胜胜/平胜/平平" },
+        { no: "019", home: "克里斯蒂安松", away: "莫尔德", league: "挪超", lg: "lg-nor",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "0-1 / 1-2 / 0-2", ht: "负负/平负/平平" },
+        { no: "020", home: "本菲卡", away: "维塞乌", league: "葡超", lg: "lg-prime",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 3-0 / 2-1", ht: "胜胜/平胜/平平" },
+        { no: "021", home: "吉维森特", away: "里奥阿维", league: "葡超", lg: "lg-prime",
+          dir: "平/胜（B级）", dc: "dir-windraw", scores: "1-1 / 2-1 / 1-0", ht: "平平/平胜/胜胜" },
+        { no: "022", home: "摩雷伦斯", away: "布拉加", league: "葡超", lg: "lg-prime",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "1-2 / 1-1 / 0-1", ht: "平负/负负/平平" },
+        { no: "023", home: "桑托斯", away: "巴拉纳竞技", league: "巴甲", lg: "lg-bras",
+          dir: "负/平（B级）", dc: "dir-drawloss", scores: "0-1 / 1-1 / 0-2", ht: "平负/负负/平平" },
+        { no: "024", home: "弗拉门戈", away: "维多利亚", league: "巴甲", lg: "lg-bras",
+          dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 3-0 / 2-1", ht: "胜胜/平胜/平平" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "017", teams: "AC奥卢 vs 赫尔辛基", league: "芬超", lg: "lg-fin", score: "0-1（0-1）", d: "ok", s: "ok", h: "ok", signal: "正常（0-1=TOP3）", sc: "ok" },
+        { no: "018", teams: "波尔图 vs 阿尔维卡", league: "葡超", lg: "lg-prime", score: "2-0（2-0）", d: "ok", s: "ok", h: "ok", signal: "正常（2-0=TOP1）", sc: "ok" },
+        { no: "019", teams: "克里斯蒂安松 vs 莫尔德", league: "挪超", lg: "lg-nor", score: "2-1（1-0）", d: "no", s: "no", h: "no", signal: "全错（主胜未覆盖）", sc: "ok" },
+        { no: "020", teams: "本菲卡 vs 维塞乌", league: "葡超", lg: "lg-prime", score: "2-2", d: "no", s: "no", h: "no", signal: "冷平（2-2未覆盖）", sc: "ok" },
+        { no: "021", teams: "吉维森特 vs 里奥阿维", league: "葡超", lg: "lg-prime", score: "1-0", d: "ok", s: "ok", h: "no", signal: "正常（1-0=TOP3，半场未确认）", sc: "ok" },
+        { no: "022", teams: "摩雷伦斯 vs 布拉加", league: "葡超", lg: "lg-prime", score: "2-2", d: "ok", s: "ok", h: "no", signal: "🟡 平局（1-1=TOP2，半场未确认）", sc: "watch" },
+        { no: "023", teams: "桑托斯 vs 巴拉纳竞技", league: "巴甲", lg: "lg-bras", score: "0-2", d: "ok", s: "ok", h: "ok", signal: "正常（台账确认三指标全中）", sc: "ok" },
+        { no: "024", teams: "弗拉门戈 vs 维多利亚", league: "巴甲", lg: "lg-bras", score: "2-0", d: "ok", s: "ok", h: "ok", signal: "正常（台账确认三指标全中）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
+  "2026-08-11": {
+    title: "8/11 批次（竞彩校正：周一轮001-003+周二轮001-002）",
+    model: "V9.x",
+    predictDate: "2026-08-11",
+    reviewed: true,
+    stats: { dir: "3/5", dirPct: "60%", score: "2/5", scorePct: "40%", ht: "4/5", htPct: "80%" },
+    predict: {
+      matches: [
+        { no: "001", home: "瓦斯特拉斯", away: "尤尔加登", league: "瑞超", lg: "lg-swe",
+          dir: "负（A级）", dc: "dir-drawloss", scores: "0-1/0-2/1-2", ht: "负负/平负/平平" },
+        { no: "002", home: "天狼星", away: "布洛马波卡纳", league: "瑞超", lg: "lg-swe",
+          dir: "胜（A级）", dc: "dir-win", scores: "1-0/2-0/1-1", ht: "胜胜/平胜/平平" },
+        { no: "003", home: "圣克拉拉", away: "马德拉国民", league: "葡超", lg: "lg-prime",
+          dir: "平/胜（B级）", dc: "dir-windraw", scores: "1-1/0-0/1-0", ht: "平平/平胜/胜胜" },
+        { no: "004", home: "江原FC", away: "大阪钢巴", league: "亚冠", lg: "lg-k1",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "- / - / 0-0", ht: "平平/平胜/胜胜" },
+        { no: "005", home: "凯拉特", away: "索菲亚列夫斯基", league: "欧冠资格赛", lg: "lg-ucl",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "0-0/0-1/1-1", ht: "平平/平负/负负" },
+      ],
+      coldRisk: [], alerts: [], zeroZero: []
+    },
+    review: {
+      results: [
+        { no: "001", teams: "瓦斯特拉斯 vs 尤尔加登", league: "瑞超", lg: "lg-swe", score: "1-0（1-0）", d: "no", s: "no", h: "no", signal: "全错（主胜未覆盖）", sc: "ok" },
+        { no: "002", teams: "天狼星 vs 布洛马波卡纳", league: "瑞超", lg: "lg-swe", score: "2-2（2-2）", d: "no", s: "no", h: "ok", signal: "🟡 部分命中（2-2半场=平平TOP3）", sc: "watch" },
+        { no: "003", teams: "圣克拉拉 vs 马德拉国民", league: "葡超", lg: "lg-prime", score: "2-2（2-2）", d: "ok", s: "no", h: "ok", signal: "🟡 部分命中（2-2半场=平平TOP1）", sc: "watch" },
+        { no: "004", teams: "江原FC vs 大阪钢巴", league: "亚冠", lg: "lg-k1", score: "0-0（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（0-0=TOP3+平平TOP1）", sc: "ok" },
+        { no: "005", teams: "凯拉特 vs 索菲亚列夫斯基", league: "欧冠资格赛", lg: "lg-ucl", score: "0-1（0-1）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（0-1=TOP2+负负TOP2）", sc: "ok" },
+      ],
+      evidence: [], avoidHigh: [], avoidWatch: []
+    }
+  },
   "2026-08-14": {
     title: "8/14 周五批次",
     model: "V10.28 → V10.29-Fix-R5",
     predictDate: "2026-08-14",
     reviewDate: "2026-08-15",
     reviewed: true,
-    stats: { dir: "12/17", dirPct: "70.6%", score: "2/17", scorePct: "11.8%", ht: "11/17", htPct: "64.7%" },
+    stats: { dir: "15/21", dirPct: "71.4%", score: "4/21", scorePct: "19%", ht: "14/21", htPct: "66.7%" },
     predict: {
       matches: [
         { no: "001", home: "东京绿茵", away: "柏太阳神", league: "日职联", lg: "lg-j1",
@@ -63,7 +1051,19 @@ const BATCHES = {
           logic: "狼队身价碾压+近10次交手5胜4平1负+希门尼斯回归 vs 布莱克本四线减员+防线重组，看好主胜" },
         { no: "017", home: "葡萄牙体育", away: "吉马良斯", league: "葡超", lg: "lg-prime",
           dir: "胜（A级）", dc: "dir-win", scores: "2-0 / 3-1 / 2-1", ht: "胜胜/平胜/胜胜", ou: "总进球 2·3",
-          logic: "葡萄牙体育主场对吉马良斯7连胜+上赛季5-1/4-1双杀+身价差10倍 vs 客队24射0进球，看好主胜" }
+          logic: "葡萄牙体育主场对吉马良斯7连胜+上赛季5-1/4-1双杀+身价差10倍 vs 客队24射0进球，看好主胜" },
+        { no: "018", home: "格拉斯哥流浪者", away: "雅盖隆", league: "欧联资格赛", lg: "lg-uel",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "2-1 / 2-0 / 1-0", ht: "胜胜/平胜/平平", ou: "总进球 2·3",
+          logic: "流浪者主场强势+阵容厚度占优 vs 雅盖隆欧战经验有限，看好主队不败" },
+        { no: "019", home: "安德莱赫特", away: "塞萨洛尼基", league: "欧联资格赛", lg: "lg-uel",
+          dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-1 / 2-1 / 1-0", ht: "平平/平胜/胜胜", ou: "总进球 1·2",
+          logic: "安德莱赫特主场对阵型完整 vs 塞萨洛尼基客场作战，看好主队不败" },
+        { no: "020", home: "哈茨", away: "本菲卡", league: "欧联资格赛", lg: "lg-uel",
+          dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 1-2 / 0-1", ht: "平平/平负/负负", ou: "总进球 1·2",
+          logic: "本菲卡实力身价明显占优 vs 哈茨主场韧性，看好客队不败" },
+        { no: "021", home: "米拉索", away: "基多大学体育", league: "解放者杯", lg: "lg-bras",
+          dir: "胜（B+级）", dc: "dir-win", scores: "1-0 / 2-0 / 1-1", ht: "胜胜/平胜/平平", ou: "总进球 1·2",
+          logic: "米拉索主场作战+解放者杯战意 vs 基多大学客场高原反客，看好主胜" },
       ],
       coldRisk: [
         { rank: "🥇", no: "014", teams: "兰斯 vs 敦刻尔克", dir: "客胜", lv: "tag-red", lvTxt: "最高", logic: "兰斯7人缺阵+主帅14次对敦刻尔克不胜+敦刻尔克首轮4-1大胜" },
@@ -134,10 +1134,13 @@ const BATCHES = {
         { no: "014", teams: "兰斯 vs 敦刻尔克", league: "法乙", lg: "lg-l2", score: "3-3（1-1）", d: "ok", s: "no", h: "ok", signal: "🟡 客队压制仍平", sc: "watch" },
         { no: "015", teams: "圣埃蒂安 vs 克莱蒙", league: "法乙", lg: "lg-l2", score: "3-1（1-0）", d: "ok", s: "no", h: "ok", signal: "正常（射正5:0碾压）", sc: "ok" },
         { no: "016", teams: "狼队 vs 布莱克本", league: "英冠", lg: "lg-champ", score: "2-2（1-1）", d: "no", s: "no", h: "ok", signal: "🟡 身价碾压却平（R332）", sc: "watch" },
-        { no: "017", teams: "葡萄牙体育 vs 吉马良斯", league: "葡超", lg: "lg-prime", score: "3-2（3-0）", d: "ok", s: "no", h: "ok", signal: "🟡 半场3-0收缩（R328）", sc: "watch" }
+        { no: "017", teams: "葡萄牙体育 vs 吉马良斯", league: "葡超", lg: "lg-prime", score: "3-2（3-0）", d: "ok", s: "no", h: "ok", signal: "🟡 半场3-0收缩（R328）", sc: "watch" },
+        { no: "018", teams: "格拉斯哥流浪者 vs 雅盖隆", league: "欧联资格赛", lg: "lg-uel", score: "1-1（1-0）", d: "ok", s: "no", h: "no", signal: "正常（方向✅，1-1未覆盖）", sc: "ok" },
+        { no: "019", teams: "安德莱赫特 vs 塞萨洛尼基", league: "欧联资格赛", lg: "lg-uel", score: "3-2（1-1）", d: "ok", s: "no", h: "ok", signal: "正常（方向✅+平平TOP1，3-2未覆盖）", sc: "ok" },
+        { no: "020", teams: "哈茨 vs 本菲卡", league: "欧联资格赛", lg: "lg-uel", score: "1-1（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐三指标全中（1-1=TOP1+平平TOP1）", sc: "ok" },
+        { no: "021", teams: "米拉索 vs 基多大学体育", league: "解放者杯", lg: "lg-bras", score: "1-1（1-0）", d: "no", s: "ok", h: "ok", signal: "🟡 部分命中（1-1=TOP3+胜胜TOP1）", sc: "watch" },
       ],
       evidence: [
-        { no: "001", teams: "鹿岛鹿角 2-1 名古屋鲸八", league: "日职联", stats: "xG 1.33:0.90、射门 16:13、控球 49%:51%", signal: "⭐ 三指标全中", txt: "22'莱奥、54'原辉绮（扳平）、90+8'关川绝杀——A级正路主场小胜剧本，2-1=比分TOP1+半全场胜胜=TOP1，补时绝杀说明进程比预期胶着（名古屋新帅米哈针对性布置）", sc: "ok" },
         { no: "012", teams: "赫拉克勒斯 3-2", league: "荷乙", stats: "射门 29:8、射正 17:6、进攻 113:52、角球 11:6", signal: "🔴 放水实锤", txt: "3-0 领先（74'）后 87'、88' 连丢 2 球收窄——射门 29 次只进 3 球", sc: "danger" },
         { no: "002", teams: "VPS瓦萨 1-3", league: "芬超", stats: "射门 8:9、射正 4:4、控球 54.4%、角球 7:4、红牌 1:0", signal: "🔴 演戏嫌疑", txt: "第4主场控球角球占优却 1-3 惨败（第8）+ 红牌松散踢法", sc: "danger" },
         { no: "009", teams: "利雅得新月 4-2", league: "沙特联", stats: "射门 14:7、射正 5:5（持平）、控球 58.6%", signal: "🔴 领先收缩", txt: "半场 3-0 后下半场丢 2 球，射正持平——控制力骤降", sc: "danger" },
@@ -171,46 +1174,46 @@ const BATCHES = {
     stats: { dir: "-", dirPct: "-", score: "-", scorePct: "-", ht: "-", htPct: "-" },
     predict: {
       matches: [
-        { no: "001", home: "鹿岛鹿角", away: "名古屋鲸八", league: "日职联", lg: "lg-j1",
+        { no: "001", home: "鹿岛鹿角", away: "名古屋鲸八", league: "日职联", lg: "lg-j1", time: "17:00",
           dir: "胜（A级）", dc: "dir-win", scores: "2-1 / 2-0 / 3-1", ht: "胜胜/平胜/负胜", ou: "总进球 2·3", risk: 2,
           logic: "卫冕冠军主场气势如虹 vs 名古屋防线告急保级队，看好主胜大球" },
-        { no: "003", home: "浦和红钻", away: "广岛三箭", league: "日职联", lg: "lg-j1",
+        { no: "003", home: "浦和红钻", away: "广岛三箭", league: "日职联", lg: "lg-j1", time: "18:00",
           dir: "负/平（B级）", dc: "dir-drawloss", scores: "1-2 / 1-1 / 0-2", ht: "平负/平平/负负", ou: "总进球 2·3", risk: 5,
           logic: "浦和5人停赛+后防大换血 vs 广岛状态火热，客队不败且可能大胜" },
-        { no: "004", home: "神户胜利船", away: "东京FC", league: "日职联", lg: "lg-j1",
+        { no: "004", home: "神户胜利船", away: "东京FC", league: "日职联", lg: "lg-j1", time: "19:00",
           dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-1 / 2-1 / 2-2", ht: "平平/平胜/负平", ou: "总进球 2·3", risk: 5,
           logic: "残阵对残阵：神户锋线3缺 vs 东京后防4缺，双方防线都残，对攻大球倾向" },
-        { no: "005", home: "首尔FC", away: "大田市民", league: "韩职", lg: "lg-j1",
+        { no: "005", home: "首尔FC", away: "大田市民", league: "韩职", lg: "lg-k1", time: "18:30",
           dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-1 / 2-1 / 1-0", ht: "平平/平胜/胜胜", ou: "总进球 2·3", risk: 4,
           logic: "榜首4场不胜急需止颓+主场对攻，大田反弹中，胜负平皆可能且进球偏多" },
-        { no: "006", home: "光州FC", away: "浦项制铁", league: "韩职", lg: "lg-j1",
+        { no: "006", home: "光州FC", away: "浦项制铁", league: "韩职", lg: "lg-k1", time: "18:30",
           dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 0-1 / 1-2", ht: "平平/平负/负负", ou: "总进球 1·2", risk: 5,
           logic: "垫底vs五连败，双弱对话，光州进攻乏力恐难挡铁人" },
-        { no: "008", home: "博尔顿", away: "普雷斯顿", league: "英冠", lg: "lg-champ",
+        { no: "008", home: "博尔顿", away: "普雷斯顿", league: "英冠", lg: "lg-champ", time: "19:30",
           dir: "胜/平（B级）", dc: "dir-windraw", scores: "1-1 / 2-1 / 2-2", ht: "平平/平胜/胜平", ou: "总进球 2·3", risk: 4,
           logic: "首发确认：普雷斯顿中卫吉布森停赛由Lindsay顶替+锋线双主力Osmajic/Lang坐替补（Erabi/Burgzorg首发）+友谊赛4连败；博尔顿升班马主场首秀Simons停赛Watson顶替，但历史交锋近10次2胜3平5负" },
-        { no: "009", home: "米亚尔比", away: "天狼星", league: "瑞超", lg: "lg-swe",
+        { no: "009", home: "米亚尔比", away: "天狼星", league: "瑞超", lg: "lg-swe", time: "21:00",
           dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-2 / 1-1 / 1-3", ht: "平负/平平/负负", ou: "总进球 2·3", risk: 5,
-          logic: "首发确认：天狼星主力齐整（Bjerkebo 12球8助领衔）vs 米亚尔比 Bergström 首发；天狼星16轮不败+客场5连胜+场均2.9球 vs 米亚尔比8轮不胜+主场4连不胜，瑞超3.07高进球" },
-        { no: "010", home: "诺维奇", away: "西布罗姆维奇", league: "英冠", lg: "lg-champ",
+          logic: "首发已确认：天狼星4-3-3 主力齐整（Bjerkebo 12球8助领衔+客场战绩第1）vs 米亚尔比3-4-3（Stavitski伤缺）；天狼星16场不败42分领跑+近5场13球 vs 米亚尔比欧冠出局4连败+近2场0球；但米亚尔比近10次对天狼星8胜2平不败克星+上次交锋4-4，瑞超3.07高进球" },
+        { no: "010", home: "诺维奇", away: "西布罗姆维奇", league: "英冠", lg: "lg-champ", time: "22:00",
           dir: "胜/平（B级）", dc: "dir-windraw", scores: "2-1 / 1-1 / 3-1", ht: "胜胜/平平/平胜", ou: "总进球 2·3", risk: 4,
-          logic: "首发确认：诺维奇 Toure领衔（Kvistgaarden/Ahmed/Topic伤缺）vs 西布朗 Morgan+Heggebo双前锋（多名新援英冠首秀磨合不足）；2026年两次交手诺维奇5-0和3-1完胜，但西布朗近7次对诺维奇6次≥14射门" },
-        { no: "011", home: "奥斯陆KFUM", away: "利勒斯特罗姆", league: "挪超", lg: "lg-nor",
+          logic: "首发已确认：诺维奇4-2-3-1 图雷领衔（Topic十字韧带伤缺+Kvistgaarden替补）vs 西布朗4-4-2 摩根+海格博双前锋无伤停；2026年两次交手诺维奇5-0/3-1完胜 vs 西布朗季前+杯赛5连胜全部大胜（4-1×3+3-0），双方火力猛对攻倾向" },
+        { no: "011", home: "奥斯陆KFUM", away: "利勒斯特罗姆", league: "挪超", lg: "lg-nor", time: "22:00",
           dir: "负/平（B级）", dc: "dir-drawloss", scores: "1-2 / 1-1 / 1-3", ht: "平负/平平/负负", ou: "总进球 2·3", risk: 4,
           logic: "首发已核实：KFUM 3-4-3 埃克雷姆领衔主力齐整（阿莱萨米/塞门斯伤缺）vs 利勒斯特罗姆 4-5-1 沿用上轮奥尔森单前锋（4球射手卡尔巴克已卖土耳其）；利勒斯特罗姆第4（16场25分）但近6场2胜4负（刚主场0-2负罗森博格）+失20球；首回合2-1胜+交锋3连胜；KFUM第12但联赛2连胜+进球联赛第2少（12球）" },
-        { no: "014", home: "玛丽港", away: "塞伊奈约基", league: "芬超", lg: "lg-fin",
+        { no: "014", home: "玛丽港", away: "塞伊奈约基", league: "芬超", lg: "lg-fin", time: "次日 00:00",
           dir: "负（C级）", dc: "dir-drawloss", scores: "0-2 / 1-2 / 1-1*", ht: "负负/平负/平平*", ou: "总进球 2·3", risk: 8,
           logic: "首发已核实：玛丽港 4-3-3 卢恩领衔 vs SJK 4-4-2 姆姆/斯特伦领衔；玛丽港19场5分垫底+近5场0胜+近2场0进球+连续14场未零封+场均0.5球联赛最差；SJK第10近5场6球+对玛丽港4连胜（交锋30次15胜），野鸡剧本矩阵" },
-        { no: "016", home: "谢菲尔德联", away: "伯明翰", league: "英冠", lg: "lg-champ",
+        { no: "016", home: "谢菲尔德联", away: "伯明翰", league: "英冠", lg: "lg-champ", time: "次日 00:30",
           dir: "胜（B级）", dc: "dir-win", scores: "2-1 / 3-1 / 2-0", ht: "胜胜/负胜/平胜", ou: "总进球 2·3", risk: 3,
           logic: "首发已核实：谢菲联4-4-2 库珀/班福德/坎农（核心哈默卖考文垂+菲利普斯/奥尼扬戈伤缺+Chong伤疑）vs 伯明翰4-2-3-1 斯坦斯菲尔德+普里斯克（莱昂纳德伤缺+边卫布坎南/莱尔德伤愈恢复期）；伯明翰斯坦斯菲尔德近3季41球火力强但防线重组" },
-        { no: "019", home: "阿拉维斯", away: "赫塔费", league: "西甲", lg: "lg-j1",
+        { no: "019", home: "阿拉维斯", away: "赫塔费", league: "西甲", lg: "lg-laliga", time: "次日 01:30",
           dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 0-1 / 1-2", ht: "平平/平负/负负", ou: "总进球 1·2", risk: 4,
           logic: "首发名单已出：阿拉维斯核心射手博耶未进名单确认缺阵+主力中卫停赛+后卫被赫塔费挖走；赫塔费新援Mangala首发+上季第7防守近皇马水平+近6次交锋4胜1平1负" },
-        { no: "024", home: "塞维利亚", away: "巴列卡诺", league: "西甲", lg: "lg-j1",
+        { no: "024", home: "塞维利亚", away: "巴列卡诺", league: "西甲", lg: "lg-laliga", time: "次日 03:30",
           dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-2 / 1-1 / 0-1", ht: "平负/平平/负负", ou: "总进球 1·2", risk: 4,
           logic: "新帅Luis García Plaza对巴列卡诺16次仅4胜2平10负（克星）+中卫Marcao/边锋Alfonso González伤缺；夏窗11人离队磨合不足；巴列卡诺射正率46%占优（Luiz Felipe伤缺）" },
-        { no: "026", home: "弗鲁米嫩塞", away: "帕尔梅拉斯", league: "巴甲", lg: "lg-j1",
+        { no: "026", home: "弗鲁米嫩塞", away: "帕尔梅拉斯", league: "巴甲", lg: "lg-bras", time: "次日 03:30",
           dir: "平/负（B级）", dc: "dir-drawloss", scores: "1-1 / 0-1 / 1-2", ht: "平平/平负/负负", ou: "总进球 1·2", risk: 4,
           logic: "帕尔梅拉斯第1（48分）但周中解放者杯1-1消耗+Paulinho/Khellven/Jefté伤缺；弗鲁米嫩塞第4刚换帅（Zubeldía下课Marcão临时）+主力射手John Kennedy伤缺+主场连续4平韧性足" }
       ],
@@ -238,17 +1241,38 @@ const BATCHES = {
     },
     review: {
       results: [
-        { no: "001", teams: "鹿岛鹿角 vs 名古屋鲸八", league: "日职联", lg: "lg-j1", score: "2-1（1-0）", d: "ok", s: "ok", h: "ok", signal: "正常（90+8绝杀）", sc: "ok" }
+        { no: "001", teams: "鹿岛鹿角 vs 名古屋鲸八", league: "日职联", lg: "lg-j1", score: "2-1（1-0）", d: "ok", s: "ok", h: "ok", signal: "🔴 赢得惊险剧本（高嫌疑）", sc: "danger" },
+        { no: "003", teams: "浦和红钻 vs 广岛三箭", league: "日职联", lg: "lg-j1", score: "1-4（1-2）", d: "ok", s: "no", h: "ok", signal: "正常（残阵被碾压）", sc: "ok" },
+        { no: "004", teams: "神户胜利船 vs 东京FC", league: "日职联", lg: "lg-j1", score: "2-2（1-1）", d: "ok", s: "ok", h: "ok", signal: "🟡 平局剧本特征", sc: "watch" },
+        { no: "005", teams: "首尔FC vs 大田市民", league: "韩职", lg: "lg-k1", score: "4-2（0-1）", d: "ok", s: "no", h: "no", signal: "🔴 数据-结果割裂（高嫌疑）", sc: "danger" },
+        { no: "006", teams: "光州FC vs 浦项制铁", league: "韩职", lg: "lg-k1", score: "1-2（0-1）", d: "ok", s: "ok", h: "ok", signal: "🔴 占优惨败+补时绝杀", sc: "danger" },
+        { no: "008", teams: "博尔顿 vs 普雷斯顿", league: "英冠", lg: "lg-champ", score: "待核", d: "?", s: "?", h: "?", signal: "赛果核验中（FotMob Full time 确认后回填）", sc: "ok" },
+        { no: "009", teams: "米亚尔比 vs 天狼星", league: "瑞超", lg: "lg-swe", score: "待核", d: "?", s: "?", h: "?", signal: "赛果核验中（FotMob Full time 确认后回填）", sc: "ok" }
       ],
-      evidence: [], avoidHigh: [], avoidWatch: []
+      evidence: [
+        { no: "001", teams: "鹿岛鹿角 2-1 名古屋鲸八", league: "日职联", lg: "lg-j1", stats: "xG 1.33:0.88、射门 16:13、控球 49%:51%、最佳球员=输球方藤井8.0", signal: "🔴 赢得惊险剧本（用户确认高嫌疑）", txt: "22'莱奥、54'原辉绮（扳平）、90+8'关川绝杀——2-1=比分TOP1+半全场胜胜=TOP1；演戏排查：🔴🔴 卫冕冠军主场控球49%落后保级队+全场最佳是输球方名古屋后卫（超水平防守）+名古屋88'换下进球者后2分钟被绝杀+2-1精准命中模型TOP1/胜胜/3球剧本落点；控分排查：90+8'绝杀=跨2.5线跨线球（1-1两球→2-1三球），2-1固定波胆收割大2.5", sc: "danger" },
+        { no: "003", teams: "浦和红钻 1-4 广岛三箭", league: "日职联", lg: "lg-j1", stats: "xG 0.15:3.09、射门 3:26、禁区内触球 9:49", signal: "🟡 比分保守教训", txt: "浦和5人停赛残阵被广岛彻底碾压（近6连胜+近5场14球）——方向负✅但比分只给到1-2/0-2低估大败，P9大球覆盖不足（应含0-3/1-4级剧本）；演戏排查：无异常（碾压为实力差距非演戏）；控分排查：🟡 75'第5球=跨4.5线（1-3四球→1-4五球），22'乌龙+45+2'半场补时球命中热门时段", sc: "watch" },
+        { no: "004", teams: "神户胜利船 2-2 东京FC", league: "日职联", lg: "lg-j1", stats: "xG 1.69:1.44、射门 11:17、控球 58%:42%", signal: "🟡 平局剧本特征", txt: "35'/69'长仓幹树两球、40'大迫勇也、90+3'武藤嘉纪绝平——2-2=比分TOP3+半全场平平=TOP1；演戏排查：🟡🟡🟡 垫底队东京（首轮1-5惨败）客场两度领先上季冠军级神户+90+3'绝平——'平局+大球4球'剧本特征完整，强弱倒挂极端（R332/R321）；控分排查：90+3'绝平=跨3.5线跨线球（1-2三球→2-2四球）", sc: "watch" },
+        { no: "005", teams: "首尔FC 4-2 大田市民", league: "韩职", lg: "lg-k1", stats: "射门 5:5、射正 3:3、角球 1:6、控球 52%:48%", signal: "🔴 数据-结果割裂（用户确认高嫌疑）", txt: "38'大田先进→48'扳平→62'首尔乌龙1-2→81'/84'宋敏圭双响→90+4'锁定；演戏排查：🔴🔴 榜首主场1角球/5射/3正却进4球（100%转化率）+近5场仅4球本场爆4球（R331）+大田61'换下进球者后13分钟丢3球（R328）+90+4'补刀凑6球大球；控分排查：90+4'补刀3-2→4-2=跨5.5线收割大5.5+4-2固定波胆卡位（同6球的5-1是'其他'会触发高赔，避开）", sc: "danger" },
+        { no: "006", teams: "光州FC 1-2 浦项制铁", league: "韩职", lg: "lg-k1", stats: "射门 5:3、射正 3:1、角球 4:1、控球 54%:46%", signal: "🔴 占优惨败+补时绝杀", txt: "38'特兰齐斯卡、84'艾尔戴尔扳平、90+7'万德森绝杀——1-2=比分TOP3+负负=半全场TOP3；演戏排查：🔴 高嫌疑——光州射门/射正/角球/控球全占优却负（R327完整结构）+浦项5连败（近5场3场0球）客场90+7'恰时绝杀+浦项近30场75-90分钟进球占30%'收官剧本队'；控分排查：90+7'绝杀=跨2.5线跨线球（1-1两球→1-2三球）", sc: "danger" }
+      ],
+      avoidHigh: [], avoidWatch: [
+        { team: "天狼星", league: "瑞超", reason: "8/11：2-0领先后3分钟连丢2球被布洛马追平2-2——用户当时认定'高度演戏放水控盘嫌疑'（R328领先收缩+控分剧本）" },
+        { team: "鹿岛鹿角", league: "日职联", reason: "001：卫冕冠军主场控球49%落后保级队+全场最佳在输球方+90+8'绝杀——'赢得惊险'剧本（用户确认高嫌疑场次）" },
+        { team: "首尔FC", league: "韩职", reason: "005：榜首主场1角球/5射/3正却4-2大胜（100%转化率）+近5场4球本场爆4球+90+4'补刀——数据-结果割裂（用户确认高嫌疑场次）" },
+        { team: "名古屋鲸八", league: "日职联", reason: "001：保级队客场控球占优+超水平防守（最佳球员）+88'换下进球者后2分钟被绝杀——'剧本参与者'" },
+        { team: "浦项制铁", league: "韩职", reason: "006：5连败近5场3场0球，客场90+7'绝杀占优垫底队光州——占优惨败+补时绝杀双剧本（R327），且近30场75-90分钟进球占30%（收官剧本队）" },
+        { team: "东京FC", league: "日职联", reason: "004：首轮1-5惨败垫底，客场两度领先上季冠军级神户+被90+3'绝平——'平局+大球'剧本参与者（R332强弱倒挂）" },
+        { team: "大田市民", league: "韩职", reason: "005：客场领先首尔19分钟后13分钟连丢3球崩盘（R328），'领先崩盘剧本'参与者" }
+      ]
     }
   }
 };
 
-/* 全局累计命中率（跨批次） */
+/* 全局累计命中率（跨批次·竞彩日期校正后全量 213 场） */
 const GLOBAL_STATS = {
-  dir: "53/74", dirPct: "71.6%",
-  score: "35/74", scorePct: "47.3%",
-  ht: "50/74", htPct: "67.6%",
+  dir: "124/213", dirPct: "58.2%",
+  score: "77/213", scorePct: "36.2%",
+  ht: "134/213", htPct: "62.9%",
   updated: "2026-08-15"
 };

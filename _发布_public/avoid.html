@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>赛前预测 · 足球分析预测站</title>
+<title>避雷名单 · 足球分析预测站</title>
 <link rel="stylesheet" href="css/style.css">
 <script>
 /* 主题初始化：读取本地偏好，防闪烁 */
@@ -28,38 +28,26 @@
         <span class="contact-item">🐧 QQ：1099365940</span>
       </div>
     </div>
-    <h1>⚽ 足球分析预测站 · 赛前预测</h1>
-    <div class="sub">规则驱动预测模型 V10.29-Fix-R5 ｜ 日历选择日期回顾历史批次 ｜ 数据双源核验</div>
+    <h1>🚫 足球分析预测站 · 队伍级避雷名单</h1>
+    <div class="sub">全联赛统一避雷 ｜ 名单动态维护 ｜ 涉及避雷队的比赛置信度降一级 + 强制避雷预警</div>
     <div class="meta">
-      <span class="badge">📋 赛前预测</span>
+      <a href="index.html" class="badge badge-link">📋 赛前预测</a>
       <a href="review.html" class="badge badge-link">🔍 赛后复盘</a>
+      <span class="badge">🚫 避雷名单</span>
     </div>
   </div>
 </header>
 
 <nav>
   <div class="inner">
-    <a href="index.html" class="active">📋 赛前预测</a>
+    <a href="index.html">📋 赛前预测</a>
     <a href="review.html">🔍 赛后复盘</a>
-    <a href="avoid.html">🚫 避雷名单</a>
+    <a href="avoid.html" class="active">🚫 避雷名单</a>
   </div>
 </nav>
 
 <div class="container">
-
-  <div class="card">
-    <h2><span class="icon">📊</span> 模型累计命中率</h2>
-    <div class="kpi-row" id="global-kpi"></div>
-    <div class="note">73 场口径 ｜ 更新于 2026-08-15 ｜ 8/14 批次 001-017 全部完赛并双源核验</div>
-  </div>
-
-  <div class="card cal-card">
-    <div id="calendar"></div>
-  </div>
-
-  <div class="batch-header" id="batch-header"></div>
-  <div id="predict-view"></div>
-
+  <div id="avoid-view"></div>
 </div>
 
 <button class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="返回顶部">↑</button>
@@ -72,8 +60,8 @@
       <span>🐧 QQ：1099365940</span>
     </div>
   </div>
-  <div class="footer-note">足球分析预测站 · V10.29-Fix-R5 · 数据双源核验</div>
-  <div class="footer-disclaimer">⚠️ 免责声明：本站为个人足球数据分析研究用途，预测内容基于历史统计模型，不构成任何投注建议。请理性参考，切勿沉迷。数据来源：ip138 / 球迷屋 / ESPN 等公开渠道。</div>
+  <div class="footer-note">足球分析预测站 · V10.29-Fix-R6 · 数据双源核验</div>
+  <div class="footer-disclaimer">⚠️ 免责声明：本站为个人足球数据分析研究用途，预测内容基于历史统计模型，不构成任何投注建议。请理性参考，切勿沉迷。数据来源：FotMob / 官方渠道等公开信息。</div>
 </div>
 
 <script src="js/data.js"></script>
