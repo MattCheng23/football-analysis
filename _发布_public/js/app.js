@@ -107,13 +107,23 @@ function renderPredict(batch) {
   const riskTag = r => r >= 7 ? `<span class="tag tag-red">🔴 ${r}</span>`
     : r >= 5 ? `<span class="tag tag-orange">🟠 ${r}</span>`
     : `<span class="tag tag-green">🟢 ${r}</span>`;
+  // 预测等级 → 颜色类（V10.31：A+ A A- 绿系 / B+ 蓝 / B 黄 / C 红，B- 并入 C）
+  const lvlClass = d => {
+    if (d.includes("A+")) return "lvl-aplus";
+    if (d.includes("A-")) return "lvl-aminus";
+    if (d.includes("A")) return "lvl-a";
+    if (d.includes("B+")) return "lvl-bplus";
+    if (d.includes("B-")) return "lvl-c"; // B- 并入 C
+    if (d.includes("B")) return "lvl-b";
+    return "lvl-c";
+  };
   const rows = sorted.map(m => {
     const revHtml = m.scores.replace(/(\d+-\d+)\*/g, '<span class="rev-score">$1*</span>');
     const revHt = m.ht.replace(/([胜负平]{2})\*/g, '<span class="rev-score">$1*</span>');
     return `<tr>
     <td><span class="no-badge">${m.no}</span></td>
     <td>${m.home} vs ${m.away}<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time || "-"}</span></span></td>
-    <td class="${m.dc}">${m.dir}</td>
+    <td class="${lvlClass(m.dir)}">${m.dir}</td>
     <td class="score-nums">${revHtml}</td>
     <td>${revHt}</td>
     <td>${m.ou}</td>
@@ -127,17 +137,30 @@ function renderPredict(batch) {
     <td><span class="tag ${c.lv}">${c.lvTxt}</span></td>
   </tr>`).join("");
 
-  // 高价值预警：只显示 中等偏高/中等，其余（中等偏低及以下）隐藏
+  // 高价值预警：只显示中等偏低及以上等级（排除"低"），不足按实际展示
   const alertRows = p.alerts
-    .filter(a => a.lvTxt === "中等偏高" || a.lvTxt === "中等")
+    .filter(a => a.lvTxt !== "低")
     .map(a => `<tr>
     <td>${a.script}</td><td>${a.no} ${a.teams}</td>
     <td><span class="tag ${a.lv}">${a.lvTxt}</span></td>
     <td>${a.logic}</td>
   </tr>`).join("");
 
-  // 0-0 预警：取概率最高的 3 场（保证列表有信息量）
+  // 0-0 预警：只显示中等偏低及以上等级，按概率排序（不足 3 场按实际展示，不硬凑）
   const zzRows = (p.zeroZero || [])
+    .filter(z => z.lvTxt !== "低")
+    .slice()
+    .sort((a, z) => z.p - a.p)
+    .slice(0, 3)
+    .map(z => `<tr>
+    <td>${z.no} ${z.teams}</td>
+    <td><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${z.p}%"></div></div><span class="prob-txt num">${z.p}%</span></div></td>
+    <td><span class="tag ${z.lv}">${z.lvTxt}</span></td>
+  </tr>`).join("");
+
+  // 7+ 球预警：总进球 ≥7 的极端大球，只显示中等偏低及以上等级（不足 3 场按实际展示，不硬凑）
+  const bigRows = (p.bigSeven || [])
+    .filter(z => z.lvTxt !== "低")
     .slice()
     .sort((a, z) => z.p - a.p)
     .slice(0, 3)
@@ -156,12 +179,14 @@ function renderPredict(batch) {
 
   el.innerHTML = `
     <div class="card">
-      <h2><span class="icon">📋</span> 一、完整预测清单（${batch.title}）</h2>
+      <h2><span class="icon">📋</span> 一、完整预测清单（${batch.title}）${batch.updated ? `<span class="mt-line" style="font-size:12px;color:var(--sub);margin-left:10px;">🕐 更新于 ${batch.updated}</span>` : ""}</h2>
       <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);margin-bottom:6px;">
-        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#dcf5e5"></span> 胜倾向</span>
-        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#fdf3d0"></span> 胜/平</span>
-        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#fee4e2"></span> 平/负</span>
-        <span style="margin-left:auto">A 级 = 高置信正路 ｜ B 级 = 中置信正路 ｜ C 级 = 低置信（含 1 反向比分，标 <span class="rev-score">*</span>）</span>
+        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#15803d"></span> A+ 极高</span>
+        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#16a34a"></span> A 高</span>
+        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#4ade80"></span> A- 中高</span>
+        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#2563eb"></span> B+ 中偏正路</span>
+        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#d97706"></span> B 中</span>
+        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#dc2626"></span> C 低（含 1 反向比分，标 <span class="rev-score">*</span>）</span>
       </div>
       <div class="table-wrap"><table>
         <thead><tr><th>场次</th><th>对阵（北京时间）</th><th>方向</th><th>比分 TOP3</th><th>半全场 TOP3</th><th>总进球</th><th>假赛分</th></tr></thead>
@@ -183,7 +208,7 @@ function renderPredict(batch) {
         <thead><tr><th>剧本</th><th>场次</th><th>概率</th><th>核心逻辑</th></tr></thead>
         <tbody>${alertRows}</tbody>
       </table></div>
-      <div class="note">仅显示中等偏高 / 中等概率的剧本，其余已过滤。</div>
+      <div class="note">仅显示中等偏低及以上等级的剧本，其余已过滤。</div>
     </div>
 
     <div class="card">
@@ -192,7 +217,16 @@ function renderPredict(batch) {
         <thead><tr><th>场次</th><th>0-0 概率</th><th>等级</th></tr></thead>
         <tbody>${zzRows}</tbody>
       </table></div>
-      <div class="note">取 0-0 概率最高的 3 场（泊松计算）。</div>
+      <div class="note">仅显示中等偏低及以上等级（泊松计算），不足 3 场按实际展示。</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="icon">🎆</span> 7+ 球预警</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>场次</th><th>7+ 球概率</th><th>等级</th></tr></thead>
+        <tbody>${bigRows}</tbody>
+      </table></div>
+      <div class="note">仅显示中等偏低及以上等级（总进球 ≥7，如 4-3/5-2/6-1，R346），不足 3 场按实际展示。</div>
     </div>
 
     <div class="card">
@@ -343,9 +377,17 @@ function renderSiteStats() {
 
 /* ---------- 预测级别表现分析 ---------- */
 function levelAnalysis(b) {
-  // 方向字符串 → 级别（A/B/C）与主倾向
-  const grade = d => (d.includes("C") ? "C级" : d.includes("A") ? "A级" : "B级");
-  const res = { "A级": { t: 0, h: 0 }, "B级": { t: 0, h: 0 }, "C级": { t: 0, h: 0 } };
+  // 方向字符串 → 细分档位（V10.31：A+ A A- B+ B C，B- 并入 C）
+  const grade = d => {
+    if (d.includes("A+")) return "A+";
+    if (d.includes("A-")) return "A-";
+    if (d.includes("A")) return "A";
+    if (d.includes("B+")) return "B+";
+    if (d.includes("B-")) return "C"; // B- 并入 C
+    if (d.includes("B")) return "B";
+    return "C";
+  };
+  const res = { "A+": { t: 0, h: 0 }, "A": { t: 0, h: 0 }, "A-": { t: 0, h: 0 }, "B+": { t: 0, h: 0 }, "B": { t: 0, h: 0 }, "C": { t: 0, h: 0 } };
   b.review.results.forEach(m => {
     const pm = b.predict.matches.find(x => x.no === m.no);
     if (!pm) return;
@@ -364,14 +406,15 @@ function renderLevelStats() {
   const row = g => {
     const r = res[g];
     const pct = r.t ? Math.round(100 * r.h / r.t) : 0;
-    return `<tr><td class="num">${g}</td><td class="num">${r.h}/${r.t}</td><td><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${pct}%"></div></div><span class="prob-txt num">${pct}%</span></div></td></tr>`;
+    const cls = { "A+": "lvl-aplus", "A": "lvl-a", "A-": "lvl-aminus", "B+": "lvl-bplus", "B": "lvl-b", "C": "lvl-c" }[g];
+    return `<tr><td class="num"><span class="${cls}" style="padding:2px 10px">${g}</span></td><td class="num">${r.h}/${r.t}</td><td><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${pct}%"></div></div><span class="prob-txt num">${pct}%</span></div></td></tr>`;
   };
   el.innerHTML = `
     <div class="table-wrap"><table>
       <thead><tr><th>预测级别</th><th>方向命中</th><th>命中率</th></tr></thead>
-      <tbody>${row("A级")}${row("B级")}${row("C级")}</tbody>
+      <tbody>${row("A+")}${row("A")}${row("A-")}${row("B+")}${row("B")}${row("C")}</tbody>
     </table></div>
-    <div class="note">A级 = 高置信正路；B级 = 中置信正路；C级 = 低置信（2主+1反向比分）。用于检验"高置信更可靠"假设。</div>`;
+    <div class="note">A+ 极高置信 ｜ A 高置信 ｜ A- 中高 ｜ B+ 中置信偏正路 ｜ B 中置信 ｜ C 低置信（含 2主+1反向比分，原 B- 并入 C）。用于检验"高置信更可靠"假设。</div>`;
 }
 
 /* ---------- 联赛表现统计 ---------- */
@@ -461,13 +504,64 @@ function initSortable() {
   });
 }
 
-/* ---------- 全局统计 + 批次头 ---------- */
+/* ---------- 全局统计（近7日 + 预警命中率） + 批次头 ---------- */
 function renderGlobal() {
   const el = document.getElementById("global-kpi");
-  if (el) el.innerHTML = `
-    <div class="kpi"><div class="num">${GLOBAL_STATS.dir}</div><div class="lbl">累计方向 ${GLOBAL_STATS.dirPct}</div></div>
-    <div class="kpi"><div class="num">${GLOBAL_STATS.score}</div><div class="lbl">累计比分 ${GLOBAL_STATS.scorePct}</div></div>
-    <div class="kpi"><div class="num">${GLOBAL_STATS.ht}</div><div class="lbl">累计半全场 ${GLOBAL_STATS.htPct}</div></div>`;
+  if (!el) return;
+  const pct = (h, n) => n ? Math.round(100 * h / n) + "%" : "—";
+  const keys = Object.keys(BATCHES).sort();
+  const weekStart = fmtKey(new Date(Date.now() - 7 * 864e5));
+
+  // 近 7 日三指标 + 近 7 日总进球/预警命中（全部统一近 7 日口径）
+  const week = { n: 0, d: 0, s: 0, h: 0 };
+  const ou = { n: 0, h: 0 }, zz = { n: 0, h: 0 }, bs = { n: 0, h: 0 }, aw = { n: 0, h: 0 };
+  keys.forEach(k => {
+    const b = BATCHES[k];
+    if (!b.review || !b.review.results) return;
+    if (k < weekStart) return; // 仅近 7 日
+    b.review.results.forEach(m => {
+      week.n++; if (m.d === "ok") week.d++; if (m.s === "ok") week.s++; if (m.h === "ok") week.h++;
+      const pm = b.predict && b.predict.matches.find(x => x.no === m.no);
+      const sc = m.score.match(/(\d+)-(\d+)/);
+      // 总进球
+      if (pm && pm.ou && sc) {
+        const mm = pm.ou.match(/(\d+)[·.x×](\d+)/);
+        if (mm) { ou.n++; const tg = +sc[1] + +sc[2]; if (tg >= +mm[1] && tg <= +mm[2]) ou.h++; }
+      }
+      if (!sc) return;
+      // 0-0 预警
+      const scoreMain = m.score.split("（")[0];
+      const z = (b.zeroZero || []).find(x => x.no === m.no);
+      if (z) { zz.n++; if (scoreMain === "0-0") zz.h++; }
+      // 7+ 预警
+      const b7 = (b.bigSeven || []).find(x => x.no === m.no);
+      if (b7) { bs.n++; if (+sc[1] + +sc[2] >= 7) bs.h++; }
+      // 高价值预警（半全场剧本）
+      if (b.alerts) {
+        const a = b.alerts.find(x => x.no === m.no);
+        if (a) {
+          aw.n++;
+          const f = sc[1] > sc[2] ? "胜" : sc[1] < sc[2] ? "负" : "平";
+          const hm = m.score.match(/（(\d+)-(\d+)）/);
+          const hh = hm ? (hm[1] > hm[2] ? "胜" : hm[1] < hm[2] ? "负" : "平") : "";
+          if (a.script === hh + f) aw.h++;
+        }
+      }
+    });
+  });
+
+  el.innerHTML = `
+    <div class="kpi-row" style="margin-bottom:6px">
+      <div class="kpi"><div class="num">${week.d}/${week.n} <span style="font-size:12px">${pct(week.d, week.n)}</span></div><div class="lbl">近7日方向</div></div>
+      <div class="kpi"><div class="num">${week.s}/${week.n} <span style="font-size:12px">${pct(week.s, week.n)}</span></div><div class="lbl">近7日比分 TOP3</div></div>
+      <div class="kpi"><div class="num">${week.h}/${week.n} <span style="font-size:12px">${pct(week.h, week.n)}</span></div><div class="lbl">近7日半全场 TOP3</div></div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${ou.h}/${ou.n} <span style="font-size:12px">${pct(ou.h, ou.n)}</span></div><div class="lbl">⚽ 总进球命中</div></div>
+      <div class="kpi" style="background:rgba(22,163,74,.08);border-color:#16a34a"><div class="num">${zz.h}/${zz.n} <span style="font-size:12px">${pct(zz.h, zz.n)}</span></div><div class="lbl">🛡️ 0-0 预警命中</div></div>
+      <div class="kpi" style="background:rgba(22,163,74,.08);border-color:#16a34a"><div class="num">${bs.h}/${bs.n} <span style="font-size:12px">${pct(bs.h, bs.n)}</span></div><div class="lbl">🎆 7+ 球预警命中</div></div>
+      <div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${aw.h}/${aw.n} <span style="font-size:12px">${pct(aw.h, aw.n)}</span></div><div class="lbl">🚨 高价值预警命中</div></div>
+    </div>`;
 }
 
 function renderBatchHeader() {
@@ -477,6 +571,7 @@ function renderBatchHeader() {
     el.innerHTML = `
       <span class="badge badge-soft">📅 ${fmtDate(currentKey)}</span>
       <span class="badge badge-solid">${b.title}</span>
+      ${b.updated ? `<span class="badge badge-soft">🕐 更新 ${b.updated}</span>` : ""}
       <span class="badge badge-soft" style="margin-left:auto">模型 ${b.model}</span>
       ${b.reviewed ? `<span class="badge badge-solid" style="background:linear-gradient(135deg,#15803d,#22a55a)">✅ 已复盘</span>`
                    : `<span class="badge badge-gold">📋 待复盘</span>`}`;
@@ -550,5 +645,29 @@ document.addEventListener("DOMContentLoaded", () => {
       syncIcon();
     });
     syncIcon();
+  }
+
+  // 打赏支持（顶部 contact-bar 注入按钮 + 微信收款码弹窗）
+  const bar = document.querySelector(".contact-bar");
+  if (bar) {
+    const donateBtn = document.createElement("span");
+    donateBtn.className = "contact-item";
+    donateBtn.textContent = "❤️ 打赏支持";
+    donateBtn.style.cssText = "cursor:pointer;user-select:none;";
+    const modal = document.createElement("div");
+    modal.style.cssText = "display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;";
+    modal.innerHTML = `
+      <div style="background:var(--card,#fff);border-radius:12px;padding:24px 28px;max-width:320px;width:90%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.25);">
+        <h3 style="margin:0 0 6px;font-size:16px;">❤️ 打赏支持</h3>
+        <p style="margin:0 0 14px;font-size:12.5px;color:var(--sub,#777);">为爱发电 · 感谢支持！<br>微信扫一扫，随意打赏～</p>
+        <img src="images/wechat_qr.png" alt="微信收款码" style="width:200px;height:200px;border-radius:8px;border:1px solid #eee;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div style="display:none;font-size:12.5px;color:#999;padding:40px 0;">二维码图片未就绪（images/wechat_qr.png）</div>
+        <button id="donateClose" style="margin-top:14px;padding:6px 18px;border:1px solid #ccc;border-radius:6px;background:transparent;cursor:pointer;font-size:12.5px;">关闭</button>
+      </div>`;
+    modal.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
+    donateBtn.addEventListener("click", () => { modal.style.display = "flex"; });
+    modal.querySelector("#donateClose").addEventListener("click", () => { modal.style.display = "none"; });
+    document.body.appendChild(modal);
+    bar.appendChild(donateBtn);
   }
 });

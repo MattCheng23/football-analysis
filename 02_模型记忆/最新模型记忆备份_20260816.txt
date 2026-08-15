@@ -1,0 +1,46 @@
+# 2026-08-16 关键上下文备份（含 8/15 深夜版全部内容 + 8/16 全天进展）
+
+> 用途：DSH 主会话存储被误删（事件帧丢失）+ 本次为装 modlens 主动重启，若重启 DSH/电脑，按此文件恢复工作状态。
+> 恢复步骤：新建会话 → 粘贴本文件内容 → 记忆系统自动注入 key/daily/project 轨。
+
+## 一、模型与项目状态（2026-08-16 最新）
+
+1. **模型版本 V10.30**（规则 R001-R346）：联赛参数校准（韩职 λ2.75/大小2.75 最大修正、挪超 3.15/3.25、芬超 2.40/2.5、瑞超 3.00/平25%、巴甲 2.45/平30%、美职联 2.80/平35%、葡超 2.75/平32%、欧冠 3.00/3.0、日职联 2.90/3.0⚠️待复核、欧冠资格赛 2.15/2.25、欧联资格赛 3.20/3.0；R345 每20场滚动校准）；队伍特定规则集 V1.0（🔴6队：天狼星领先放水+30%/鹿岛补时剧本+25%/葡体领先收缩+20%/首尔转化异常/浦项收官剧本+15%/波兹南主场爆冷+20%；🟡10队观察）；R346 7+ 球预警（bigSeven，只用于未来批次）
+2. **data.js 25 批 213 场**：evidence 全量（约 200 场深度复盘 7/21-8/14 共 21 个批次全部完成）；GLOBAL_STATS 124/213 58.2%·77/213 36.2%·132/213 62.0%；避雷名单 V0.5（🔴10：天狼星/鹿岛/首尔/浦项/VPS/TPS/波兹南/葡体/全北/江原；🟡11：名古屋/东京/大田/狼队/HJK/桑托斯/莫尔德/横滨/布兰/AIK/吉马良斯）；乙级联赛（德乙/荷乙/法乙）+沙特联以后不分析（用户拍板）
+3. **8/15 批 14 场**：9 场已确认复盘（001鹿岛2-1🔴/003浦和1-4🟡/004神户2-2🟡/005首尔4-2🔴/006光州1-2🔴/008博尔顿2-1/009米亚尔比4-3🔴7+预警命中/010诺维奇1-2🟡/011 KFUM1-1⭐三指标全中），剩 014玛丽港vsSJK/016谢菲联vs伯明翰/019阿拉维斯vs赫塔费/024塞维利亚vs巴列卡诺/026弗鲁米嫩vs帕尔梅拉斯 待 FT 后录入+演戏排查；全部完赛后整体复盘（三级递进③）
+4. **019 西甲揭幕战预测已更新**（实际首发确认）：阿拉维斯4-4-2 vs 赫塔费3-5-2，博耶肌肉伤缺+加塞斯停赛 vs 乌切十字韧带赛季报销+胡安米膝伤（双射手全缺，马约拉尔替补）；预测 平/负（B级）比分 1-1/0-1/1-0 半全场 平平/平负/平胜 总进球1·2，0-0预警 p=11
+5. **modlens 视觉插件已安装并配置完成**（8/16）：`@liustack/modlens@3.16.7` 已注册进 web profile bundles（C:\Users\Administrator\.dsh\profiles\web\package.json），~/.modlens/config.json 引擎已配好：provider=openai、baseUrl=https://token.sensenova.cn/v1（用户 settings.yaml 里 sensenova 的 OpenAI 兼容端点）、apiKey=sk-S8u9...N3（.credentials.yaml 的 SENSENOVA_API_KEY）、model=sensenova-6.8-flash-lite（商汤视觉模型，glm-5.2 备用）。**已实测通过**：analyze 微信收款码图 7.2 秒返回完整 OCR+布局+语义（测试输出 D:\Cola\_modlens_test1.json）。**装完需重启 DSH web 生效**：重启后模型选择器出现 DeepSeek-V4-Flash/Pro (modlens vision) 条目，工具名 modlens_read_image 注入所有请求，Web UI 粘贴图片自动转路径（/modlens/paste 路由，25MB 上限），引擎也可在 Settings→Plugins→Plugin configuration 卡片改
+6. **subagent_pro 测试结论**（8/16）：工具调用成功（对话正常），但模型 deepseek-v4-pro 端点返回 "does not declare image input"——V4-Pro 当前不支持图片输入，识图需靠 modlens 方案
+7. **网页新功能**：🎆 7+ 球预警卡片（bigRows 镜像 zzRows）+ 三预警模块 filter lvTxt!=="低" 取前3（不足按实际）；打赏功能（微信收款码 images/wechat_qr.png，contact-bar 按钮+弹窗）；已部署 Cloudflare Pages football-analysis-report（最新部署 b004fd6f 之后又更新 019）
+8. **GitHub 双仓库备份**：D:\Cola\_backup\daily_backup.ps1（UTF-8 BOM 必须、Push-WithRetry、URL 带 MattCheng23/），计划任务 DSH_DailyBackup 每天 23:00；最新改动（打赏/预警/019更新）待下次备份自动同步
+9. **子代理复用池**：cbd0b6f6（E档案）/7b47349d（记忆备份）/be016c8a（data.js 校正）+ 20 个复盘代理已归档；禁止无限新建，新任务优先 send_message 复用
+
+## 二、关键铁律（勿忘）
+
+- **当前会话不可随意重启**（历史帧已丢，内存即全部）；重启后按本文件恢复；**禁删 ~/.dsh/sessions/ 目录**
+- 查赛果必须 FotMob 显示 Full time/FT 才可录入（半场/实时当赛果=严重错误，犯过两次）
+- 盘口词黑名单（盘口/水位/让球/庄家/投注/控盘等禁）；控分排查仅本地（网页 cleanTxt 截断"控分排查："）；假赛排查必查 FotMob 六项+控分四查+跨线球；只报真实命中率
+- HTTP 铁律：禁 Invoke-WebRequest/Invoke-RestMethod，一律 curl.exe -s 或 read_page；FotMob API：curl.exe -s -H "x-mas: 9a9a7e262fce7ff04f0de2242aaf5c34"（注意：8/16 实测 leagues/matches/search 端点返回 404，只有 read_page 可用）
+- PowerShell 陷阱：PS5.1 无 BOM 中文崩→UTF-8 BOM；edit 工具写回去 BOM 需重补；内联 python -c 中文崩→写 _tmp_*.py
+- 演戏自动排查铁律：每场赛果核验后立即按 R321-R328 自动跑（碾压收窄/占优惨败/转化率倒挂/半场收缩/补时剧本/闪击收工），结论写 evidence txt
+- 假赛最浓信号=赢球方数据-结果割裂（非占优方输球）；控分四查：时段进球分布/总进球卡位/领先方节奏/关键事件时机；跨线球=尾声进球恰好跨 2.5/3.5/4.5/5.5 线；波胆边界：4-x 全固定，5+ 归"其他"（用户平台）
+- R343 市场/赔率信息一律不参考（盘口词）；只用可核验基本面
+- key 轨记忆 approve-all 铁律：提交建议后立即 POST http://127.0.0.1:3080/memory-evolve/api/suggestions/approve-all
+- mnemon 永久禁用（曾致 DSH 崩溃）；用户偏好：自动化、大任务子代理、报告精简（≤5行≤5列）、假球先问信号、只报真实命中率
+- 比分必须最合理（P8）不能太保守（P9 大球覆盖，泊松小分是下限不是目标）；总进球列仅由比分 TOP3 按 R338 推导
+
+## 三、恢复后第一优先
+
+1. 检查 modlens 是否生效（模型列表有无 (modlens vision) 条目；若未配引擎，配 openai 兼容端点：modlens config set provider openai / openai.baseUrl / openai.apiKey / openai.model）
+2. 8/15 批剩余 5 场赛果跟进（014/016/019/024/026，FotMob FT 确认）→ 演戏排查 → 录入 data.js → 部署；全部完赛后整体复盘（三级递进③）
+3. 8/15 竞彩赛果文件更新版核对 8/14 批 002-017 编号归属
+4. 019 西甲赛果复盘（预测平/负 1-1/0-1/1-0，验证揭幕战低分逻辑）
+5. GitHub 备份确认（每日 23:00 自动，最新改动含打赏/预警/019）
+
+## 四、近期决策链备忘（用户拍板）
+
+- 乙级联赛（德乙/荷乙/法乙）+沙特联以后不分析（风险太高）→避雷名单剔除相关队；英冠保留
+- 7+ 预警只用于未来批次（与 zeroZero 并列预测模板必含项）；预警显示只列中等偏低及以上等级，不足3个不硬凑
+- 队伍特定规则集 V1.0 用户拍板（特定队伍可以加特定系数和规则）
+- 打赏功能用户拍板（微信收款码）；modlens 识图方案用户拍板（openai 兼容端点）
+- 竞彩批次编号规则：001/201 开头编号段=一轮；8/15 轮=001-027
