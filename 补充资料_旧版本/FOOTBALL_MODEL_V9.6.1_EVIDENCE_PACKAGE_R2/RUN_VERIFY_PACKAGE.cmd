@@ -1,0 +1,4 @@
+@echo off
+cd /d D:\Cola\FOOTBALL_MODEL_V9.6.1_EVIDENCE_PACKAGE_R2
+python -m zipfile -c ..\FOOTBALL_MODEL_V9.6.1_EVIDENCE_PACKAGE_R2.zip .
+echo ZIP_CREATED

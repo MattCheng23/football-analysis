@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>足球赛事分析报告中心</title>
+<style>
+/* ============================================================
+   足球赛事分析报告中心 · 双主题单文件版
+   主题A：浅色专业数据仪表盘（默认 / 对外分享）
+   主题B：赛博HUD深色控制台（自用夜间）
+   ============================================================ */
+
+/* ---------- 基础变量（浅色主题 = 默认） ---------- */
+:root {
+  --bg: #f3f4f6;
+  --card: #ffffff;
+  --card-border: #e5e7eb;
+  --ink: #111827;
+  --sub: #6b7280;
+  --primary: #2557d6;
+  --primary-soft: #eef2fc;
+  --risk-high: #ef4444;
+  --risk-high-bg: #fee2e2;
+  --risk-mid: #eab308;
+  --risk-mid-bg: #fef9c3;
+  --risk-ok: #16a34a;
+  --risk-ok-bg: #dcfce7;
+  --risk-row-bg: rgba(239, 68, 68, .05);
+  --table-head-bg: #f9fafb;
+  --table-border: #e5e7eb;
+  --stripe: #fafbfc;
+  --hover: #f3f6fd;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 14px rgba(0,0,0,.05);
+  --theme-toggle-bg: #e5e7eb;
+  --nav-inactive: #6b7280;
+  --nav-bg: #ffffff;
+  --nav-border: #e5e7eb;
+  --mono: "Consolas", "SF Mono", "Cascadia Mono", "Menlo", monospace;
+}
+
+/* ---------- 赛博HUD深色主题 ---------- */
+body.dark {
+  --bg: #081020;
+  --card: #0b1526;
+  --card-border: rgba(0, 229, 255, .45);
+  --ink: #d7e4f2;
+  --sub: #6d87a8;
+  --primary: #00e5ff;
+  --primary-soft: rgba(0, 229, 255, .08);
+  --risk-high: #ff4d6d;
+  --risk-high-bg: rgba(255, 77, 109, .12);
+  --risk-mid: #ffd166;
+  --risk-mid-bg: rgba(255, 209, 102, .10);
+  --risk-ok: #2ee6a8;
+  --risk-ok-bg: rgba(46, 230, 168, .10);
+  --risk-row-bg: rgba(255, 77, 109, .06);
+  --table-head-bg: rgba(0, 229, 255, .07);
+  --table-border: rgba(0, 229, 255, .18);
+  --stripe: rgba(0, 229, 255, .02);
+  --hover: rgba(0, 229, 255, .06);
+  --shadow: 0 0 0 1px rgba(0, 229, 255, .08), 0 0 24px rgba(0, 229, 255, .05);
+  --theme-toggle-bg: #14243d;
+  --nav-inactive: #6d87a8;
+  --nav-bg: #081020;
+  --nav-border: rgba(0, 229, 255, .25);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "HarmonyOS Sans SC", "MiSans", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.65;
+  font-size: 14px;
+  transition: background .25s, color .25s;
+  min-height: 100vh;
+}
+/* HUD 网格背景（低透明度，无特效） */
+body.dark {
+  background-image:
+    linear-gradient(rgba(0, 229, 255, .035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, .035) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.wrap { max-width: 1240px; margin: 0 auto; padding: 20px 22px 60px; }
+
+/* ---------- 顶部标题栏 ---------- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  flex-wrap: wrap; margin-bottom: 16px;
+}
+.topbar .title-block h1 {
+  font-size: 22px; font-weight: 800; letter-spacing: .5px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.topbar .title-block h1 .ver {
+  font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  background: var(--primary-soft); color: var(--primary);
+  border: 1px solid var(--card-border); font-family: var(--mono);
+}
+body.dark .topbar .title-block h1 .ver { box-shadow: 0 0 10px rgba(0,229,255,.25); }
+.topbar .title-block .time { font-size: 12.5px; color: var(--sub); margin-top: 4px; }
+.theme-toggle {
+  width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--card-border);
+  background: var(--card); cursor: pointer; font-size: 20px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow); transition: transform .15s;
+}
+.theme-toggle:hover { transform: scale(1.08); }
+
+/* ---------- Tab 胶囊导航 ---------- */
+.tabs {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;
+  padding: 6px; background: var(--nav-bg); border: 1px solid var(--nav-border);
+  border-radius: 14px; box-shadow: var(--shadow);
+}
+.tab-btn {
+  padding: 9px 22px; border-radius: 10px; border: none; cursor: pointer;
+  font-size: 14px; font-weight: 700; letter-spacing: .5px;
+  background: transparent; color: var(--nav-inactive);
+  transition: all .15s;
+}
+.tab-btn:hover { color: var(--primary); }
+.tab-btn.active {
+  background: var(--primary); color: #fff;
+}
+body.dark .tab-btn.active {
+  background: rgba(0, 229, 255, .15); color: #00e5ff;
+  box-shadow: inset 0 0 0 1px rgba(0, 229, 255, .5), 0 0 14px rgba(0, 229, 255, .2);
+}
+
+/* ---------- 卡片 ---------- */
+.panel { display: none; }
+.panel.active { display: block; }
+.card {
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 20px 22px; margin-bottom: 16px;
+  box-shadow: var(--shadow); position: relative;
+}
+/* HUD 四角角标 */
+body.dark .card::before, body.dark .card::after {
+  content: ""; position: absolute; width: 14px; height: 14px;
+  border-color: var(--primary); border-style: solid;
+  opacity: .8;
+}
+body.dark .card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; border-radius: 6px 0 0 0; }
+body.dark .card::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; border-radius: 0 0 6px 0; }
+.card h2 {
+  font-size: 16px; font-weight: 800; margin-bottom: 12px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--table-border);
+  display: flex; align-items: center; gap: 8px; letter-spacing: .4px;
+}
+.card h2 .hint { margin-left: auto; font-size: 12px; font-weight: 400; color: var(--sub); }
+.card h3 {
+  font-size: 14px; font-weight: 800; margin: 18px 0 10px; letter-spacing: .4px;
+  color: var(--primary);
+}
+.lead { font-size: 13.5px; color: var(--sub); margin-bottom: 10px; }
+.note {
+  background: var(--primary-soft); border-left: 4px solid var(--primary);
+  padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 13px;
+  color: var(--ink); margin: 12px 0;
+}
+body.dark .note { box-shadow: inset 0 0 20px rgba(0,229,255,.04); }
+
+/* ---------- 表格 ---------- */
+.table-wrap { overflow-x: auto; margin: 10px 0; border-radius: 10px; border: 1px solid var(--table-border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 980px; }
+thead th {
+  background: var(--table-head-bg); color: var(--ink);
+  text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--table-border);
+  white-space: nowrap; font-size: 12.5px; font-weight: 800; letter-spacing: .4px;
+}
+tbody td { padding: 9px 12px; border-bottom: 1px solid var(--table-border); vertical-align: middle; }
+tbody tr:nth-child(even) { background: var(--stripe); }
+tbody tr:hover { background: var(--hover); }
+/* 高嫌疑行：微弱底色 */
+tr.risk-row { background: var(--risk-row-bg); }
+tr.risk-row:nth-child(even) { background: var(--risk-row-bg); }
+tr.risk-row:hover { background: var(--risk-row-bg); }
+
+/* ---------- 数字等宽 ---------- */
+.num, .score, .no-cell {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .4px;
+}
+.no-cell { font-weight: 800; font-size: 12.5px; white-space: nowrap; }
+.score { font-weight: 700; font-size: 13.5px; white-space: nowrap; }
+.stat-cell { font-family: var(--mono); font-size: 12.5px; color: var(--sub); white-space: nowrap; }
+
+/* ---------- 风险标签 ---------- */
+.risk-tag {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11.5px; font-weight: 800; white-space: nowrap; letter-spacing: .3px;
+}
+.risk-high { background: var(--risk-high-bg); color: var(--risk-high); }
+.risk-mid  { background: var(--risk-mid-bg);  color: var(--risk-mid); }
+.risk-ok   { background: var(--risk-ok-bg);   color: var(--risk-ok); }
+body.dark .risk-high { box-shadow: inset 0 0 0 1px rgba(255,77,109,.4); }
+body.dark .risk-mid  { box-shadow: inset 0 0 0 1px rgba(255,209,102,.4); }
+body.dark .risk-ok   { box-shadow: inset 0 0 0 1px rgba(46,230,168,.4); }
+
+/* ---------- KPI ---------- */
+.kpi-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
+.kpi {
+  flex: 1; min-width: 140px; background: var(--card); border: 1px solid var(--card-border);
+  border-radius: 10px; padding: 14px 16px; text-align: center;
+}
+.kpi .num { font-size: 26px; font-weight: 800; color: var(--primary); }
+.kpi .lbl { font-size: 12px; color: var(--sub); margin-top: 3px; }
+
+/* ---------- 避雷名单网格 ---------- */
+.avoid-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; margin-top: 10px; }
+.avoid-item {
+  border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 14px;
+  background: var(--card);
+}
+.avoid-item .t { font-weight: 800; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+.avoid-item .l { font-size: 11.5px; color: var(--sub); margin-top: 2px; letter-spacing: .4px; }
+.avoid-item .r { font-size: 12.5px; margin-top: 6px; color: var(--ink); }
+
+/* ---------- 原则/规则表 ---------- */
+.rule-table td:first-child { font-family: var(--mono); font-weight: 800; white-space: nowrap; color: var(--primary); }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 720px) {
+  .wrap { padding: 14px 12px 40px; }
+  .card { padding: 14px 14px; }
+  .tab-btn { padding: 8px 14px; font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ================= 顶部标题栏 ================= -->
+  <div class="topbar">
+    <div class="title-block">
+      <h1>
+        ⚽ 足球赛事分析报告中心
+        <span class="ver">V10.29-Fix-R4</span>
+      </h1>
+      <div class="time">复盘批次：8/14 周五（001-017） ｜ 数据双源核验 ｜ 更新 2026-08-15</div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
+  </div>
+
+  <!-- ================= Tab 胶囊导航 ================= -->
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-panel="review">复盘报告</button>
+    <button class="tab-btn" data-panel="league">联赛风险评级</button>
+    <button class="tab-btn" data-panel="ledger">赛果台账</button>
+    <button class="tab-btn" data-panel="rules">模型规则</button>
+  </div>
+
+  <!-- ================= ① 复盘报告 ================= -->
+  <div class="panel active" id="panel-review">
+
+    <div class="card">
+      <h2>📋 001-017 逐场复盘总表 <span class="hint">高嫌疑行已用底色标记</span></h2>
+      <div class="lead">批次方向命中 12/17（70.6%）｜比分 TOP3 2/17｜半全场 TOP3 11/17。赛果经 ip138 / 球迷屋 / ESPN 双源核验。</div>
+      <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>场次</th><th>联赛</th><th>对阵</th><th>全场比分</th><th>半场比分</th><th>关键统计</th><th>风险嫌疑标签</th><th>复盘备注</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="no-cell">001</td><td>日职联</td><td>东京绿茵 vs 柏太阳神</td><td class="score">1-3</td><td class="score">0-2</td><td class="stat-cell">射门8:11 射正4:6</td><td><span class="risk-tag risk-ok">正常</span></td><td>客队全面压制，实力差合理</td></tr>
+          <tr class="risk-row"><td class="no-cell">002</td><td>芬超</td><td>VPS瓦萨 vs TPS图尔库</td><td class="score">1-3</td><td class="score">0-2</td><td class="stat-cell">控球54.4% 角球7:4 红牌1:0</td><td><span class="risk-tag risk-high">🔴 高嫌疑</span></td><td>第4主场占优却惨败+红牌，松散踢法（R327）</td></tr>
+          <tr><td class="no-cell">003</td><td>德乙</td><td>荷尔斯泰因 vs 圣保利</td><td class="score">2-2</td><td class="score">0-2</td><td class="stat-cell">角球5:5</td><td><span class="risk-tag risk-mid">🟡 中嫌疑</span></td><td>半场0-2追平，方向✅（观察）</td></tr>
+          <tr><td class="no-cell">004</td><td>德乙</td><td>布伦瑞克 vs 波鸿</td><td class="score">0-1</td><td class="score">0-1</td><td class="stat-cell">角球5:6</td><td><span class="risk-tag risk-mid">🟡 中嫌疑</span></td><td>首轮6-1后断崖0-1（R331）</td></tr>
+          <tr><td class="no-cell">005</td><td>沙特联</td><td>新未来城体育 vs 费哈</td><td class="score">2-1</td><td class="score">2-0</td><td class="stat-cell">红牌1:0 射正5:5</td><td><span class="risk-tag risk-ok">正常</span></td><td>红牌仍赢，三指标全中</td></tr>
+          <tr><td class="no-cell">006</td><td>瑞典超</td><td>埃尔夫斯堡 vs 瓦斯特拉斯</td><td class="score">3-0</td><td class="score">1-0</td><td class="stat-cell">射门13:5 射正7:1</td><td><span class="risk-tag risk-ok">正常</span></td><td>碾压取胜</td></tr>
+          <tr><td class="no-cell">007</td><td>挪超</td><td>罗森博格 vs 维京</td><td class="score">2-1</td><td class="score">1-0</td><td class="stat-cell">射门12:6 射正7:1</td><td><span class="risk-tag risk-ok">正常</span></td><td>三指标全中</td></tr>
+          <tr><td class="no-cell">008</td><td>沙特联</td><td>达曼协作 vs 利雅得体育</td><td class="score">4-2</td><td class="score">1-1</td><td class="stat-cell">射正11:4 角球7:0 客红牌</td><td><span class="risk-tag risk-ok">正常</span></td><td>压制合理</td></tr>
+          <tr class="risk-row"><td class="no-cell">009</td><td>沙特联</td><td>利雅得新月 vs 费萨里</td><td class="score">4-2</td><td class="score">3-0</td><td class="stat-cell">射正5:5持平 控球58.6%</td><td><span class="risk-tag risk-high">🔴 高嫌疑</span></td><td>半场3-0后丢2球收窄（R328）</td></tr>
+          <tr><td class="no-cell">010</td><td>荷甲</td><td>特尔斯达 vs 鹿特丹斯巴达</td><td class="score">1-3</td><td class="score">0-1</td><td class="stat-cell">射门5:13 射正1:9</td><td><span class="risk-tag risk-ok">正常</span></td><td>非演戏——客队状态误判（R329教训）</td></tr>
+          <tr><td class="no-cell">011</td><td>荷乙</td><td>瓦尔韦克 vs 多德勒支</td><td class="score">2-2</td><td class="score">0-1</td><td class="stat-cell">射正5:5 控球53.1%</td><td><span class="risk-tag risk-mid">🟡 中嫌疑</span></td><td>降班马主场只打平（观察）</td></tr>
+          <tr class="risk-row"><td class="no-cell">012</td><td>荷乙</td><td>赫拉克勒斯 vs 邓伯什</td><td class="score">3-2</td><td class="score">1-0</td><td class="stat-cell">射门29:8 射正17:6 角球11:6</td><td><span class="risk-tag risk-high">🔴 高嫌疑</span></td><td>射门29:8碾压，3-0领先87'/88'连丢2球（R326）</td></tr>
+          <tr><td class="no-cell">013</td><td>法乙</td><td>昂纳西 vs 罗德兹</td><td class="score">2-0</td><td class="score">1-0</td><td class="stat-cell">射正6:3 角球8:7</td><td><span class="risk-tag risk-mid">🟡 中嫌疑</span></td><td>冷门风险场却主胜（R333）</td></tr>
+          <tr><td class="no-cell">014</td><td>法乙</td><td>兰斯 vs 敦刻尔克</td><td class="score">3-3</td><td class="score">1-1</td><td class="stat-cell">射门8:12 射正4:8 主红牌</td><td><span class="risk-tag risk-mid">🟡 中嫌疑</span></td><td>客队压制仍平，方向✅</td></tr>
+          <tr><td class="no-cell">015</td><td>法乙</td><td>圣埃蒂安 vs 克莱蒙</td><td class="score">3-1</td><td class="score">1-0</td><td class="stat-cell">射门14:2 射正5:0</td><td><span class="risk-tag risk-ok">正常</span></td><td>碾压取胜</td></tr>
+          <tr><td class="no-cell">016</td><td>英冠</td><td>狼队 vs 布莱克本</td><td class="score">2-2</td><td class="score">1-1</td><td class="stat-cell">射门11:6 射正2:4</td><td><span class="risk-tag risk-mid">🟡 中嫌疑</span></td><td>身价碾压却平（R332）</td></tr>
+          <tr class="risk-row"><td class="no-cell">017</td><td>葡超</td><td>葡萄牙体育 vs 吉马良斯</td><td class="score">3-2</td><td class="score">3-0</td><td class="stat-cell">半场3-0后丢2球</td><td><span class="risk-tag risk-mid">🟡 观察</span></td><td>半场领先收缩（R328，入观察名单）</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🎭 演戏信号模式总结（规则实证）</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>模式</th><th>案例</th><th>信号特征</th><th>对应规则</th></tr></thead>
+        <tbody>
+          <tr><td class="num">碾压收窄</td><td>012 赫拉克勒斯</td><td>射门≥2.5倍+射正≥2倍，85'后连丢≥2球 → 赢球放水</td><td class="num">R326</td></tr>
+          <tr><td class="num">占优惨败</td><td>002 VPS瓦萨</td><td>控球+角球占优、射正持平却输≥2球+红牌 → 演戏嫌疑</td><td class="num">R327</td></tr>
+          <tr><td class="num">半场领先收缩</td><td>009 新月 / 017 葡体</td><td>半场净胜≥2球但射正持平，下半场丢≥2球</td><td class="num">R328</td></tr>
+          <tr><td class="num">单场大胜陷阱</td><td>004 布伦瑞克</td><td>上一轮净胜≥3球，次轮主胜预测降级</td><td class="num">R331</td></tr>
+          <tr><td class="num">身价-状态背离</td><td>016 狼队</td><td>身价碾压但射正落后 → 以实际状态为准</td><td class="num">R332</td></tr>
+          <tr><td class="num">跨赛季纪录衰减</td><td>013 罗德兹</td><td>赛季初前5轮跨赛季纪录权重×0.5</td><td class="num">R333</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note">结论：R326-R328 演戏识别规则全部实战验证有效；R329-R334 为本批次复盘新增。比赛结束后复盘不改预测，偏差转规则下一轮生效（原则 P7）。</div>
+    </div>
+
+  </div>
+
+  <!-- ================= ② 联赛风险评级 ================= -->
+  <div class="panel" id="panel-league">
+
+    <div class="card">
+      <h2>🏆 联赛环境评级 <span class="hint">仅参考环境，不整联赛剔除</span></h2>
+      <div class="lead">策略：所有联赛统一「队伍级避雷」，不做联赛级剔除。下表反映联赛整体环境，实际执行看具体队伍。</div>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>环境</th><th>联赛</th><th>本轮表现</th><th>判定依据</th></tr></thead>
+        <tbody>
+          <tr class="risk-row"><td><span class="risk-tag risk-high">🔴 演戏多发</span></td><td>荷乙</td><td>012 放水实锤、011 表现背离</td><td>次级联赛+降班马混战+盘口活跃</td></tr>
+          <tr><td><span class="risk-tag risk-mid">🟠 需警惕</span></td><td>沙特联</td><td>009 半场领先收缩</td><td>资本联赛阵容剧变，存在赢球收手文化</td></tr>
+          <tr><td><span class="risk-tag risk-mid">🟡 正常+冷门</span></td><td>荷甲 / 德乙</td><td>010 预测误判；003/004 冷门率高</td><td>主流/次级之间，冷门频发</td></tr>
+          <tr><td><span class="risk-tag risk-ok">🟢 可信</span></td><td>芬超、日职联、瑞超、挪超、巴甲、韩职、美职联、葡超</td><td>001/006/007 数据与赛果匹配</td><td>历史数据稳定，监管较规范</td></tr>
+          <tr><td><span class="risk-tag risk-ok">🟢 五大联赛</span></td><td>英超、西甲、德甲、意甲、法甲</td><td>新赛季开启</td><td>资金量大、监管严、数据全 → 重点预测对象</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🚨 队伍级避雷名单 V0.2</h2>
+      <div class="lead">避雷队伍参与的比赛 → 预测置信度降一级 + 强制「避雷预警」标记；名单动态维护，每次复盘后更新。</div>
+
+      <h3>🔴 高信号（4 队）</h3>
+      <div class="avoid-grid">
+        <div class="avoid-item"><div class="t"><span class="risk-tag risk-high">高</span> VPS瓦萨</div><div class="l">芬超</div><div class="r">002：第4主场控球54.4%占优却1-3惨败+红牌</div></div>
+        <div class="avoid-item"><div class="t"><span class="risk-tag risk-high">高</span> TPS图尔库</div><div class="l">芬超</div><div class="r">002：历史克VPS，客场3-1大胜排名高4位对手</div></div>
+        <div class="avoid-item"><div class="t"><span class="risk-tag risk-high">高</span> 赫拉克勒斯</div><div class="l">荷乙</div><div class="r">012：射门29:8碾压，3-0领先87'/88'连丢2球</div></div>
+        <div class="avoid-item"><div class="t"><span class="risk-tag risk-high">高</span> 利雅得新月</div><div class="l">沙特联</div><div class="r">009：半场3-0后射正持平、丢2球收窄</div></div>
+      </div>
+
+      <h3>🟡 观察（7 队）</h3>
+      <div class="avoid-grid">
+        <div class="avoid-item"><div class="t"><span class="risk-tag risk-mid">观察</span> 瓦尔韦克</div><div class="l">荷乙</div><div class="r">011：降班马主场射正持平只打平</div></div>
+        <div class="avoid-item"><div class="t"><span class="risk-tag risk-mid">观察</span> 荷尔斯泰因</div><div class="l">德乙</div><div class="r">003：半场0-2后追平，主场韧性存疑</div></div>
+        <div class="avoid-item"><div class="t"><span class="risk-tag risk-mid">观察</span> 圣保利</div><div class="l">德乙</div><div class="r">003：心理碾压却只拿平局</div></div>
+        <div class="avoid-item"><div class="t"><span class="risk-tag risk-mid">观察</span> 布伦瑞克</div><div class="l">德乙</div><div class="r">004：首轮6-1后主场0-1（R331）</div></div>
+        <div class="avoid-item"><div class="t"><span class="risk-tag risk-mid">观察</span> 狼队</div><div class="l">英冠</div><div class="r">016：身价碾压却射正2:4落后（R332）</div></div>
+        <div class="avoid-item"><div class="t"><span class="risk-tag risk-mid">观察</span> 昂纳西</div><div class="l">法乙</div><div class="r">013：冷门风险场却主胜完场（R333）</div></div>
+        <div class="avoid-item"><div class="t"><span class="risk-tag risk-mid">观察</span> 葡萄牙体育</div><div class="l">葡超</div><div class="r">017：半场3-0后丢2球被追到3-2（R328）</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= ③ 赛果台账 ================= -->
+  <div class="panel" id="panel-ledger">
+
+    <div class="card">
+      <h2>📊 累计命中率（73 场口径）</h2>
+      <div class="kpi-row">
+        <div class="kpi"><div class="num">52/73</div><div class="lbl">方向 71.2%</div></div>
+        <div class="kpi"><div class="num">34/73</div><div class="lbl">比分 TOP3 46.6%</div></div>
+        <div class="kpi"><div class="num">49/73</div><div class="lbl">半全场 TOP3 67.1%</div></div>
+      </div>
+      <div class="note">口径固定 73 场，场次一旦纳入不再取出（核验错误更正除外）。8/14 批次 001-017 全部完赛并双源核验。</div>
+    </div>
+
+    <div class="card">
+      <h2>📅 8/14 批次台账（001-017）</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>场次</th><th>联赛</th><th>对阵</th><th>全场比分</th><th>半场比分</th><th>方向</th><th>比分</th><th>半全场</th><th>备注</th></tr></thead>
+        <tbody>
+          <tr><td class="no-cell">001</td><td>日职联</td><td>东京绿茵 vs 柏太阳神</td><td class="score">1-3</td><td class="score">0-2</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-ok">✅</td><td>负负在TOP3</td></tr>
+          <tr><td class="no-cell">002</td><td>芬超</td><td>VPS瓦萨 vs TPS图尔库</td><td class="score">1-3</td><td class="score">0-2</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-high">❌</td><td>演戏嫌疑</td></tr>
+          <tr><td class="no-cell">003</td><td>德乙</td><td>荷尔斯泰因 vs 圣保利</td><td class="score">2-2</td><td class="score">0-2</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-high">❌</td><td>方向修正✅</td></tr>
+          <tr><td class="no-cell">004</td><td>德乙</td><td>布伦瑞克 vs 波鸿</td><td class="score">0-1</td><td class="score">0-1</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-high">❌</td><td>全盘错误</td></tr>
+          <tr><td class="no-cell">005</td><td>沙特联</td><td>新未来城体育 vs 费哈</td><td class="score">2-1</td><td class="score">2-0</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-ok">✅</td><td>三指标全中</td></tr>
+          <tr><td class="no-cell">006</td><td>瑞典超</td><td>埃尔夫斯堡 vs 瓦斯特拉斯</td><td class="score">3-0</td><td class="score">1-0</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-ok">✅</td><td>方向+半全场</td></tr>
+          <tr><td class="no-cell">007</td><td>挪超</td><td>罗森博格 vs 维京</td><td class="score">2-1</td><td class="score">1-0</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-ok">✅</td><td>三指标全中</td></tr>
+          <tr><td class="no-cell">008</td><td>沙特联</td><td>达曼协作 vs 利雅得体育</td><td class="score">4-2</td><td class="score">1-1</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-ok">✅</td><td>平胜在TOP3</td></tr>
+          <tr><td class="no-cell">009</td><td>沙特联</td><td>利雅得新月 vs 费萨里</td><td class="score">4-2</td><td class="score">3-0</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-ok">✅</td><td>领先收缩</td></tr>
+          <tr><td class="no-cell">010</td><td>荷甲</td><td>特尔斯达 vs 鹿特丹斯巴达</td><td class="score">1-3</td><td class="score">0-1</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-high">❌</td><td>全错</td></tr>
+          <tr><td class="no-cell">011</td><td>荷乙</td><td>瓦尔韦克 vs 多德勒支</td><td class="score">2-2</td><td class="score">0-1</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-high">❌</td><td>方向✅</td></tr>
+          <tr><td class="no-cell">012</td><td>荷乙</td><td>赫拉克勒斯 vs 邓伯什</td><td class="score">3-2</td><td class="score">1-0</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-ok">✅</td><td>放水实锤</td></tr>
+          <tr><td class="no-cell">013</td><td>法乙</td><td>昂纳西 vs 罗德兹</td><td class="score">2-0</td><td class="score">1-0</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-high">❌</td><td>全错</td></tr>
+          <tr><td class="no-cell">014</td><td>法乙</td><td>兰斯 vs 敦刻尔克</td><td class="score">3-3</td><td class="score">1-1</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-ok">✅</td><td>方向✅半全场✅</td></tr>
+          <tr><td class="no-cell">015</td><td>法乙</td><td>圣埃蒂安 vs 克莱蒙</td><td class="score">3-1</td><td class="score">1-0</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-ok">✅</td><td>方向+半全场</td></tr>
+          <tr><td class="no-cell">016</td><td>英冠</td><td>狼队 vs 布莱克本</td><td class="score">2-2</td><td class="score">1-1</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-ok">✅</td><td>半全场✅</td></tr>
+          <tr><td class="no-cell">017</td><td>葡超</td><td>葡萄牙体育 vs 吉马良斯</td><td class="score">3-2</td><td class="score">3-0</td><td class="risk-tag risk-ok">✅</td><td class="risk-tag risk-high">❌</td><td class="risk-tag risk-ok">✅</td><td>方向+半全场</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note">铁律：赛果写入前必须双源联网核验（比分+半场+进球时间线），严禁将赛前/进行中数据当最终赛果。</div>
+    </div>
+
+  </div>
+
+  <!-- ================= ④ 模型规则 ================= -->
+  <div class="panel" id="panel-rules">
+
+    <div class="card">
+      <h2>📜 七条核心原则（不可动摇）</h2>
+      <div class="table-wrap">
+      <table class="rule-table">
+        <thead><tr><th>原则</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td>P1</td><td>方向决定全场——胜/平/负严格对应主客进球大小关系</td></tr>
+          <tr><td>P2</td><td>比分必须匹配方向——TOP3 全部指向同一全场结果</td></tr>
+          <tr><td>P3</td><td>半全场第二字必须匹配方向</td></tr>
+          <tr><td>P4</td><td>交叉校验强制执行——方向→比分TOP1→半全场TOP1 三者一致</td></tr>
+          <tr><td>P5</td><td>完全不参考盘口——禁提任何亚盘/水位/升盘降盘（黑名单自动检查）</td></tr>
+          <tr><td>P6</td><td>规则必须基于 ≥50 场历史数据，禁止单场补丁式规则</td></tr>
+          <tr><td>P7</td><td>赛后复盘禁止修改预测，偏差→转规则→下一轮生效</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🎯 演戏识别规则（R314 / R321-R334）</h2>
+      <div class="table-wrap">
+      <table class="rule-table">
+        <thead><tr><th>编号</th><th>名称</th><th>识别逻辑</th></tr></thead>
+        <tbody>
+          <tr><td>R314</td><td>控盘放水丢球识别</td><td>2-0领先+≤5分钟连丢2球+对手保级 → 平局+20%</td></tr>
+          <tr><td>R321</td><td>野鸡赛不可预测系数</td><td>小联赛主场强队排名高≥4位却输球 → 标记演戏嫌疑</td></tr>
+          <tr><td>R322</td><td>闪击后收工识别</td><td>开场≤5分钟进球 → 半场前无第2球 → 下半场预期-0.5球</td></tr>
+          <tr><td>R323</td><td>安慰球识别</td><td>落后≥3球后75'后的进球权重降低50%</td></tr>
+          <tr><td>R324</td><td>射门转化率倒挂预警</td><td>一方&gt;30%且对手&lt;15% → 标记效率异常</td></tr>
+          <tr><td>R325</td><td>Dixon-Coles 低分校正</td><td>0-0/1-0/0-1/1-1 独立概率校正（ScoreCast 来源）</td></tr>
+          <tr><td>R326</td><td>碾压收窄识别</td><td>射门≥2.5倍+射正≥2倍+85'后连丢≥2球 → 赢球放水（012实证）</td></tr>
+          <tr><td>R327</td><td>占优惨败识别</td><td>控球≥55%+角球领先+射正持平却输≥2球 → 演戏嫌疑（002实证）</td></tr>
+          <tr><td>R328</td><td>半场领先收缩预警</td><td>半场净胜≥2球但射正持平+下半场丢≥2球 → 控制力骤降（009/017实证）</td></tr>
+          <tr><td>R329</td><td>客队状态强制核验</td><td>预测主队占优前必须联网核验客队近3场状态（010教训）</td></tr>
+          <tr><td>R330</td><td>观察名单半避雷</td><td>观察名单队伍比赛置信度降半级（004/013/016验证）</td></tr>
+          <tr><td>R331</td><td>单场大胜陷阱</td><td>上一轮净胜≥3球，次轮主胜降一级（004实证）</td></tr>
+          <tr><td>R332</td><td>身价-状态背离</td><td>状态与身价不符时以状态为准（016实证）</td></tr>
+          <tr><td>R333</td><td>跨赛季纪录衰减</td><td>赛季初5轮跨赛季纪录权重×0.5（013实证）</td></tr>
+          <tr><td>R334</td><td>赛季初进球上调</td><td>赛季初4周大小球+0.3，比分TOP3增3-2/2-2/4-2覆盖</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📈 版本演进</h2>
+      <div class="table-wrap">
+      <table class="rule-table">
+        <thead><tr><th>版本</th><th>核心变更</th></tr></thead>
+        <tbody>
+          <tr><td>V10.28</td><td>动态自适应引擎（文本描述）</td></tr>
+          <tr><td>V10.29-Fix</td><td>规则审计 108→90、盘口黑名单、废弃预期命中率</td></tr>
+          <tr><td>V10.29-Fix-R2</td><td>演戏识别 R321-R324（001/002 复盘实证）</td></tr>
+          <tr><td>V10.29-Fix-R3</td><td>Dixon-Coles 低分校正 R325（ScoreCast 来源）</td></tr>
+          <tr><td>V10.29-Fix-R4</td><td>R326-R328 + 联赛环境标签 + 队伍级避雷名单</td></tr>
+          <tr><td>V10.29-Fix-R5</td><td>R329-R334（001-017 详细复盘：客队核验/大胜陷阱/纪录衰减/进球上调）</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note">预期承诺：只报真实命中率（方向 71.2%），废弃虚高"预期命中率"表述。</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- 主题切换（浅色 ⇄ 赛博HUD深色） ---------- */
+  var toggle = document.getElementById('themeToggle');
+  function setTheme(dark) {
+    document.body.classList.toggle('dark', dark);
+    toggle.textContent = dark ? '☀' : '🌙';
+    try { localStorage.setItem('dsh-theme', dark ? 'dark' : 'light'); } catch (e) {}
+  }
+  // 默认浅色；记住上次选择
+  var saved = null;
+  try { saved = localStorage.getItem('dsh-theme'); } catch (e) {}
+  setTheme(saved === 'dark');
+  toggle.addEventListener('click', function () {
+    setTheme(!document.body.classList.contains('dark'));
+  });
+
+  /* ---------- Tab 切换 ---------- */
+  var tabs = document.getElementById('tabs');
+  tabs.addEventListener('click', function (e) {
+    var btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    var name = btn.getAttribute('data-panel');
+    var btns = tabs.querySelectorAll('.tab-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+    btn.classList.add('active');
+    var panels = document.querySelectorAll('.panel');
+    for (var j = 0; j < panels.length; j++) panels[j].classList.remove('active');
+    document.getElementById('panel-' + name).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+
+</body>
+</html>

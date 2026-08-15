@@ -1,0 +1,41 @@
+league,team,adjustment,trigger,version,evidence
+韩职,全北现代,客场系数-0.10,全北现代客场,V9.6.1,711场基线
+韩职,蔚山HD,"追平+15%, 平局权重×1.3",蔚山HD半场落后,V9.6.1,711场基线
+韩职,浦项制铁,被逆转+15%,浦项制铁半场领先,V9.6.1,711场基线
+韩职,首尔FC,客场对后6名→进球+0.5球,首尔FC客场+对手排名后6,V9.6.1,711场基线
+韩职,光州FC,"客场进球+10%, 零封-10%",光州FC客场,V9.6.1,711场基线
+瑞超,米亚尔比,主场系数-0.05,米亚尔比主场,V9.6.1,711场基线
+瑞超,韦斯特罗斯,客场防守+0.3,韦斯特罗斯客场,V9.6.1,711场基线
+瑞超,索尔纳,状态因子+0.3,索尔纳近期状态≥3连胜,V9.6.1,711场基线
+瑞超,赫根,状态因子+0.3,赫根近期状态≥3连胜,V9.6.1,711场基线
+瑞超,哥德堡,状态因子+0.3,哥德堡近期状态≥3连胜,V9.6.1,711场基线
+瑞超,天狼星,客场下半场进球+15%,天狼星客场,V9.6.1,711场基线
+瑞超,哈马比,对后6名→进球+0.5球,哈马比主场+对手排名后6,V9.6.1,711场基线
+芬超,玛丽港,"对手进球+20%, 防守系数-1.0",玛丽港主客场,V9.6.1,711场基线
+芬超,格尼斯坦,"对手进球+20%, 防守系数-1.0",格尼斯坦主客场,V9.6.1,711场基线
+芬超,雅罗,"对手进球+20%, 防守系数-1.0",雅罗主客场,V9.6.1,711场基线
+芬超,伊尔维斯,"对手进球+20%, 防守系数-1.0",伊尔维斯主客场,V9.6.1,711场基线
+芬超,埃尔维斯,客场进球+0.3球,埃尔维斯客场,V9.6.1,711场基线
+挪超,博德闪耀,半场领先→被逆转+15%,博德闪耀半场领先,V9.6.1,711场基线
+挪超,维京,半场领先→被逆转+15%,维京半场领先,V9.6.1,711场基线
+挪超,莫尔德,半场领先→被逆转+15%,莫尔德半场领先,V9.6.1,711场基线
+挪超,桑德菲杰,客场进球+10%,桑德菲杰客场,V9.6.1,711场基线
+巴甲,科林蒂安,主场穿盘不受核心缺阵影响,科林蒂安主场+核心缺阵,V9.6.1,711场基线
+巴甲,博塔弗戈,残阵锋线无力→平局+15%,博塔弗戈≥3名锋线伤缺,V9.6.1,711场基线
+巴甲,维多利亚,残阵客场死守→客队进球-0.3,维多利亚客场+≥3名主力伤缺,V9.6.1,711场基线
+美职联,迈阿密国际,梅西/德保罗缺阵→主胜-10%,梅西/德保罗同时缺阵或轮休,V9.6.1,实战
+美职联,洛杉矶FC,布安加+孙兴慜→客场进球+0.3,两人同时首发,V9.6.1,实战
+美职联,温哥华白浪,≥4人伤停→主场系数-0.05,主场+≥4人伤停,V9.6.1,实战
+美职联,西雅图海湾人,莫里斯+拉根缺阵→被穿盘+20%,锋线支柱+防线核心同时缺阵,V9.6.1,实战
+DATA_MISSING_29,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING
+DATA_MISSING_30,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING
+DATA_MISSING_31,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING
+DATA_MISSING_32,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING
+DATA_MISSING_33,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING
+DATA_MISSING_34,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING
+DATA_MISSING_35,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING
+DATA_MISSING_36,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING
+DATA_MISSING_37,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING
+DATA_MISSING_38,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING
+DATA_MISSING_39,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING
+DATA_MISSING_40,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING,DATA_MISSING

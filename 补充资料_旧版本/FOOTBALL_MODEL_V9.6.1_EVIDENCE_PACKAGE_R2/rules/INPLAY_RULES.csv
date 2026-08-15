@@ -1,0 +1,8 @@
+rule_id,version,phase,required_inputs,scope,exact_condition,coefficient,priority,conflicts_with,missing_data_action,abstain_condition
+R003,V9.6.1,inplay,半场比分,所有比赛,半场落后追平概率+联赛逆转因子,1.0,98,无,DATA_MISSING,无
+R004,V9.6.1,inplay,半场比分,半场0-0,平平概率+10%,1.1,98,无,DATA_MISSING,无
+R122,V9.6.1,inplay,比赛事件,所有比赛,点球罚失方进球预期-0.3,0.9,95,无,DATA_MISSING,无
+R123,V9.6.1,inplay,进球来源,仅韩职,角球助攻头球≥2球,1.2,95,无,DATA_MISSING,无
+R124,V9.6.1,inplay,控球/射门,全部,控球≤45%且射正率≥50%,1.1,95,无,DATA_MISSING,无
+R125,V9.6.1,inplay,射门,全部,对手全场射正=0,1.1,95,无,DATA_MISSING,无
+R131,V9.6.1,inplay,半场,挪超,半场2-0领先,1.1,95,无,DATA_MISSING,无

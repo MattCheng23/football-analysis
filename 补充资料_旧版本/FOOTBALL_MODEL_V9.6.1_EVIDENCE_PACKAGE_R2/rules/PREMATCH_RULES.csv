@@ -1,0 +1,5 @@
+rule_id,version,phase,required_inputs,scope,exact_condition,coefficient,priority,conflicts_with,missing_data_action,abstain_condition
+R007,V9.6.1,prematch,排名差/进球和/失球和,所有比赛,平局概率动态调整,1.0,95,无,DATA_MISSING,无
+R012,V9.6.1,prematch,对阵信息,所有比赛,核对一致性/不一致弃权,1.0,99,无,data_missing,整场弃权
+R013,V9.6.1,prematch,方向,仅韩职,韩职方向=平，1-1/0-0/2-2权重,1.0,95,无,DATA_MISSING,无
+R016,V9.6.1,prematch,联赛,仅巴甲,巴甲平局基线 27%,1.0,95,无,DATA_MISSING,无

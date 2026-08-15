@@ -1,0 +1,52 @@
+formula_spec_version: "V9.6.1"
+lambda_home_raw: "(home_avg_goals / league_avg_goals) * league_avg_goals * home_coefficient"
+lambda_away_raw: "(away_avg_goals / league_avg_goals) * league_avg_goals * away_coefficient"
+weights:
+  recent3: 1.5
+  mid4_6: 1.0
+  old7_10: 0.7
+weight_normalization: 10.3
+opponent_adjustment:
+  home: "lambda_home_raw * (1 - away_defense_deviation)"
+  away: "lambda_away_raw * (1 - home_defense_deviation)"
+  defense_deviation: "(avg_conceded - league_avg_conceded) / league_avg_conceded"
+injury_core_striker:
+  goals_delta: -0.4
+  draw_delta: 0.12
+  home_delta: -0.10
+injury_core_playmaker:
+  goals_delta: -0.3
+  draw_delta: 0.08
+  home_delta: -0.08
+injury_core_defender:
+  goals_delta: 0.0
+  draw_delta: 0.10
+  home_delta: -0.05
+injury_double_core:
+  goals_delta: -0.6
+  draw_delta: 0.20
+  home_delta: -0.15
+draw_baseline_overrides:
+  韩职: 0.31
+  瑞超: 0.28
+  芬超: 0.31
+  挪超: 0.20
+  巴甲: 0.27
+  美职联: 0.24
+  欧冠: 0.35
+  欧罗巴: 0.22
+final_probability:
+  normalize: true
+  note: "修正后概率归一化到 1"
+score_matrix:
+  type: poisson
+  range: [0, 5]
+  draw_adjustment_for_kor:
+    1-1: 0.50
+    0-0: 0.25
+    2-2: 0.25
+half_time_coefficient: 0.45
+missing_data:
+  injuries_missing: "停用伤停组件"
+  odds_missing: "停用赔率组件"
+  fixture_mismatch: "弃权"

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>足球分析模型 · 报告中心（2026-08-15）</title>
+<style>
+  :root {
+    --bg: #f4f6fa; --card: #ffffff; --border: #e2e8f0;
+    --ink: #1e293b; --sub: #64748b;
+    --red: #dc2626; --red-bg: #fee2e2;
+    --orange: #ea580c; --orange-bg: #ffedd5;
+    --yellow: #ca8a04; --yellow-bg: #fef9c3;
+    --green: #16a34a; --green-bg: #dcfce7;
+    --blue: #2563eb; --blue-bg: #dbeafe;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+    background: var(--bg); color: var(--ink); padding: 24px; line-height: 1.65;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  header {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    color: #fff; border-radius: 14px; padding: 26px 32px; margin-bottom: 20px;
+    box-shadow: 0 4px 14px rgba(30,58,138,.25);
+  }
+  header h1 { font-size: 26px; margin-bottom: 6px; }
+  header p { opacity: .9; font-size: 14px; }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tab {
+    padding: 9px 20px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--card); cursor: pointer; font-size: 14px; font-weight: 600; color: var(--sub);
+    transition: all .15s;
+  }
+  .tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .tab:hover:not(.active) { border-color: var(--blue); color: var(--blue); }
+  .panel { display: none; }
+  .panel.active { display: block; animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px 26px; margin-bottom: 16px;
+  }
+  h2 { font-size: 20px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+  h3 { font-size: 16px; margin: 18px 0 10px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; }
+  th {
+    background: #f1f5f9; color: var(--ink); text-align: left; padding: 9px 12px;
+    border-bottom: 2px solid var(--border); white-space: nowrap;
+  }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:hover td { background: #f8fafc; }
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .tag-red { background: var(--red-bg); color: var(--red); }
+  .tag-orange { background: var(--orange-bg); color: var(--orange); }
+  .tag-yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .tag-green { background: var(--green-bg); color: var(--green); }
+  .tag-blue { background: var(--blue-bg); color: var(--blue); }
+  .pill { display: inline-block; background: #f1f5f9; border-radius: 6px; padding: 1px 8px; font-size: 12px; font-weight: 600; color: var(--sub); }
+  .note {
+    background: var(--blue-bg); border-left: 4px solid var(--blue); border-radius: 0 8px 8px 0;
+    padding: 12px 16px; margin: 12px 0; font-size: 13.5px; color: #1e3a8a;
+  }
+  .warn {
+    background: var(--red-bg); border-left: 4px solid var(--red); border-radius: 0 8px 8px 0;
+    padding: 12px 16px; margin: 12px 0; font-size: 13.5px; color: #7f1d1d;
+  }
+  ul, ol { margin: 8px 0 8px 24px; }
+  li { margin: 4px 0; }
+  .kpi-row { display: flex; gap: 14px; flex-wrap: wrap; margin: 14px 0; }
+  .kpi {
+    flex: 1; min-width: 140px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px; text-align: center;
+  }
+  .kpi .num { font-size: 26px; font-weight: 800; color: var(--blue); }
+  .kpi .lbl { font-size: 12.5px; color: var(--sub); margin-top: 4px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } body { padding: 12px; } }
+  .footer { text-align: center; color: var(--sub); font-size: 12px; margin: 24px 0 8px; }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .tab { display: none; }
+    .panel { display: block !important; }
+    .card { break-inside: avoid; box-shadow: none; }
+    header { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>⚽ 足球分析模型 · 报告中心</h1>
+  <p>V10.29-Fix-R4 ｜ 2026-08-15 ｜ 001-012 联网复盘 + 假赛排查 + 联赛风险评级</p>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('review')">📋 复盘报告</div>
+  <div class="tab" onclick="showTab('league')">🏆 联赛风险评级</div>
+  <div class="tab" onclick="showTab('ledger')">📊 赛果台账</div>
+  <div class="tab" onclick="showTab('rules')">📜 模型规则</div>
+</div>
+
+<!-- ================= 复盘报告 ================= -->
+<div id="review" class="panel active">
+
+  <div class="card">
+    <h2>🔍 001-012 联网复盘 · 假赛嫌疑排查</h2>
+    <div class="note">
+      对 8/14 周五批次已完赛 12 场联网复核真实数据（技术统计 + 进球时间线），识别"演戏/假赛"信号。<br>
+      数据源：ip138 技术统计页 + 球迷屋/博东系战报 + ESPN 双源核验。核心规则：R314 / R321-R324。
+    </div>
+
+    <h3>🔴 高嫌疑（演戏信号明确）</h3>
+    <table>
+      <tr><th>场次</th><th>对阵</th><th>赛果</th><th>真实数据</th><th>演戏信号</th></tr>
+      <tr>
+        <td><b>012</b></td><td>赫拉克勒斯 vs 邓伯什<br><span class="pill">荷乙</span></td>
+        <td><b>3-2</b><br><span class="pill">半场 1-0</span></td>
+        <td><b>射门 29:8、射正 17:6、进攻 113:52、角球 11:6</b> 全面碾压</td>
+        <td><b>3-0 领先（74'）后 87'、88' 连丢 2 球</b>收窄比分。射门 29 次只进 3 球——典型"赢球收工放水"</td>
+      </tr>
+      <tr>
+        <td><b>002</b></td><td>VPS瓦萨 vs TPS图尔库<br><span class="pill">芬超</span></td>
+        <td><b>1-3</b><br><span class="pill">半场 0-2</span></td>
+        <td>射门 8:9、射正 4:4、<b>控球 54.4%、角球 7:4</b> 不落下风，红牌 1:0（主队）</td>
+        <td>排名第 4 vs 第 8，主场控球角球占优却 1-3 惨败。<b>红牌 + 松散踢法</b>——"纸面实力不可能输成这样"</td>
+      </tr>
+      <tr>
+        <td><b>009</b></td><td>利雅得新月 vs 费萨里<br><span class="pill">沙特联</span></td>
+        <td><b>4-2</b><br><span class="pill">半场 3-0</span></td>
+        <td>射门 14:7、<b>射正 5:5 持平</b>、控球 58.6%</td>
+        <td><b>半场 3-0 后下半场丢 2 球</b>（仅 1 球回应）。血脉压制（35 次交手 27 胜 8 平 0 负）却让升班马追到 3-2</td>
+      </tr>
+    </table>
+
+    <h3>🟡 中嫌疑（有可疑点，需观察）</h3>
+    <table>
+      <tr><th>场次</th><th>对阵</th><th>赛果</th><th>真实数据</th><th>可疑点</th></tr>
+      <tr>
+        <td><b>011</b></td><td>瓦尔韦克 vs 多德勒支<br><span class="pill">荷乙</span></td>
+        <td><b>2-2</b><br><span class="pill">半场 0-1</span></td>
+        <td>射门 14:12、射正 5:5 持平、控球 53.1%、角球 4:5</td>
+        <td>降班马主场对荷乙队，射正持平只打平，客队先进球</td>
+      </tr>
+      <tr>
+        <td><b>003</b></td><td>荷尔斯泰因 vs 圣保利<br><span class="pill">德乙</span></td>
+        <td><b>2-2</b><br><span class="pill">半场 0-2</span></td>
+        <td>角球 5:5 均势</td>
+        <td><b>半场 0-2 落后追平 2-2</b>，圣保利心理碾压（近 6 次 5 胜 1 平）却只拿平局</td>
+      </tr>
+      <tr>
+        <td><b>004</b></td><td>布伦瑞克 vs 波鸿<br><span class="pill">德乙</span></td>
+        <td><b>0-1</b><br><span class="pill">半场 0-1</span></td>
+        <td>角球 5:6</td>
+        <td>首轮 6-1 大胜后主场 0-1，降班马波鸿客场全身而退</td>
+      </tr>
+    </table>
+
+    <h3>🟢 低嫌疑（数据与赛果匹配，正常）</h3>
+    <table>
+      <tr><th>场次</th><th>对阵</th><th>赛果</th><th>依据</th></tr>
+      <tr><td>001</td><td>东京绿茵 1-3 柏太阳神 <span class="pill">日职联</span></td><td>1-3</td><td>客队射门 11:8、射正 6:4、控球 56.2% 全面压制——实力差合理（点球实为 VAR 取消，无点球）</td></tr>
+      <tr><td>005</td><td>新未来城 2-1 费哈 <span class="pill">沙特联</span></td><td>2-1</td><td>主队红牌仍 2-1 赢，射正持平但有韧性，主胜合理</td></tr>
+      <tr><td>006</td><td>埃尔夫斯堡 3-0 瓦斯特拉斯 <span class="pill">瑞典超</span></td><td>3-0</td><td>射门 13:5、射正 7:1 碾压，正常</td></tr>
+      <tr><td>007</td><td>罗森博格 2-1 维京 <span class="pill">挪超</span></td><td>2-1</td><td>射正 7:1 碾压取胜，正常</td></tr>
+      <tr><td>008</td><td>达曼协作 4-2 利雅得体育 <span class="pill">沙特联</span></td><td>4-2</td><td>射正 11:4、角球 7:0 压制，客队红牌，合理</td></tr>
+      <tr><td>010</td><td>特尔斯达 1-3 鹿特丹斯巴达 <span class="pill">荷甲</span></td><td>1-3</td><td><b>射正 1:9 被碾压</b>——非假赛，是模型误判客队状态（预测失误）</td></tr>
+    </table>
+
+    <h3>🎭 演戏信号模式总结（新增规则依据）</h3>
+    <table>
+      <tr><th>模式</th><th>本轮案例</th><th>信号特征</th></tr>
+      <tr><td><b>碾压收窄</b></td><td>012 赫拉克勒斯</td><td>射门≥2.5 倍 + 射正≥2 倍领先，3 球以上领先却在 85' 后连丢 2 球 → <b>赢球放水</b></td></tr>
+      <tr><td><b>占优惨败</b></td><td>002 VPS瓦萨</td><td>控球 + 角球占优、射正持平却 1-3 大败 + 红牌 → <b>演戏嫌疑（R321 强化）</b></td></tr>
+      <tr><td><b>半场领先收缩</b></td><td>009 利雅得新月</td><td>半场 3-0 后射正持平、下半场丢 2 球收窄 → <b>控制力骤降（R322 变体）</b></td></tr>
+      <tr><td><b>预测误判型</b></td><td>010 特尔斯达</td><td>射正 1:9 被碾压（非假赛）→ 预测前必须核验客队近期真实状态</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- ================= 联赛风险评级 ================= -->
+<div id="league" class="panel">
+
+  <div class="card">
+    <h2>🏆 联赛假赛风险评级（核心产出）</h2>
+    <div class="note">依据：本轮 12 场真实数据 + 历史"野鸡赛"经验（R321 诞生背景）+ 联赛监管环境。目标：迎接五大联赛，降低野鸡比赛风险。</div>
+
+    <table>
+      <tr><th>风险等级</th><th>联赛</th><th>本轮表现</th><th>判定理由</th></tr>
+      <tr>
+        <td><span class="tag tag-red">🔴 高风险</span></td>
+        <td><b>荷乙</b></td>
+        <td>012 明显演戏（射门 29:8 却 3-2 补时丢 2 球）、011 主队占优未赢</td>
+        <td>次级联赛 + 多队降班马混战 + 盘口活跃，演戏空间大</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-orange">🟠 中高风险</span></td>
+        <td><b>沙特联</b></td>
+        <td>009 半场 3-0 后放水（射正持平）</td>
+        <td>资本联赛新赛季阵容剧变，存在"赢球收手"文化</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-yellow">🟡 中风险</span></td>
+        <td><b>荷甲</b></td>
+        <td>010 射正 1:9 被碾压（预测失误）</td>
+        <td>主流联赛但中小球队保级战易出冷门</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-yellow">🟡 中风险</span></td>
+        <td><b>德乙</b></td>
+        <td>003 半场 0-2 追平、004 首轮 6-1 后 0-1</td>
+        <td>次级别，降班马/升班马混战，冷门率高</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-green">🟢 低风险（可信）</span></td>
+        <td><b>芬超</b>、日职联、瑞典超、挪超、巴甲、韩职、美职联、葡超、欧冠、欧罗巴</td>
+        <td>芬超 102 场历史仅 4 场中等爆冷，整体稳定</td>
+        <td><b>芬超不整联赛剔除</b>——002 异常聚焦在特定队伍，改为队伍级避雷</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-green">🟢 五大联赛（重点）</span></td>
+        <td><b>英超、西甲、德甲、意甲、法甲</b></td>
+        <td>新赛季开启</td>
+        <td>资金量大、监管严、数据全，正常预测</td>
+      </tr>
+    </table>
+
+    <h3>🚨 队伍级避雷名单（V0.2 · 全联赛统一 · 不做联赛级剔除）</h3>
+    <table>
+      <tr><th>队伍</th><th>联赛</th><th>级别</th><th>避雷原因（实证）</th></tr>
+      <tr><td><b>VPS瓦萨</b></td><td>芬超</td><td><span class="tag tag-red">🔴 高</span></td><td>002：第4主场，控球54.4%/角球7:4占优却1-3惨败TPS(第8)+红牌</td></tr>
+      <tr><td><b>TPS土尔库</b></td><td>芬超</td><td><span class="tag tag-red">🔴 高</span></td><td>002：历史克VPS（5/30主场1-0），客场3-1大胜排名高4位对手</td></tr>
+      <tr><td><b>赫拉克勒斯</b></td><td>荷乙</td><td><span class="tag tag-red">🔴 高</span></td><td>012：射门29:8/射正17:6碾压，3-0领先87'/88'连丢2球——放水实锤</td></tr>
+      <tr><td><b>利雅得新月</b></td><td>沙特联</td><td><span class="tag tag-red">🔴 高</span></td><td>009：半场3-0后射正持平、丢2球收窄——"赢球收手"</td></tr>
+      <tr><td>瓦尔韦克</td><td>荷乙</td><td><span class="tag tag-yellow">🟡 观察</span></td><td>011：降班马主场射正持平只打平，客队先进球</td></tr>
+      <tr><td>荷尔斯泰因</td><td>德乙</td><td><span class="tag tag-yellow">🟡 观察</span></td><td>003：半场0-2后追平，主场韧性存疑</td></tr>
+      <tr><td>圣保利</td><td>德乙</td><td><span class="tag tag-yellow">🟡 观察</span></td><td>003：心理碾压（近6次5胜1平）却只拿平局</td></tr>
+      <tr><td>布伦瑞克</td><td>德乙</td><td><span class="tag tag-yellow">🟡 观察</span></td><td>004：首轮6-1后主场0-1，状态断崖</td></tr>
+    </table>
+    <div class="note">机制：避雷队伍参与的比赛预测置信度降一级 + 强制"避雷预警"标记；名单动态维护，每次复盘后更新。联赛环境标签仅参考（荷乙演戏多发、沙特联需警惕），<b>不整联赛剔除</b>。</div>
+
+    <div class="warn">
+      <b>执行策略（V10.29-Fix-R4）</b>：<b>所有联赛统一队伍级避雷，不做联赛级剔除</b>。避雷队伍（VPS瓦萨/TPS土尔库/赫拉克勒斯/利雅得新月）比赛 → 置信度降一级 + "避雷预警"标记；联赛环境标签仅参考；五大联赛为重点预测对象。
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= 赛果台账 ================= -->
+<div id="ledger" class="panel">
+
+  <div class="card">
+    <h2>📊 赛果台账（累计命中率）</h2>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="num">49/68</div><div class="lbl">方向命中率 72.1%</div></div>
+      <div class="kpi"><div class="num">34/68</div><div class="lbl">比分 TOP3 50.0%</div></div>
+      <div class="kpi"><div class="num">45/68</div><div class="lbl">半全场 TOP3 66.2%</div></div>
+    </div>
+    <div class="note">口径固定 68 场。本次更新：① 003 方向修正 ❌→✅（预测"平/胜"，实际 2-2 平）；② 新增 008-012 五场（方向 4/5、比分 0/5、半全场 3/5）。</div>
+
+    <h3>8/14 周五批次（001-017）确认状态</h3>
+    <table>
+      <tr><th>编号</th><th>对阵</th><th>赛果（半场）</th><th>方向</th><th>比分</th><th>半全场</th><th>备注</th></tr>
+      <tr><td>001</td><td>东京绿茵 vs 柏太阳神</td><td>1-3（0-2）</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-green">✅</span></td><td>负负在 TOP3</td></tr>
+      <tr><td>002</td><td>VPS瓦萨 vs TPS图尔库</td><td>1-3（0-2）</td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-red">❌</span></td><td>⚠️ 演戏嫌疑浓（R327）</td></tr>
+      <tr><td>003</td><td>荷尔斯泰因 vs 圣保利</td><td>2-2（0-2）</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-red">❌</span></td><td>方向修正为 ✅</td></tr>
+      <tr><td>004</td><td>布伦瑞克 vs 波鸿</td><td>0-1（0-1）</td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-red">❌</span></td><td>全盘错误</td></tr>
+      <tr><td>005</td><td>新未来城体育 vs 费哈</td><td>2-1（2-0）</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-green">✅</span></td><td>三指标全中</td></tr>
+      <tr><td>006</td><td>埃尔夫斯堡 vs 瓦斯特拉斯</td><td>3-0（1-0）</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-green">✅</span></td><td>方向+半全场命中</td></tr>
+      <tr><td>007</td><td>罗森博格 vs 维京</td><td>2-1（1-0）</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-green">✅</span></td><td>三指标全中</td></tr>
+      <tr><td>008</td><td>达曼协作 vs 利雅得体育</td><td>4-2（1-1）</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-green">✅</span></td><td>平胜在 TOP3</td></tr>
+      <tr><td>009</td><td>利雅得新月 vs 费萨里</td><td>4-2（3-0）</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-green">✅</span></td><td>⚠️ 半场领先收缩（R328）</td></tr>
+      <tr><td>010</td><td>特尔斯达 vs 鹿特丹斯巴达</td><td>1-3（0-1）</td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-red">❌</span></td><td>全错（射正 1:9 被碾压）</td></tr>
+      <tr><td>011</td><td>瓦尔韦克 vs 多德勒支</td><td>2-2（0-1）</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-red">❌</span></td><td>客队先进球被追平</td></tr>
+      <tr><td>012</td><td>赫拉克勒斯 vs 邓伯什</td><td>3-2（1-0）</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-red">❌</span></td><td><span class="tag tag-green">✅</span></td><td>⚠️ 演戏嫌疑浓（R326）</td></tr>
+      <tr><td>013-017</td><td>昂纳西/兰斯/圣埃蒂安/狼队/葡体</td><td>待赛果</td><td colspan="4" style="color:var(--sub)">法乙 3 场 + 狼队 + 葡萄牙体育，尚未完赛</td></tr>
+    </table>
+
+    <div class="note"><b>铁律</b>：赛果写入前必须双源联网核验（比分 + 半场 + 进球时间线）；严禁将赛前/进行中数据当最终赛果。</div>
+  </div>
+
+</div>
+
+<!-- ================= 模型规则 ================= -->
+<div id="rules" class="panel">
+
+  <div class="card">
+    <h2>📜 模型核心（V10.29-Fix-R4）</h2>
+
+    <h3>七条核心原则</h3>
+    <table>
+      <tr><th>原则</th><th>内容</th></tr>
+      <tr><td><b>P1</b></td><td>方向决定全场——胜/平/负严格对应主客进球大小关系</td></tr>
+      <tr><td><b>P2</b></td><td>比分必须匹配方向——TOP3 全部指向同一全场结果</td></tr>
+      <tr><td><b>P3</b></td><td>半全场第二字必须匹配方向</td></tr>
+      <tr><td><b>P4</b></td><td>交叉校验强制执行——方向→比分TOP1→半全场TOP1 三者一致</td></tr>
+      <tr><td><b>P5</b></td><td><b>完全不参考盘口</b>——禁提任何亚盘/水位/升盘降盘（黑名单自动检查）</td></tr>
+      <tr><td><b>P6</b></td><td>规则必须基于 ≥50 场历史数据，禁止单场补丁式规则</td></tr>
+      <tr><td><b>P7</b></td><td>赛后复盘禁止修改预测，偏差→转规则→下一轮生效</td></tr>
+    </table>
+
+    <h3>演戏识别规则（R314 / R321-R328）</h3>
+    <table>
+      <tr><th>编号</th><th>名称</th><th>识别逻辑</th></tr>
+      <tr><td>R314</td><td>控盘放水丢球识别</td><td>2-0 领先 + ≤5 分钟连丢 2 球 + 对手保级 → 平局 +20%</td></tr>
+      <tr><td>R321</td><td>野鸡赛不可预测系数</td><td>小联赛主场强队排名高 ≥4 位却输球 → 标记"演戏嫌疑"</td></tr>
+      <tr><td>R322</td><td>闪击后收工识别</td><td>开场 ≤5 分钟进球 → 半场前无第 2 球 → 下半场预期 -0.5 球</td></tr>
+      <tr><td>R323</td><td>安慰球识别</td><td>落后 ≥3 球后 75' 后的进球权重降低 50%</td></tr>
+      <tr><td>R324</td><td>射门转化率倒挂预警</td><td>一方 &gt;30% 且对手 &lt;15% → 标记"效率异常"</td></tr>
+      <tr><td><b>R326</b></td><td><b>碾压收窄识别（新）</b></td><td>射门 ≥2.5 倍 + 射正 ≥2 倍 + 85' 后连丢 ≥2 球 → 赢球放水标记（012 实证）</td></tr>
+      <tr><td><b>R327</b></td><td><b>占优惨败识别（新）</b></td><td>控球 ≥55% + 角球领先 + 射正持平却输 ≥2 球 → 演戏嫌疑（002 实证）</td></tr>
+      <tr><td><b>R328</b></td><td><b>半场领先收缩预警（新）</b></td><td>半场净胜 ≥2 球但射正持平 + 下半场丢 ≥2 球 → 控制力骤降（009 实证）</td></tr>
+    </table>
+
+    <h3>联赛环境标签（仅参考 · 不整联赛剔除）</h3>
+    <table>
+      <tr><th>环境</th><th>联赛</th><th>备注</th></tr>
+      <tr><td><span class="tag tag-red">🔴 演戏多发</span></td><td><b>荷乙</b></td><td>012 放水实锤 + 011 表现背离（队伍级避雷）</td></tr>
+      <tr><td><span class="tag tag-orange">🟠 需警惕</span></td><td>沙特联</td><td>009 半场领先收缩（赢球收手）</td></tr>
+      <tr><td><span class="tag tag-yellow">🟡 正常+冷门</span></td><td>荷甲、德乙</td><td>010 预测误判；003/004 冷门率高</td></tr>
+      <tr><td><span class="tag tag-green">🟢 可信</span></td><td>芬超、日职联、瑞超、挪超、巴甲、韩职、美职联、葡超</td><td>历史数据稳定</td></tr>
+      <tr><td><span class="tag tag-green">🟢 五大联赛</span></td><td><b>英超、西甲、德甲、意甲、法甲</b></td><td><b>新赛季重点</b></td></tr>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  足球分析模型报告中心 · 生成于 2026-08-15 · 数据双源核验 · 仅供学习参考
+</div>
+
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  var tabs = document.querySelectorAll('.tab');
+  tabs.forEach(function(t){
+    if (t.getAttribute('onclick').indexOf(id) > -1) t.classList.add('active');
+  });
+}
+</script>
+</body>
+</html>

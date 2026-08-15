@@ -1,0 +1,67 @@
+{
+  "package_name": "FOOTBALL_MODEL_V9.6.1_EVIDENCE_PACKAGE_R2",
+  "version": "V9.6.1",
+  "created_at": "2026-08-03T00:00:00Z",
+  "total_files": 35,
+  "total_dirs": 8,
+  "files": [
+    "00_MANIFEST.json",
+    "01_README.md",
+    "02_AUDIT_CORRECTIONS.md",
+    "03_MODEL_IDENTITY.json",
+    "04_CHANGELOG_V9.5_TO_V9.6.1.md",
+    "05_FORMULA_SPEC.yaml",
+    "06_PARAMETERS.json",
+    "10_LIMITATIONS_AND_DATA_MISSING.md",
+    "data/ARCHIVED_PREMATCH_PREDICTIONS_LAST50.csv",
+    "data/DATA_DICTIONARY.md",
+    "data/MARKET_QUOTES_LAST50.csv",
+    "data/MATCH_RESULTS_LAST50.csv",
+    "data/RECONSTRUCTED_BACKTEST_LAST50.csv",
+    "data/SOURCE_LEDGER.csv",
+    "previous_deliveries/README.txt",
+    "reproduction/REPRODUCE_LOG.txt",
+    "reproduction/REPRODUCTION_CASES.jsonl",
+    "reproduction/REPRODUCTION_COMPARISON.csv",
+    "reproduction/REPRODUCTION_INTERMEDIATE_VALUES.csv",
+    "requirements.txt",
+    "rules/INPLAY_RULES.csv",
+    "rules/POSTMATCH_REVIEW_RULES.csv",
+    "rules/PREMATCH_RULES.csv",
+    "rules/RULE_REGISTRY_ALL_131.csv",
+    "rules/TEAM_RULES_ALL_40.csv",
+    "RUN_REPRODUCE.cmd",
+    "RUN_VERIFY_PACKAGE.cmd",
+    "SHA256SUMS.txt",
+    "src/README_SRC.txt",
+    "tests/test_formulas.py",
+    "tests/test_manifest.py",
+    "tests/test_no_postmatch_leakage.py",
+    "tests/test_prediction_statistics.py",
+    "tests/test_reproduction.py",
+    "timestamp_evidence/TIMESTAMP_LEDGER.csv"
+  ],
+  "base_deliveries": {
+    "BASE_V9.6.1_1.txt": {
+      "sha256": "c5964faeca297d0e5bd9ef5337e188fece9d5380252945fc4c91ce261122b19d",
+      "status": "SOURCE_OF_DIALOG_COPY"
+    },
+    "SUPPLEMENT_R1.txt": {
+      "sha256": "5d234952512f920f44fc3b6a0ca1aaefef467d5a2a9be4cf3b8b800798a9e9e5",
+      "status": "SOURCE_OF_DIALOG_COPY"
+    }
+  },
+  "corrections": {
+    "active_rules": 69,
+    "defunct_merged_rules": 62,
+    "placeholder_rules": 8,
+    "claimed_total_rules": 131,
+    "actual_team_rules": 28,
+    "claimed_team_rules": 40,
+    "rule_gaps": [
+      "R023-R081",
+      "R096-R109"
+    ],
+    "status": "NON_REPRODUCIBLE_INCOMPLETE_RULESET"
+  }
+}
