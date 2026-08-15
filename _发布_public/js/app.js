@@ -92,7 +92,6 @@ function selectDate(key) {
   calOpen = false; // 选完自动收起日历
   renderCalendar();
   renderAll();
-  document.querySelector(".batch-header").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 /* ---------- 渲染：预测 ---------- */
@@ -170,11 +169,15 @@ function renderPredict(batch) {
     <td><span class="tag ${z.lv}">${z.lvTxt}</span></td>
   </tr>`).join("");
 
-  // 核心逻辑速览（一句话/场）
+  // 核心逻辑速览：预览 30 字 + 点击展开全文（与复盘页技术统计统一风格）
+  const cut = (s, n) => { s = (s || "").trim(); return s.length > n ? s.slice(0, n) + "…" : s; };
   const logicRows = sorted.map(m => `<tr>
     <td><span class="no-badge">${m.no}</span></td>
     <td>${m.home} vs ${m.away}${m.time ? `<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time}</span></span>` : ""}</td>
-    <td>${m.logic || "-"}</td>
+    <td><details>
+      <summary>${cut(m.logic, 30) || "-"}</summary>
+      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${m.logic || ""}</div>
+    </details></td>
   </tr>`).join("");
 
   el.innerHTML = `
@@ -230,7 +233,7 @@ function renderPredict(batch) {
     </div>
 
     <div class="card">
-      <h2><span class="icon">💡</span> 各场核心逻辑（一句话）</h2>
+      <h2><span class="icon">💡</span> 各场核心逻辑 <span class="hint">点击展开全文</span></h2>
       <div class="table-wrap"><table>
         <thead><tr><th>场次</th><th>对阵</th><th>核心逻辑</th></tr></thead>
         <tbody>${logicRows}</tbody>
@@ -280,8 +283,23 @@ function renderReview(batch) {
 
   const totalN = batch.predict.matches.length;
   const confirmedN = r.results.length;
-  const alertCount = r.results.filter(m => alertOf(m) !== "").length;
-  const alertKpi = `<div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${alertCount}</div><div class="lbl">🎯 预警命中（不计正式）</div></div>`;
+  // 控分排查结论仅本地保留（合规），网页只展示演戏排查部分
+  const cleanTxt = t => (t || "").split("控分排查：")[0].trim();
+  // 本批次总进球（ou）命中：预测总进球区间 vs 实际进球数
+  let ouN = 0, ouH = 0;
+  r.results.forEach(m => {
+    const pm = batch.predict.matches.find(x => x.no === m.no);
+    if (!pm || !pm.ou) return;
+    const sc = m.score.match(/(\d+)-(\d+)/);
+    if (!sc) return;
+    const mm = pm.ou.match(/(\d+)[·.x×](\d+)/);
+    if (!mm) return;
+    ouN++;
+    const tg = +sc[1] + +sc[2];
+    if (tg >= +mm[1] && tg <= +mm[2]) ouH++;
+  });
+  const ouPct = ouN ? Math.round(100 * ouH / ouN) + "%" : "—";
+  const ouKpi = `<div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${ouH}/${ouN} <span style="font-size:12px">${ouPct}</span></div><div class="lbl">⚽ 总进球命中</div></div>`;
   const statusTag = batch.reviewed
     ? `<span class="tag tag-green">完整复盘</span>`
     : `<span class="tag tag-yellow">部分复盘（已确认 ${confirmedN}/${totalN} 场）</span>`;
@@ -289,12 +307,12 @@ function renderReview(batch) {
         <div class="kpi"><div class="num">${batch.stats.dir}</div><div class="lbl">方向命中率 ${batch.stats.dirPct}</div></div>
         <div class="kpi"><div class="num">${batch.stats.score}</div><div class="lbl">比分 TOP3 ${batch.stats.scorePct}</div></div>
         <div class="kpi"><div class="num">${batch.stats.ht}</div><div class="lbl">半全场 TOP3 ${batch.stats.htPct}</div></div>
-        ${alertKpi}` : `
+        ${ouKpi}` : `
         <div class="kpi"><div class="num">${confirmedN}/${totalN}</div><div class="lbl">已确认场次</div></div>
         <div class="kpi"><div class="num">${r.results.filter(m => m.d === "ok").length}</div><div class="lbl">方向已命中</div></div>
         <div class="kpi"><div class="num">${r.results.filter(m => m.s === "ok").length}</div><div class="lbl">比分已命中</div></div>
         <div class="kpi"><div class="num">${r.results.filter(m => m.h === "ok").length}</div><div class="lbl">半全场已命中</div></div>
-        ${alertKpi}`;
+        ${ouKpi}`;
 
   const rows = r.results.map(m => {
     const pm = batch.predict.matches.find(x => x.no === m.no);
@@ -303,25 +321,49 @@ function renderReview(batch) {
     const hTop = pm ? topOf(htFromScore(m.score), pm.ht) : null;
     const hCell = hTop ? hitTag(hTop) : (m.h === "ok" ? okT : noT); // 无半场数据时按 h 判定
     const aw = alertOf(m);
-    return `<tr>
+    // 总进球命中：预测 ou 区间 vs 实际进球数
+    const ouCell = () => {
+      const pm = batch.predict.matches.find(x => x.no === m.no);
+      if (!pm || !pm.ou) return `<span class="tag tag-gray">—</span>`;
+      const sc = m.score.match(/(\d+)-(\d+)/);
+      if (!sc) return `<span class="tag tag-gray">—</span>`;
+      const mm = pm.ou.match(/(\d+)[·.x×](\d+)/);
+      if (!mm) return `<span class="tag tag-gray">—</span>`;
+      const tg = +sc[1] + +sc[2];
+      const hit = tg >= +mm[1] && tg <= +mm[2];
+      const range = pm.ou.replace("总进球 ", "");
+      return hit
+        ? `<span class="tag tag-green">${range} ✅</span>`
+        : `<span class="tag tag-red">${range} ❌ <span style="opacity:.8">实${tg}球</span></span>`;
+    };
+    // 对阵列：与赛前一致的两行排版
+    const nms = (m.teams || "").split(" vs ");
+    const homeNm = nms[0] || "", awayNm = nms[1] || "";
+    return `<tr class="${m.d === "ok" ? "ok-row" : ""}">
       <td><span class="no-badge">${m.no}</span></td>
-      <td>${m.teams} <span class="lg ${m.lg}">${m.league}</span></td>
+      <td>${homeNm} vs ${awayNm}<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span>${pm && pm.time ? `<span class="match-time">🕐 ${pm.time}</span>` : ""}</span></td>
       <td><b>${m.score}</b></td>
       <td>${dTag(m.d)}</td>
       <td>${hitTag(sTop)}</td>
       <td>${hCell}</td>
-      <td>${aw ? `<span class="tag tag-yellow">${aw}</span>` : `<span class="tag tag-gray">—</span>`}</td>
-      <td><span class="tag ${m.sc === "danger" ? "tag-red" : m.sc === "watch" ? "tag-yellow" : "tag-green"}">${m.signal}</span></td>
+      <td>${ouCell()}</td>
     </tr>`;
   }).join("");
 
-  // 控分排查结论仅本地保留（合规），网页只展示演戏排查部分
-  const cleanTxt = t => (t || "").split("控分排查：")[0].trim();
-  const evRows = r.evidence.map(e => `<tr>
-    <td><b>${e.no} ${e.teams}</b><br><span class="lg ${e.lg}">${e.league}</span></td>
-    <td>${e.stats}</td>
-    <td><span class="tag ${e.sc === "danger" ? "tag-red" : e.sc === "watch" ? "tag-yellow" : "tag-green"}">${e.signal}</span> ${cleanTxt(e.txt)}</td>
-  </tr>`).join("");
+  // 关键场次技术统计：默认只显示信号徽章，点击展开完整统计与解读（游客友好）
+  const evRows = r.evidence.map(e => {
+    // evidence.teams 形如 "阿拉维斯 3-0 赫塔费" → 拆分对阵（与赛前统一排版）
+    const em = (e.teams || "").match(/^(.*?)\s+\d+-\d+\s+(.*)$/);
+    const evHome = em ? em[1] : (e.teams || "");
+    const evAway = em ? em[2] : "";
+    return `<tr>
+    <td><b>${e.no}</b> ${evHome} vs ${evAway}<br><span class="mt-line"><span class="lg ${e.lg}">${e.league}</span></span></td>
+    <td><details>
+      <summary><span class="tag ${e.sc === "danger" ? "tag-red" : e.sc === "watch" ? "tag-yellow" : "tag-green"}">${e.signal}</span> <span style="font-size:12px;color:var(--sub)">点击展开</span></summary>
+      <div style="margin-top:8px;font-size:12.5px;color:var(--sub);line-height:1.8">${e.stats || "—"}<br><br>${cleanTxt(e.txt) || ""}</div>
+    </details></td>
+  </tr>`;
+  }).join("");
 
   el.innerHTML = `
     <div class="card">
@@ -336,22 +378,22 @@ function renderReview(batch) {
       <div class="table-wrap"><table data-sort>
         <thead><tr>
           <th data-sortable>场次</th><th>对阵</th><th data-sortable>赛果（半场）</th>
-          <th data-sortable>方向</th><th data-sortable>比分</th><th data-sortable>半全场</th><th data-sortable>预警命中</th><th>演戏信号</th>
+          <th data-sortable>方向</th><th data-sortable>比分</th><th data-sortable>半全场</th><th data-sortable>总进球</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table></div>
     </div>
 
     <div class="card">
-      <h2><span class="icon">🔎</span> 关键场次技术统计（演戏信号实证）</h2>
+      <h2><span class="icon">🔎</span> 关键场次技术统计（演戏信号实证）<span class="hint">点击信号标签展开完整数据</span></h2>
       <div class="table-wrap"><table>
-        <thead><tr><th>场次</th><th>技术统计</th><th>信号解读</th></tr></thead>
+        <thead><tr><th>场次</th><th>演戏信号（点击展开）</th></tr></thead>
         <tbody>${evRows}</tbody>
       </table></div>
     </div>`;
 }
 
-/* ---------- 站点总览统计条 ---------- */
+/* ---------- 站点总览统计条 + 批次趋势图 ---------- */
 function renderSiteStats() {
   const el = document.getElementById("site-stats");
   if (!el) return;
@@ -366,13 +408,27 @@ function renderSiteStats() {
     }
   });
   const dirPct = totalMatches ? Math.round(100 * dirHit / totalMatches) + "%" : "—";
+  // 批次趋势：近 10 个已复盘批次方向命中率柱状
+  const trend = keys.filter(k => BATCHES[k].reviewed && BATCHES[k].stats).slice(-10).map(k => {
+    const b = BATCHES[k];
+    const pct = parseInt(b.stats.dirPct) || 0;
+    const short = (b.title || "").split("批次")[0].split(" ")[0];
+    return `<div class="trend-col" title="${b.title}：方向 ${b.stats.dir}（${b.stats.dirPct}）">
+      <div class="trend-lbl">${pct}%</div>
+      <div class="trend-bar" style="height:${Math.max(6, pct * 0.8)}px"></div>
+      <div class="trend-date">${short}</div>
+    </div>`;
+  }).join("");
   el.innerHTML = `
-    <div class="site-stat"><span class="ss-num">${totalBatches}</span><span class="ss-lbl">总批次</span></div>
-    <div class="site-stat"><span class="ss-num">${totalMatches}</span><span class="ss-lbl">已复盘场次</span></div>
-    <div class="site-stat"><span class="ss-num">${dirPct}</span><span class="ss-lbl">批次方向命中</span></div>
-    <div class="site-stat"><span class="ss-num">${GLOBAL_STATS.dirPct}</span><span class="ss-lbl">累计方向命中</span></div>
-    <div class="site-stat"><span class="ss-num">${reviewed}/${totalBatches}</span><span class="ss-lbl">已复盘批次</span></div>
-    <div class="site-stat"><span class="ss-num">${GLOBAL_STATS.updated.slice(5)}</span><span class="ss-lbl">最后更新</span></div>`;
+    <div class="site-stats">
+      <div class="site-stat"><span class="ss-num">${totalBatches}</span><span class="ss-lbl">总批次</span></div>
+      <div class="site-stat"><span class="ss-num">${totalMatches}</span><span class="ss-lbl">已复盘场次</span></div>
+      <div class="site-stat"><span class="ss-num">${dirPct}</span><span class="ss-lbl">批次方向命中</span></div>
+      <div class="site-stat"><span class="ss-num">${GLOBAL_STATS.dirPct}</span><span class="ss-lbl">累计方向命中</span></div>
+      <div class="site-stat"><span class="ss-num">${reviewed}/${totalBatches}</span><span class="ss-lbl">已复盘批次</span></div>
+      <div class="site-stat"><span class="ss-num">${GLOBAL_STATS.updated.slice(5)}</span><span class="ss-lbl">最后更新</span></div>
+    </div>
+    ${trend ? `<div class="trend-row">${trend}</div><div class="note">📈 近 10 个已复盘批次方向命中率趋势</div>` : ""}`;
 }
 
 /* ---------- 预测级别表现分析 ---------- */
@@ -414,10 +470,10 @@ function renderLevelStats() {
       <thead><tr><th>预测级别</th><th>方向命中</th><th>命中率</th></tr></thead>
       <tbody>${row("A+")}${row("A")}${row("A-")}${row("B+")}${row("B")}${row("C")}</tbody>
     </table></div>
-    <div class="note">A+ 极高置信 ｜ A 高置信 ｜ A- 中高 ｜ B+ 中置信偏正路 ｜ B 中置信 ｜ C 低置信（含 2主+1反向比分，原 B- 并入 C）。用于检验"高置信更可靠"假设。</div>`;
+    <div class="note">A+ 极高置信 ｜ A 高置信 ｜ A- 中高 ｜ B+ 中置信偏正路 ｜ B 中置信 ｜ C 低置信（B- 并入 C 展示：B- = 2主+1反向，C = 1主+2反向）。用于检验"高置信更可靠"假设。</div>`;
 }
 
-/* ---------- 联赛表现统计 ---------- */
+/* ---------- 联赛表现统计（V10.36：方向/比分/半全场三指标） ---------- */
 function renderLeagueStats() {
   const el = document.getElementById("league-stats");
   if (!el || !BATCHES[currentKey] || !BATCHES[currentKey].reviewed) return;
@@ -426,18 +482,25 @@ function renderLeagueStats() {
   b.review.results.forEach(m => {
     const pm = b.predict.matches.find(x => x.no === m.no);
     const lg = (pm && pm.league) || m.league || "其他";
-    if (!map[lg]) map[lg] = { t: 0, h: 0 };
+    if (!map[lg]) map[lg] = { t: 0, d: 0, s: 0, h: 0 };
     map[lg].t++;
-    if (m.d === "ok") map[lg].h++;
+    if (m.d === "ok") map[lg].d++;
+    if (m.s === "ok") map[lg].s++;
+    if (m.h === "ok") map[lg].h++;
   });
+  const cell = (ok, t) => `${ok}/${t} <span style="font-size:11px;color:var(--sub)">(${Math.round(100 * ok / Math.max(1, t))}%)</span>`;
   const rows = Object.keys(map).sort((a, z) => map[z].t - map[a].t).map(lg => {
     const r = map[lg];
-    const pct = Math.round(100 * r.h / r.t);
-    return `<tr><td>${lg}</td><td class="num">${r.h}/${r.t}</td><td><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${pct}%"></div></div><span class="prob-txt num">${pct}%</span></div></td></tr>`;
+    return `<tr>
+      <td>${lg}</td><td class="num">${r.t}</td>
+      <td class="num">${cell(r.d, r.t)}</td>
+      <td class="num">${cell(r.s, r.t)}</td>
+      <td class="num">${cell(r.h, r.t)}</td>
+    </tr>`;
   }).join("");
   el.innerHTML = `
     <div class="table-wrap"><table>
-      <thead><tr><th>联赛</th><th>方向命中</th><th>命中率</th></tr></thead>
+      <thead><tr><th>联赛</th><th>场次</th><th>方向</th><th>比分</th><th>半全场</th></tr></thead>
       <tbody>${rows}</tbody>
     </table></div>`;
 }
@@ -509,8 +572,30 @@ function renderGlobal() {
   const el = document.getElementById("global-kpi");
   if (!el) return;
   const pct = (h, n) => n ? Math.round(100 * h / n) + "%" : "—";
+  const pctN = (h, n) => n ? Math.round(100 * h / n) : 0;
   const keys = Object.keys(BATCHES).sort();
   const weekStart = fmtKey(new Date(Date.now() - 7 * 864e5));
+
+  // SVG 环形（专业仪表盘风格）
+  const ring = (id, p, size) => {
+    const st = 9, r = (size - st) / 2, c = 2 * Math.PI * r;
+    const off = c * (1 - Math.min(100, p) / 100);
+    return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">
+      <defs><linearGradient id="${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="var(--primary)"/><stop offset="100%" stop-color="var(--gold)"/>
+      </linearGradient></defs>
+      <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="var(--thead-bg)" stroke-width="${st}"/>
+      <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="url(#${id})" stroke-width="${st}"
+        stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 ${size / 2} ${size / 2})"/>
+    </svg>`;
+  };
+  const kpiRing = (id, p, hit, total, label) => `
+    <div class="kpi ring-kpi">
+      <div class="ring-wrap">${ring(id, p, 92)}
+        <div class="ring-num"><b>${p}%</b><span>${hit}/${total}</span></div>
+      </div>
+      <div class="lbl">${label}</div>
+    </div>`;
 
   // 近 7 日三指标 + 近 7 日总进球/预警命中（全部统一近 7 日口径）
   const week = { n: 0, d: 0, s: 0, h: 0 };
@@ -552,9 +637,9 @@ function renderGlobal() {
 
   el.innerHTML = `
     <div class="kpi-row" style="margin-bottom:6px">
-      <div class="kpi"><div class="num">${week.d}/${week.n} <span style="font-size:12px">${pct(week.d, week.n)}</span></div><div class="lbl">近7日方向</div></div>
-      <div class="kpi"><div class="num">${week.s}/${week.n} <span style="font-size:12px">${pct(week.s, week.n)}</span></div><div class="lbl">近7日比分 TOP3</div></div>
-      <div class="kpi"><div class="num">${week.h}/${week.n} <span style="font-size:12px">${pct(week.h, week.n)}</span></div><div class="lbl">近7日半全场 TOP3</div></div>
+      ${kpiRing("g-ring-d", pctN(week.d, week.n), week.d, week.n, "近7日方向")}
+      ${kpiRing("g-ring-s", pctN(week.s, week.n), week.s, week.n, "近7日比分 TOP3")}
+      ${kpiRing("g-ring-h", pctN(week.h, week.n), week.h, week.n, "近7日半全场 TOP3")}
     </div>
     <div class="kpi-row">
       <div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${ou.h}/${ou.n} <span style="font-size:12px">${pct(ou.h, ou.n)}</span></div><div class="lbl">⚽ 总进球命中</div></div>
@@ -568,13 +653,20 @@ function renderBatchHeader() {
   const b = BATCHES[currentKey];
   const el = document.getElementById("batch-header");
   if (el && b) {
+    // 上一批/下一批快速导航
+    const keys = Object.keys(BATCHES).sort();
+    const idx = keys.indexOf(currentKey);
+    const prevK = idx > 0 ? keys[idx - 1] : null;
+    const nextK = idx < keys.length - 1 ? keys[idx + 1] : null;
     el.innerHTML = `
+      <button class="batch-nav" onclick="selectDate('${prevK}')" ${prevK ? "" : "disabled"} title="${prevK ? fmtDate(prevK) : ""}">‹ 上批</button>
       <span class="badge badge-soft">📅 ${fmtDate(currentKey)}</span>
       <span class="badge badge-solid">${b.title}</span>
       ${b.updated ? `<span class="badge badge-soft">🕐 更新 ${b.updated}</span>` : ""}
-      <span class="badge badge-soft" style="margin-left:auto">模型 ${b.model}</span>
+      <span class="badge badge-soft" style="margin-left:auto">模型 <b style="color:var(--primary)">${b.model}</b></span>
       ${b.reviewed ? `<span class="badge badge-solid" style="background:linear-gradient(135deg,#15803d,#22a55a)">✅ 已复盘</span>`
-                   : `<span class="badge badge-gold">📋 待复盘</span>`}`;
+                   : `<span class="badge badge-gold">📋 待复盘</span>`}
+      <button class="batch-nav" onclick="selectDate('${nextK}')" ${nextK ? "" : "disabled"} title="${nextK ? fmtDate(nextK) : ""}">下批 ›</button>`;
   }
 }
 
@@ -634,11 +726,11 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCalendar();
   renderAll();
 
-  // 主题切换按钮
+  // 主题切换按钮（左上角胶囊，图标 + 文字）
   const toggle = document.getElementById("themeToggle");
   if (toggle) {
     const html = document.documentElement;
-    const syncIcon = () => { toggle.textContent = html.classList.contains("dark") ? "☀" : "🌙"; };
+    const syncIcon = () => { toggle.innerHTML = (html.classList.contains("dark") ? "☀" : "🌙") + "<span> 切换主题</span>"; };
     toggle.addEventListener("click", () => {
       const dark = html.classList.toggle("dark");
       try { localStorage.setItem("dsh-theme", dark ? "dark" : "light"); } catch (e) {}
