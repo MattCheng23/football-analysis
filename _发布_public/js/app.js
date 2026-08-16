@@ -106,7 +106,7 @@ function renderPredict(batch) {
   const riskTag = r => r >= 7 ? `<span class="tag tag-red">🔴 ${r}</span>`
     : r >= 5 ? `<span class="tag tag-orange">🟠 ${r}</span>`
     : `<span class="tag tag-green">🟢 ${r}</span>`;
-  // 预测等级 → 颜色类（R337 v2：A+ A A- 绿系 / B+ 蓝 / B 黄 / B- 紫（2主1反·1个反向比分标*）/ C 红（1主2反·2个反向比分标*））
+  // 预测等级 → 颜色类（R337 v2：A+ A A- 绿系 / B+ 蓝 / B 黄 / B- 紫（1正2反·反向比分标*）/ C 红（1正2反·反向比分标*））
   const lvlClass = d => {
     if (d.includes("A+")) return "lvl-aplus";
     if (d.includes("A-")) return "lvl-aminus";
@@ -130,8 +130,15 @@ function renderPredict(batch) {
   </tr>`;
   }).join("");
 
-  // 冷门风险（全量展示，逻辑列预览 30 字 + 点击展开）
-  const coldRows = p.coldRisk.map(c => `<tr>
+  // 通用截断工具：预览 30 字 + 点击展开全文（必须先于所有使用处定义）
+  const cut = (s, n) => { s = (s || "").trim(); return s.length > n ? s.slice(0, n) + "…" : s; };
+
+  // 冷门风险（全部比赛全量展示，按等级从高到低排序，逻辑列预览 30 字 + 点击展开）
+  const lvW = { "较高": 4, "中等偏高": 3, "中等": 2, "低": 1 };
+  const coldRows = (p.coldRisk || [])
+    .slice()
+    .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
+    .map(c => `<tr>
     <td>${c.rank}</td><td>${c.no} ${c.teams}</td><td>${c.dir}</td>
     <td><span class="tag ${c.lv}">${c.lvTxt}</span></td>
     <td><details>
@@ -141,8 +148,7 @@ function renderPredict(batch) {
   </tr>`).join("");
 
   // 高价值预警：只显示中等偏低及以上等级（排除"低"），逻辑列预览 30 字 + 点击展开
-  const cut = (s, n) => { s = (s || "").trim(); return s.length > n ? s.slice(0, n) + "…" : s; };
-  const alertRows = p.alerts
+  const alertRows = (p.alerts || [])
     .filter(a => a.lvTxt !== "低")
     .map(a => `<tr>
     <td>${a.script}</td><td>${a.no} ${a.teams}</td>
@@ -194,7 +200,7 @@ function renderPredict(batch) {
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#4ade80"></span> A- 中高</span>
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#2563eb"></span> B+ 中偏正路</span>
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#d97706"></span> B 中</span>
-        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#9333ea"></span> B- 中低（2 主 1 反，1 个反向比分标 <span class="rev-score">*</span>）</span>
+        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#9333ea"></span> B- 中低（1 主 2 反，2 个反向比分标 <span class="rev-score">*</span>）</span>
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#dc2626"></span> C 低（1 主 2 反，2 个反向比分标 <span class="rev-score">*</span>）</span>
       </div>
       <div class="table-wrap"><table>
@@ -204,7 +210,7 @@ function renderPredict(batch) {
     </div>
 
     <div class="card">
-      <h2><span class="icon">🌡️</span> 冷门风险（${p.coldRisk.length} 场全量）</h2>
+      <h2><span class="icon">🌡️</span> 冷门风险（${(p.coldRisk || []).length} 场全量）</h2>
       <div class="table-wrap"><table>
         <thead><tr><th>排名</th><th>场次</th><th>冷门方向</th><th>风险等级</th><th>核心逻辑</th></tr></thead>
         <tbody>${coldRows}</tbody>
@@ -302,7 +308,8 @@ function renderReview(batch) {
     if (!mm) return;
     ouN++;
     const tg = +sc[1] + +sc[2];
-    if (tg >= +mm[1] && tg <= +mm[2]) ouH++;
+    // 总进球 = 两个离散选项（如 1·2 = 1球或2球），命中 = 实际总进球等于任一选项
+    if (tg === +mm[1] || tg === +mm[2]) ouH++;
   });
   const ouPct = ouN ? Math.round(100 * ouH / ouN) + "%" : "—";
   const ouKpi = `<div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${ouH}/${ouN} <span style="font-size:12px">${ouPct}</span></div><div class="lbl">⚽ 总进球命中</div></div>`;
@@ -336,7 +343,8 @@ function renderReview(batch) {
       const mm = pm.ou.match(/(\d+)[·.x×](\d+)/);
       if (!mm) return `<span class="tag tag-gray">—</span>`;
       const tg = +sc[1] + +sc[2];
-      const hit = tg >= +mm[1] && tg <= +mm[2];
+      // 总进球 = 两个离散选项（如 1·2 = 1球或2球），命中 = 实际总进球等于任一选项
+      const hit = tg === +mm[1] || tg === +mm[2];
       const range = pm.ou.replace("总进球 ", "");
       return hit
         ? `<span class="tag tag-green">${range} ✅</span>`
@@ -476,7 +484,7 @@ function renderLevelStats() {
       <thead><tr><th>预测级别</th><th>方向命中</th><th>命中率</th></tr></thead>
       <tbody>${row("A+")}${row("A")}${row("A-")}${row("B+")}${row("B")}${row("C")}</tbody>
     </table></div>
-    <div class="note">A+ 极高置信 ｜ A 高置信 ｜ A- 中高 ｜ B+ 中置信偏正路 ｜ B 中置信 ｜ C 低置信（B- 并入 C 展示：B- = 2主+1反向，C = 1主+2反向）。用于检验"高置信更可靠"假设。</div>`;
+    <div class="note">A+ 极高置信 ｜ A 高置信 ｜ A- 中高 ｜ B+ 中置信偏正路 ｜ B 中置信 ｜ C 低置信（B- 并入 C 展示：B- = 1正+2反向，C = 1正+2反向；A/B+ 为 3正路/2正1反）。用于检验"高置信更可靠"假设。</div>`;
 }
 
 /* ---------- 联赛表现统计（V10.36：方向/比分/半全场三指标） ---------- */
@@ -617,7 +625,7 @@ function renderGlobal() {
       // 总进球
       if (pm && pm.ou && sc) {
         const mm = pm.ou.match(/(\d+)[·.x×](\d+)/);
-        if (mm) { ou.n++; const tg = +sc[1] + +sc[2]; if (tg >= +mm[1] && tg <= +mm[2]) ou.h++; }
+        if (mm) { ou.n++; const tg = +sc[1] + +sc[2]; if (tg === +mm[1] || tg === +mm[2]) ou.h++; }
       }
       if (!sc) return;
       // 0-0 预警
@@ -703,7 +711,19 @@ function toggleUpdLog() {
   if (d) d.style.display = d.style.display === "none" ? "block" : "none";
 }
 
-/* ---------- 避雷名单（独立子页面，跨批次聚合） ---------- */
+/* ---------- 避雷名单（独立子页面，跨批次聚合+可视化） ---------- */
+/* 联赛中文名 → 徽章色类映射（与赛前预测 .lg-* 一致） */
+const LG_CLS = {
+  "瑞超": "lg-swe", "日职联": "lg-j1", "日乙": "lg-j2", "韩职": "lg-k1",
+  "葡超": "lg-prime", "芬超": "lg-fin", "挪超": "lg-nor", "英冠": "lg-champ",
+  "巴甲": "lg-bras", "西甲": "lg-laliga", "荷甲": "lg-ered", "荷乙": "lg-eers",
+  "英社区盾": "lg-eng", "英超": "lg-eng", "美职联": "lg-mls", "沙特联": "lg-spl",
+  "法乙": "lg-l2", "德乙": "lg-bundes2", "欧冠": "lg-ucl", "欧联资格赛": "lg-uel"
+};
+function lgCls(lg) { return LG_CLS[lg] || "lg-other"; }
+function lgBadge(lg, small) {
+  return `<span class="lg ${small ? "lg-sm " : ""}${lgCls(lg)}">${lg || ""}</span>`;
+}
 function renderAvoid() {
   const el = document.getElementById("avoid-view");
   if (!el) return;
@@ -716,21 +736,66 @@ function renderAvoid() {
     (r.avoidWatch || []).forEach(a => { watchMap[a.team] = a; });
   });
   const highList = Object.values(highMap), watchList = Object.values(watchMap);
-  const card = (a, kind) => `<div class="avoid-card ${kind}">
-    <div class="team-icon">${kind === "high" ? "🚫" : "👀"}</div><div>
-      <div class="team-name">${a.team} <span class="tag ${kind === "high" ? "tag-red" : "tag-yellow"}">${kind === "high" ? "🔴 高" : "🟡 观察"}</span></div>
-      <div class="team-league">${a.league}</div>
-      <div class="team-reason">${a.reason}</div>
-    </div></div>`;
   const srcCount = Object.keys(BATCHES).filter(k => BATCHES[k].review && ((BATCHES[k].review.avoidHigh && BATCHES[k].review.avoidHigh.length) || (BATCHES[k].review.avoidWatch && BATCHES[k].review.avoidWatch.length))).length;
+
+  // —— 联赛分布统计（可视化：哪个联赛避雷队最多）——
+  const leagueCnt = {};
+  highList.concat(watchList).forEach(a => {
+    const lg = a.league || "未知";
+    leagueCnt[lg] = (leagueCnt[lg] || 0) + 1;
+  });
+  const lgEntries = Object.entries(leagueCnt).sort((a, b) => b[1] - a[1]);
+  const maxCnt = Math.max(1, ...lgEntries.map(e => e[1]));
+  const lgBars = lgEntries.map(([lg, cnt]) => `
+    <div class="avoid-lbar">
+      ${lgBadge(lg, true)}
+      <div class="avoid-lbar-track"><div class="avoid-lbar-fill" style="width:${(cnt / maxCnt * 100).toFixed(0)}%"></div></div>
+      <span class="avoid-lbar-num">${cnt}</span>
+    </div>`).join("");
+
+  // —— 单队折叠条目（默认收起，仅显队名）——
+  const item = (a, kind) => `
+    <details class="avoid-item ${kind}">
+      <summary>
+        <span class="avoid-item-ic">${kind === "high" ? "🚫" : "👀"}</span>
+        <span class="avoid-item-name">${a.team}</span>
+        <span class="avoid-item-lg">${lgBadge(a.league)}</span>
+        <span class="tag ${kind === "high" ? "tag-red" : "tag-yellow"}">${kind === "high" ? "🔴 高" : "🟡 观察"}</span>
+        <span class="avoid-item-arrow">▸</span>
+      </summary>
+      <div class="avoid-item-body">${a.reason}</div>
+    </details>`;
+
   el.innerHTML = `
     <div class="card">
       <h2><span class="icon">🚨</span> 队伍级避雷名单（全联赛统一）</h2>
       <div class="note">避雷队伍参与的比赛预测置信度降一级 + 强制"避雷预警"标记；名单动态维护，跨批次累计（当前 ${highList.length + watchList.length} 队，来自 ${srcCount} 个批次）。</div>
-      <h3>🔴 高信号（${highList.length}）</h3>
-      <div class="avoid-grid">${highList.map(a => card(a, "high")).join("") || '<div class="note">暂无</div>'}</div>
-      <h3>🟡 观察（${watchList.length}）</h3>
-      <div class="avoid-grid">${watchList.map(a => card(a, "watch")).join("") || '<div class="note">暂无</div>'}</div>
+
+      <!-- 统计仪表盘 -->
+      <div class="avoid-dash">
+        <div class="avoid-stat st-high"><div class="avoid-stat-num">${highList.length}</div><div class="avoid-stat-lbl">🔴 高信号</div></div>
+        <div class="avoid-stat st-watch"><div class="avoid-stat-num">${watchList.length}</div><div class="avoid-stat-lbl">🟡 观察</div></div>
+        <div class="avoid-stat st-lg"><div class="avoid-stat-num">${lgEntries.length}</div><div class="avoid-stat-lbl">🏆 涉及联赛</div></div>
+        <div class="avoid-stat st-batch"><div class="avoid-stat-num">${srcCount}</div><div class="avoid-stat-lbl">📚 来源批次</div></div>
+      </div>
+
+      <!-- 联赛分布可视化 -->
+      <div class="avoid-league">
+        <h4>📊 避雷队联赛分布 <span class="avoid-league-hint">（高信号+观察，最多见 = 假球重灾区）</span></h4>
+        ${lgBars || '<div class="note">暂无数据</div>'}
+      </div>
+
+      <!-- 高信号（默认展开） -->
+      <details class="avoid-sec sec-high" open>
+        <summary>🚫 🔴 高信号（${highList.length}）<span class="avoid-sec-hint">点击${highList.length ? "折叠/展开" : ""}</span></summary>
+        <div class="avoid-grid">${highList.map(a => item(a, "high")).join("") || '<div class="note">暂无</div>'}</div>
+      </details>
+
+      <!-- 观察（默认折叠，防堆积） -->
+      <details class="avoid-sec sec-watch">
+        <summary>👀 🟡 观察（${watchList.length}）<span class="avoid-sec-hint">点击展开 ${watchList.length} 队</span></summary>
+        <div class="avoid-grid">${watchList.map(a => item(a, "watch")).join("") || '<div class="note">暂无</div>'}</div>
+      </details>
     </div>`;
 }
 

@@ -323,6 +323,10 @@ html.dark .no-badge { box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .3), 0 0 10px rgb
 .lg-eng     { background: #4338ca; }
 .lg-prime   { background: #166534; }
 
+/* 小号联赛徽章（条形图内用） */
+.lg-sm { padding: 1px 7px; font-size: 10.5px; border-radius: 4px; letter-spacing: .3px; white-space: nowrap; }
+.lg-other { background: #64748b; }
+
 /* ---------- 方向徽章 ---------- */
 .dir-win     { background: var(--risk-ok-bg); color: var(--risk-ok); font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid color-mix(in srgb, var(--risk-ok) 30%, transparent); }
 .dir-windraw { background: var(--risk-mid-bg); color: var(--risk-mid); font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid color-mix(in srgb, var(--risk-mid) 30%, transparent); }
@@ -428,8 +432,73 @@ html.dark .ring-num b { text-shadow: 0 0 12px rgba(76, 195, 221, .2); }
 .bar-fill.r { background: linear-gradient(180deg, #f07a6e, var(--risk-high)); }
 .bar-lbl { font-size: 12px; color: var(--sub); margin-top: 6px; line-height: 1.5; }
 
-/* ---------- 避雷卡片 ---------- */
-.avoid-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-top: 12px; }
+/* ---------- 避雷页面（可视化版） ---------- */
+/* 统计仪表盘 */
+.avoid-dash { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin: 16px 0 4px; }
+.avoid-stat {
+  background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+  padding: 14px 10px; text-align: center; box-shadow: var(--shadow); transition: transform .15s;
+}
+.avoid-stat:hover { transform: translateY(-2px); }
+.avoid-stat-num { font-size: 30px; font-weight: 900; font-family: var(--font-title); line-height: 1.1; }
+.avoid-stat-lbl { font-size: 12px; color: var(--sub); margin-top: 4px; }
+.avoid-stat.st-high { border-color: color-mix(in srgb, var(--risk-high) 40%, transparent); }
+.avoid-stat.st-high .avoid-stat-num { color: var(--risk-high); }
+.avoid-stat.st-watch { border-color: color-mix(in srgb, var(--risk-mid) 40%, transparent); }
+.avoid-stat.st-watch .avoid-stat-num { color: var(--risk-mid); }
+.avoid-stat.st-lg .avoid-stat-num, .avoid-stat.st-batch .avoid-stat-num { color: var(--primary); }
+
+/* 联赛分布条形图 */
+.avoid-league {
+  margin: 14px 0 18px; padding: 14px 16px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow);
+}
+.avoid-league h4 { margin: 0 0 10px; font-size: 13.5px; color: var(--ink); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.avoid-league-hint { font-size: 11px; color: var(--sub); font-weight: 400; }
+.avoid-lbar { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+.avoid-lbar .lg-sm { width: 72px; text-align: center; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; }
+.avoid-lbar-track { flex: 1; height: 14px; border-radius: 7px; background: color-mix(in srgb, var(--border) 60%, transparent); overflow: hidden; }
+.avoid-lbar-fill { height: 100%; border-radius: 7px; background: linear-gradient(90deg, color-mix(in srgb, var(--risk-high) 55%, transparent), var(--risk-high)); transition: width .5s; }
+.avoid-lbar-num { width: 22px; font-size: 12px; font-weight: 700; color: var(--ink); }
+
+/* 区块折叠（高信号/观察） */
+.avoid-sec { margin-top: 16px; }
+.avoid-sec > summary {
+  cursor: pointer; list-style: none; user-select: none;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 15.5px; font-weight: 800; font-family: var(--font-title);
+  padding: 12px 16px; background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; box-shadow: var(--shadow); transition: border-color .15s;
+}
+.avoid-sec > summary::-webkit-details-marker { display: none; }
+.avoid-sec > summary:hover { border-color: var(--primary); }
+.avoid-sec.sec-high > summary { color: var(--risk-high); border-left: 4px solid var(--risk-high); }
+.avoid-sec.sec-watch > summary { color: var(--risk-mid); border-left: 4px solid var(--risk-mid); }
+.avoid-sec-hint { margin-left: auto; font-size: 11px; font-weight: 400; color: var(--sub); }
+
+/* 单队折叠条目（默认收起仅显队名） */
+.avoid-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; margin-top: 12px; }
+.avoid-item { background: var(--card); border: 1px solid var(--border); border-radius: 11px; box-shadow: var(--shadow); transition: border-color .15s; overflow: hidden; }
+.avoid-item:hover { border-color: var(--primary); }
+.avoid-item > summary {
+  cursor: pointer; list-style: none; user-select: none;
+  display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+}
+.avoid-item > summary::-webkit-details-marker { display: none; }
+.avoid-item-ic { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.avoid-item.high .avoid-item-ic { background: var(--risk-high-bg); }
+.avoid-item.watch .avoid-item-ic { background: var(--risk-mid-bg); }
+.avoid-item-name { font-size: 14px; font-weight: 800; color: var(--ink); }
+.avoid-item-lg { margin-left: auto; }
+.avoid-item-lg .lg { font-size: 11px; padding: 1.5px 8px; }
+.avoid-item-arrow { font-size: 11px; color: var(--sub); transition: transform .2s; }
+.avoid-item[open] .avoid-item-arrow { transform: rotate(90deg); }
+.avoid-item-body {
+  font-size: 12.5px; color: var(--ink); line-height: 1.65;
+  padding: 2px 14px 13px 52px; border-top: 1px dashed var(--border); margin: 0 14px 0 0;
+}
+
+/* 兼容旧类（其他页面引用时兜底） */
 .avoid-card {
   background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
   display: flex; gap: 12px; align-items: flex-start; transition: all .15s; box-shadow: var(--shadow);
