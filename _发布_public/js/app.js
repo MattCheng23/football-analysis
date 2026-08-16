@@ -145,24 +145,22 @@ function renderPredict(batch) {
     <td>${a.logic}</td>
   </tr>`).join("");
 
-  // 0-0 预警：只显示中等偏低及以上等级，按概率排序（不足 3 场按实际展示，不硬凑）
+  // 0-0 预警：只显示中等偏低及以上等级，按概率排序（全部展示，不截断）
   const zzRows = (p.zeroZero || [])
     .filter(z => z.lvTxt !== "低")
     .slice()
     .sort((a, z) => z.p - a.p)
-    .slice(0, 3)
     .map(z => `<tr>
     <td>${z.no} ${z.teams}</td>
     <td><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${z.p}%"></div></div><span class="prob-txt num">${z.p}%</span></div></td>
     <td><span class="tag ${z.lv}">${z.lvTxt}</span></td>
   </tr>`).join("");
 
-  // 7+ 球预警：总进球 ≥7 的极端大球，只显示中等偏低及以上等级（不足 3 场按实际展示，不硬凑）
+  // 7+ 球预警：总进球 ≥7 的极端大球，只显示中等偏低及以上等级（全部展示，不截断）
   const bigRows = (p.bigSeven || [])
     .filter(z => z.lvTxt !== "低")
     .slice()
     .sort((a, z) => z.p - a.p)
-    .slice(0, 3)
     .map(z => `<tr>
     <td>${z.no} ${z.teams}</td>
     <td><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${z.p}%"></div></div><span class="prob-txt num">${z.p}%</span></div></td>
