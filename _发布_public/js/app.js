@@ -130,19 +130,27 @@ function renderPredict(batch) {
   </tr>`;
   }).join("");
 
-  // 冷门风险（精简：前6条，无逻辑列）
-  const coldRows = p.coldRisk.slice(0, 6).map(c => `<tr>
+  // 冷门风险（全量展示，逻辑列预览 30 字 + 点击展开）
+  const coldRows = p.coldRisk.map(c => `<tr>
     <td>${c.rank}</td><td>${c.no} ${c.teams}</td><td>${c.dir}</td>
     <td><span class="tag ${c.lv}">${c.lvTxt}</span></td>
+    <td><details>
+      <summary>${cut(c.logic || "-", 30)}</summary>
+      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${c.logic || "-"}</div>
+    </details></td>
   </tr>`).join("");
 
-  // 高价值预警：只显示中等偏低及以上等级（排除"低"），不足按实际展示
+  // 高价值预警：只显示中等偏低及以上等级（排除"低"），逻辑列预览 30 字 + 点击展开
+  const cut = (s, n) => { s = (s || "").trim(); return s.length > n ? s.slice(0, n) + "…" : s; };
   const alertRows = p.alerts
     .filter(a => a.lvTxt !== "低")
     .map(a => `<tr>
     <td>${a.script}</td><td>${a.no} ${a.teams}</td>
     <td><span class="tag ${a.lv}">${a.lvTxt}</span></td>
-    <td>${a.logic}</td>
+    <td><details>
+      <summary>${cut(a.logic, 30) || "-"}</summary>
+      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${a.logic || ""}</div>
+    </details></td>
   </tr>`).join("");
 
   // 0-0 预警：只显示中等偏低及以上等级，按概率排序（全部展示，不截断）
@@ -168,7 +176,6 @@ function renderPredict(batch) {
   </tr>`).join("");
 
   // 核心逻辑速览：预览 30 字 + 点击展开全文（与复盘页技术统计统一风格）
-  const cut = (s, n) => { s = (s || "").trim(); return s.length > n ? s.slice(0, n) + "…" : s; };
   const logicRows = sorted.map(m => `<tr>
     <td><span class="no-badge">${m.no}</span></td>
     <td>${m.home} vs ${m.away}${m.time ? `<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time}</span></span>` : ""}</td>
@@ -197,9 +204,9 @@ function renderPredict(batch) {
     </div>
 
     <div class="card">
-      <h2><span class="icon">🌡️</span> 冷门风险 Top6</h2>
+      <h2><span class="icon">🌡️</span> 冷门风险（${p.coldRisk.length} 场全量）</h2>
       <div class="table-wrap"><table>
-        <thead><tr><th>排名</th><th>场次</th><th>冷门方向</th><th>风险等级</th></tr></thead>
+        <thead><tr><th>排名</th><th>场次</th><th>冷门方向</th><th>风险等级</th><th>核心逻辑</th></tr></thead>
         <tbody>${coldRows}</tbody>
       </table></div>
     </div>
@@ -210,25 +217,25 @@ function renderPredict(batch) {
         <thead><tr><th>剧本</th><th>场次</th><th>概率</th><th>核心逻辑</th></tr></thead>
         <tbody>${alertRows}</tbody>
       </table></div>
-      <div class="note">仅显示中等偏低及以上等级的剧本，其余已过滤。</div>
+      <div class="note">仅显示中等偏低及以上等级的剧本，其余已过滤。全部剧本按概率排序展示。</div>
     </div>
 
     <div class="card">
-      <h2><span class="icon">🛡️</span> 0-0 预警</h2>
+      <h2><span class="icon">🛡️</span> 0-0 预警（${(p.zeroZero || []).length} 场全量）</h2>
       <div class="table-wrap"><table>
         <thead><tr><th>场次</th><th>0-0 概率</th><th>等级</th></tr></thead>
         <tbody>${zzRows}</tbody>
       </table></div>
-      <div class="note">仅显示中等偏低及以上等级（泊松计算），不足 3 场按实际展示。</div>
+      <div class="note">仅显示中等偏低及以上等级（泊松计算），全量展示按概率排序。</div>
     </div>
 
     <div class="card">
-      <h2><span class="icon">🎆</span> 7+ 球预警</h2>
+      <h2><span class="icon">🎆</span> 7+ 球预警（${(p.bigSeven || []).length} 场全量）</h2>
       <div class="table-wrap"><table>
         <thead><tr><th>场次</th><th>7+ 球概率</th><th>等级</th></tr></thead>
         <tbody>${bigRows}</tbody>
       </table></div>
-      <div class="note">仅显示中等偏低及以上等级（总进球 ≥7，如 4-3/5-2/6-1，R346），不足 3 场按实际展示。</div>
+      <div class="note">仅显示中等偏低及以上等级（总进球 ≥7，如 4-3/5-2/6-1，R346），全量展示按概率排序。</div>
     </div>
 
     <div class="card">
