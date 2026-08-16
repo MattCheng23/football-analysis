@@ -106,13 +106,13 @@ function renderPredict(batch) {
   const riskTag = r => r >= 7 ? `<span class="tag tag-red">🔴 ${r}</span>`
     : r >= 5 ? `<span class="tag tag-orange">🟠 ${r}</span>`
     : `<span class="tag tag-green">🟢 ${r}</span>`;
-  // 预测等级 → 颜色类（V10.31：A+ A A- 绿系 / B+ 蓝 / B 黄 / C 红，B- 并入 C）
+  // 预测等级 → 颜色类（R337 v2：A+ A A- 绿系 / B+ 蓝 / B 黄 / B- 紫（2主1反·1个反向比分标*）/ C 红（1主2反·2个反向比分标*））
   const lvlClass = d => {
     if (d.includes("A+")) return "lvl-aplus";
     if (d.includes("A-")) return "lvl-aminus";
     if (d.includes("A")) return "lvl-a";
     if (d.includes("B+")) return "lvl-bplus";
-    if (d.includes("B-")) return "lvl-c"; // B- 并入 C
+    if (d.includes("B-")) return "lvl-bminus";
     if (d.includes("B")) return "lvl-b";
     return "lvl-c";
   };
@@ -189,7 +189,8 @@ function renderPredict(batch) {
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#4ade80"></span> A- 中高</span>
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#2563eb"></span> B+ 中偏正路</span>
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#d97706"></span> B 中</span>
-        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#dc2626"></span> C 低（含 1 反向比分，标 <span class="rev-score">*</span>）</span>
+        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#9333ea"></span> B- 中低（2 主 1 反，1 个反向比分标 <span class="rev-score">*</span>）</span>
+        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#dc2626"></span> C 低（1 主 2 反，2 个反向比分标 <span class="rev-score">*</span>）</span>
       </div>
       <div class="table-wrap"><table>
         <thead><tr><th>场次</th><th>对阵（北京时间）</th><th>方向</th><th>比分 TOP3</th><th>半全场 TOP3</th><th>总进球</th><th>假赛分</th></tr></thead>
@@ -658,16 +659,43 @@ function renderBatchHeader() {
     const idx = keys.indexOf(currentKey);
     const prevK = idx > 0 ? keys[idx - 1] : null;
     const nextK = idx < keys.length - 1 ? keys[idx + 1] : null;
+    // 更新日志（收纳按钮+浮层）：聚合本批次所有场次 updates，按时间倒序；主清单直接显示最新版
+    const ms = (b.predict && b.predict.matches) || [];
+    const logItems = ms
+      .flatMap(m => (Array.isArray(m.updates) && m.updates.length
+        ? m.updates.map(u => ({ no: m.no, teams: `${m.home} vs ${m.away}`, t: u.t, x: u.x })) : []))
+      .sort((a, z) => (a.t < z.t ? 1 : a.t > z.t ? -1 : 0));
+    const updBtn = `<button class="updlog-btn${logItems.length ? " has-upd" : ""}" onclick="toggleUpdLog()" title="点击展开/收起更新日志">📜 更新日志${logItems.length ? ` <b>${logItems.length}</b>` : ""}</button>`;
+    const updDrop = `<div class="updlog-dropdown" id="updlog-dropdown" style="display:none">
+      <div class="updlog-head">📜 更新日志 <span class="hint">主清单直接显示最新版，此处记录变更明细（旧值→新值）</span></div>
+      ${logItems.length ? `<div class="updlog-list">${logItems.map(it => `<div class="updlog-item">
+        <span class="updlog-time">${it.t}</span>
+        <span class="updlog-no">${it.no}</span>
+        <span class="updlog-teams">${it.teams}</span>
+        <span class="updlog-x">${it.x}</span>
+      </div>`).join("")}</div>`
+      : `<div class="note" style="margin:0">暂无更新——开赛前若有首发/伤停调整，更新版将直接覆盖主清单对应行，变更记录在此。</div>`}
+    </div>`;
     el.innerHTML = `
-      <button class="batch-nav" onclick="selectDate('${prevK}')" ${prevK ? "" : "disabled"} title="${prevK ? fmtDate(prevK) : ""}">‹ 上批</button>
-      <span class="badge badge-soft">📅 ${fmtDate(currentKey)}</span>
-      <span class="badge badge-solid">${b.title}</span>
-      ${b.updated ? `<span class="badge badge-soft">🕐 更新 ${b.updated}</span>` : ""}
-      <span class="badge badge-soft" style="margin-left:auto">模型 <b style="color:var(--primary)">${b.model}</b></span>
-      ${b.reviewed ? `<span class="badge badge-solid" style="background:linear-gradient(135deg,#15803d,#22a55a)">✅ 已复盘</span>`
-                   : `<span class="badge badge-gold">📋 待复盘</span>`}
-      <button class="batch-nav" onclick="selectDate('${nextK}')" ${nextK ? "" : "disabled"} title="${nextK ? fmtDate(nextK) : ""}">下批 ›</button>`;
+      <div style="position:relative">
+        <button class="batch-nav" onclick="selectDate('${prevK}')" ${prevK ? "" : "disabled"} title="${prevK ? fmtDate(prevK) : ""}">‹ 上批</button>
+        <span class="badge badge-soft">📅 ${fmtDate(currentKey)}</span>
+        <span class="badge badge-solid">${b.title}</span>
+        ${b.updated ? `<span class="badge badge-soft">🕐 更新 ${b.updated}</span>` : ""}
+        ${updBtn}
+        <span class="badge badge-soft" style="margin-left:auto">模型 <b style="color:var(--primary)">${b.model}</b></span>
+        ${b.reviewed ? `<span class="badge badge-solid" style="background:linear-gradient(135deg,#15803d,#22a55a)">✅ 已复盘</span>`
+                     : `<span class="badge badge-gold">📋 待复盘</span>`}
+        <button class="batch-nav" onclick="selectDate('${nextK}')" ${nextK ? "" : "disabled"} title="${nextK ? fmtDate(nextK) : ""}">下批 ›</button>
+        ${updDrop}
+      </div>`;
   }
+}
+
+/* 更新日志浮层展开/收起 */
+function toggleUpdLog() {
+  const d = document.getElementById("updlog-dropdown");
+  if (d) d.style.display = d.style.display === "none" ? "block" : "none";
 }
 
 /* ---------- 避雷名单（独立子页面，跨批次聚合） ---------- */
