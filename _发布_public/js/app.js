@@ -727,24 +727,16 @@ function lgBadge(lg, small) {
 function renderAvoid() {
   const el = document.getElementById("avoid-view");
   if (!el) return;
-  // 跨批次聚合 avoidHigh / avoidWatch，按队伍去重（保留最新 reason）
-  const highMap = {}, watchMap = {};
-  Object.keys(BATCHES).forEach(k => {
-    const r = BATCHES[k].review;
-    if (!r) return;
-    (r.avoidHigh || []).forEach(a => { highMap[a.team] = a; });
-    (r.avoidWatch || []).forEach(a => { watchMap[a.team] = a; });
-  });
-  const highList = Object.values(highMap), watchList = Object.values(watchMap);
-  const srcCount = Object.keys(BATCHES).filter(k => BATCHES[k].review && ((BATCHES[k].review.avoidHigh && BATCHES[k].review.avoidHigh.length) || (BATCHES[k].review.avoidWatch && BATCHES[k].review.avoidWatch.length))).length;
+  const R = (typeof TEAM_RATING !== "undefined") ? TEAM_RATING : [];
+  const by = (g) => R.filter(x => x.g === g);
+  const r2 = by("R2"), r1 = by("R1"), n = by("N"), b1 = by("B1"), b2 = by("B2");
 
-  // —— 联赛分布统计（可视化：哪个联赛避雷队最多）——
+  // —— 联赛分布（黑榜+偏黑 = 假球重灾区）——
   const leagueCnt = {};
-  highList.concat(watchList).forEach(a => {
-    const lg = a.league || "未知";
-    leagueCnt[lg] = (leagueCnt[lg] || 0) + 1;
+  b2.concat(b1).forEach(a => {
+    (a.lg || "未知").split(",").forEach(lg => { leagueCnt[lg.trim()] = (leagueCnt[lg.trim()] || 0) + 1; });
   });
-  const lgEntries = Object.entries(leagueCnt).sort((a, b) => b[1] - a[1]);
+  const lgEntries = Object.entries(leagueCnt).sort((x, y) => y[1] - x[1]);
   const maxCnt = Math.max(1, ...lgEntries.map(e => e[1]));
   const lgBars = lgEntries.map(([lg, cnt]) => `
     <div class="avoid-lbar">
@@ -753,48 +745,72 @@ function renderAvoid() {
       <span class="avoid-lbar-num">${cnt}</span>
     </div>`).join("");
 
-  // —— 单队折叠条目（默认收起，仅显队名）——
-  const item = (a, kind) => `
-    <details class="avoid-item ${kind}">
+  // —— 单队折叠条目 ——
+  const ITEM_DEF = {
+    R2: { ic: "⭐", tag: "⭐ 红榜", cls: "tag-red", it: "red" },
+    R1: { ic: "🟢", tag: "🟢 偏红", cls: "tag-orange", it: "" },
+    B1: { ic: "🟡", tag: "🟡 偏黑", cls: "tag-yellow", it: "watch" },
+    B2: { ic: "🔴", tag: "🔴 黑榜", cls: "tag-red", it: "high" }
+  };
+  const item = (a, g) => {
+    const d = ITEM_DEF[g];
+    const meta = `场次${a.p} · 三指标${a.tp} · 红${a.r}/黑${a.b}`;
+    return `
+    <details class="avoid-item ${d.it}">
       <summary>
-        <span class="avoid-item-ic">${kind === "high" ? "🚫" : "👀"}</span>
-        <span class="avoid-item-name">${a.team}</span>
-        <span class="avoid-item-lg">${lgBadge(a.league)}</span>
-        <span class="tag ${kind === "high" ? "tag-red" : "tag-yellow"}">${kind === "high" ? "🔴 高" : "🟡 观察"}</span>
+        <span class="avoid-item-ic">${d.ic}</span>
+        <span class="avoid-item-name">${a.t}</span>
+        <span class="avoid-item-lg">${lgBadge((a.lg || "").split(",")[0])}</span>
+        <span style="margin-left:8px;font-size:11px;opacity:.7">${meta}</span>
+        <span class="tag ${d.cls}">${d.tag}</span>
         <span class="avoid-item-arrow">▸</span>
       </summary>
-      <div class="avoid-item-body">${a.reason}</div>
+      <div class="avoid-item-body">${a.rs || meta}</div>
     </details>`;
+  };
 
   el.innerHTML = `
     <div class="card">
-      <h2><span class="icon">🚨</span> 队伍级避雷名单（全联赛统一）</h2>
-      <div class="note">避雷队伍参与的比赛预测置信度降一级 + 强制"避雷预警"标记；名单动态维护，跨批次累计（当前 ${highList.length + watchList.length} 队，来自 ${srcCount} 个批次）。</div>
+      <h2><span class="icon">🚨</span> 队伍红黑总榜（R358 · 假赛风险评估）</h2>
+      <div class="note">赛前分析看双方评级：双红榜=放心正路；任一黑方参与=抓鬼重点。红榜=正路稳定不演戏（三指标全中），黑榜=演戏/剧本嫌疑（避雷/危险信号）。当前 ${R.length} 队（7/21-8/16 全 26 批次聚合），中性 ${n.length} 队未展示。</div>
 
       <!-- 统计仪表盘 -->
       <div class="avoid-dash">
-        <div class="avoid-stat st-high"><div class="avoid-stat-num">${highList.length}</div><div class="avoid-stat-lbl">🔴 高信号</div></div>
-        <div class="avoid-stat st-watch"><div class="avoid-stat-num">${watchList.length}</div><div class="avoid-stat-lbl">🟡 观察</div></div>
-        <div class="avoid-stat st-lg"><div class="avoid-stat-num">${lgEntries.length}</div><div class="avoid-stat-lbl">🏆 涉及联赛</div></div>
-        <div class="avoid-stat st-batch"><div class="avoid-stat-num">${srcCount}</div><div class="avoid-stat-lbl">📚 来源批次</div></div>
+        <div class="avoid-stat st-high"><div class="avoid-stat-num">${r2.length}</div><div class="avoid-stat-lbl">⭐ 红榜·稳定</div></div>
+        <div class="avoid-stat st-lg"><div class="avoid-stat-num">${r1.length}</div><div class="avoid-stat-lbl">🟢 偏红</div></div>
+        <div class="avoid-stat st-batch"><div class="avoid-stat-num">${n.length}</div><div class="avoid-stat-lbl">⚪ 中性</div></div>
+        <div class="avoid-stat st-watch"><div class="avoid-stat-num">${b1.length}</div><div class="avoid-stat-lbl">🟡 偏黑</div></div>
+        <div class="avoid-stat st-high"><div class="avoid-stat-num">${b2.length}</div><div class="avoid-stat-lbl">🔴 黑榜</div></div>
       </div>
 
       <!-- 联赛分布可视化 -->
       <div class="avoid-league">
-        <h4>📊 避雷队联赛分布 <span class="avoid-league-hint">（高信号+观察，最多见 = 假球重灾区）</span></h4>
+        <h4>📊 黑榜+偏黑联赛分布 <span class="avoid-league-hint">（假球重灾区）</span></h4>
         ${lgBars || '<div class="note">暂无数据</div>'}
       </div>
 
-      <!-- 高信号（默认展开） -->
+      <!-- 红榜·稳定（默认展开） -->
       <details class="avoid-sec sec-high" open>
-        <summary>🚫 🔴 高信号（${highList.length}）<span class="avoid-sec-hint">点击${highList.length ? "折叠/展开" : ""}</span></summary>
-        <div class="avoid-grid">${highList.map(a => item(a, "high")).join("") || '<div class="note">暂无</div>'}</div>
+        <summary>⭐ 红榜·稳定（${r2.length}）<span class="avoid-sec-hint">三指标全中≥2 且 0 演戏 → 评级 +0.5 档</span></summary>
+        <div class="avoid-grid">${r2.map(a => item(a, "R2")).join("") || '<div class="note">暂无</div>'}</div>
       </details>
 
-      <!-- 观察（默认折叠，防堆积） -->
+      <!-- 偏红（默认折叠） -->
+      <details class="avoid-sec sec-red">
+        <summary>🟢 偏红（${r1.length}）<span class="avoid-sec-hint">点击展开 ${r1.length} 队</span></summary>
+        <div class="avoid-grid">${r1.map(a => item(a, "R1")).join("") || '<div class="note">暂无</div>'}</div>
+      </details>
+
+      <!-- 偏黑（默认折叠） -->
       <details class="avoid-sec sec-watch">
-        <summary>👀 🟡 观察（${watchList.length}）<span class="avoid-sec-hint">点击展开 ${watchList.length} 队</span></summary>
-        <div class="avoid-grid">${watchList.map(a => item(a, "watch")).join("") || '<div class="note">暂无</div>'}</div>
+        <summary>🟡 偏黑（${b1.length}）<span class="avoid-sec-hint">点击展开 ${b1.length} 队</span></summary>
+        <div class="avoid-grid">${b1.map(a => item(a, "B1")).join("") || '<div class="note">暂无</div>'}</div>
+      </details>
+
+      <!-- 黑榜（默认展开） -->
+      <details class="avoid-sec sec-high" open>
+        <summary>🔴 黑榜（${b2.length}）<span class="avoid-sec-hint">避雷/危险信号 → 置信度降一级</span></summary>
+        <div class="avoid-grid">${b2.map(a => item(a, "B2")).join("") || '<div class="note">暂无</div>'}</div>
       </details>
     </div>`;
 }
