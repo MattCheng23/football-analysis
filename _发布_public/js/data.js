@@ -6,7 +6,7 @@
 const BATCHES = {
   "2026-08-12": {
     title: "8/12 周二批次（副本4补录·竞彩校正）",
-    model: "V10.0",
+    model: "V10.37",
     predictDate: "2026-08-12",
     reviewed: true,
     stats: { dir: "6/7", dirPct: "85.7%", score: "3/7", scorePct: "42.9%", ht: "6/7", htPct: "85.7%" },
@@ -82,7 +82,7 @@ const BATCHES = {
   },
   "2026-08-05": {
     title: "8/5 周二批次（欧冠首回合·竞彩校正）",
-    model: "V10.0",
+    model: "V10.37",
     predictDate: "2026-08-05",
     reviewed: true,
     stats: { dir: "3/5", dirPct: "60%", score: "2/5", scorePct: "40%", ht: "4/5", htPct: "80%" },
@@ -1716,7 +1716,7 @@ const BATCHES = {
   },
   "2026-08-17": {
     title: "8月17 周一批次",
-    model: "V10.36",
+    model: "V10.37",
     predictDate: "2026-08-17",
     updated: "2026-08-17 18:52",
     stats: { dir: "5/5", dirPct: "100%", score: "1/5", scorePct: "20%", ht: "2/5", htPct: "40%" },
