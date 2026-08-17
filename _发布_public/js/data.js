@@ -1770,7 +1770,7 @@ const BATCHES = {
         { no: "004", teams: "拉科 vs 埃尔切", p: 6, lv: "tag-gray", lvTxt: "低" }
       ],
       bigSeven: [
-        { no: "005", teams: "卡萨皮亚 vs 本菲卡", p: 5, lv: "tag-gray", lvTxt: "低" }
+        { no: "005", teams: "卡萨皮亚 vs 本菲卡", p: 8, lv: "tag-gray", lvTxt: "低" }
       ]
     },
     review: { results: [], evidence: [] }
