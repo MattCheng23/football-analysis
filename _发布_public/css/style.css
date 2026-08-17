@@ -488,6 +488,20 @@ html.dark .ring-num b { text-shadow: 0 0 12px rgba(76, 195, 221, .2); }
 .avoid-item-ic { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; }
 .avoid-item.high .avoid-item-ic { background: var(--risk-high-bg); }
 .avoid-item.watch .avoid-item-ic { background: var(--risk-mid-bg); }
+/* 红黑总榜配色（R358）：红榜绿 / 偏红蓝 / 偏黑黄 / 黑榜红 */
+.avoid-item.red .avoid-item-ic { background: var(--risk-ok-bg); }
+.avoid-item.blue .avoid-item-ic { background: rgba(58,123,213,.12); }
+.tag-blue { background: rgba(58,123,213,.12); color: #3a7bd5; border-color: rgba(58,123,213,.35); }
+html.dark .tag-blue { background: rgba(88,160,255,.14); color: #7db1ff; border-color: rgba(88,160,255,.4); }
+.avoid-sec.sec-green > summary { color: var(--risk-ok); border-left: 4px solid var(--risk-ok); }
+.avoid-sec.sec-blue > summary { color: #3a7bd5; border-left: 4px solid #3a7bd5; }
+html.dark .avoid-sec.sec-blue > summary { color: #7db1ff; border-left: 4px solid #7db1ff; }
+.avoid-stat.st-green { border-color: color-mix(in srgb, var(--risk-ok) 40%, transparent); }
+.avoid-stat.st-green .avoid-stat-num { color: var(--risk-ok); }
+.avoid-stat.st-blue { border-color: rgba(58,123,213,.35); }
+.avoid-stat.st-blue .avoid-stat-num { color: #3a7bd5; }
+html.dark .avoid-stat.st-blue { border-color: rgba(88,160,255,.4); }
+html.dark .avoid-stat.st-blue .avoid-stat-num { color: #7db1ff; }
 .avoid-item-name { font-size: 14px; font-weight: 800; color: var(--ink); }
 .avoid-item-lg { margin-left: auto; }
 .avoid-item-lg .lg { font-size: 11px; padding: 1.5px 8px; }

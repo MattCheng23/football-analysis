@@ -747,8 +747,8 @@ function renderAvoid() {
 
   // —— 单队折叠条目 ——
   const ITEM_DEF = {
-    R2: { ic: "⭐", tag: "⭐ 红榜", cls: "tag-red", it: "red" },
-    R1: { ic: "🟢", tag: "🟢 偏红", cls: "tag-orange", it: "" },
+    R2: { ic: "⭐", tag: "⭐ 红榜", cls: "tag-green", it: "red" },
+    R1: { ic: "🟢", tag: "🟢 偏红", cls: "tag-blue", it: "blue" },
     B1: { ic: "🟡", tag: "🟡 偏黑", cls: "tag-yellow", it: "watch" },
     B2: { ic: "🔴", tag: "🔴 黑榜", cls: "tag-red", it: "high" }
   };
@@ -776,8 +776,8 @@ function renderAvoid() {
 
       <!-- 统计仪表盘 -->
       <div class="avoid-dash">
-        <div class="avoid-stat st-high"><div class="avoid-stat-num">${r2.length}</div><div class="avoid-stat-lbl">⭐ 红榜·稳定</div></div>
-        <div class="avoid-stat st-lg"><div class="avoid-stat-num">${r1.length}</div><div class="avoid-stat-lbl">🟢 偏红</div></div>
+        <div class="avoid-stat st-green"><div class="avoid-stat-num">${r2.length}</div><div class="avoid-stat-lbl">⭐ 红榜·稳定</div></div>
+        <div class="avoid-stat st-blue"><div class="avoid-stat-num">${r1.length}</div><div class="avoid-stat-lbl">🟢 偏红</div></div>
         <div class="avoid-stat st-batch"><div class="avoid-stat-num">${n.length}</div><div class="avoid-stat-lbl">⚪ 中性</div></div>
         <div class="avoid-stat st-watch"><div class="avoid-stat-num">${b1.length}</div><div class="avoid-stat-lbl">🟡 偏黑</div></div>
         <div class="avoid-stat st-high"><div class="avoid-stat-num">${b2.length}</div><div class="avoid-stat-lbl">🔴 黑榜</div></div>
@@ -790,13 +790,13 @@ function renderAvoid() {
       </div>
 
       <!-- 红榜·稳定（默认展开） -->
-      <details class="avoid-sec sec-high" open>
+      <details class="avoid-sec sec-green" open>
         <summary>⭐ 红榜·稳定（${r2.length}）<span class="avoid-sec-hint">三指标全中≥2 且 0 演戏 → 评级 +0.5 档</span></summary>
         <div class="avoid-grid">${r2.map(a => item(a, "R2")).join("") || '<div class="note">暂无</div>'}</div>
       </details>
 
       <!-- 偏红（默认折叠） -->
-      <details class="avoid-sec sec-red">
+      <details class="avoid-sec sec-blue">
         <summary>🟢 偏红（${r1.length}）<span class="avoid-sec-hint">点击展开 ${r1.length} 队</span></summary>
         <div class="avoid-grid">${r1.map(a => item(a, "R1")).join("") || '<div class="note">暂无</div>'}</div>
       </details>
