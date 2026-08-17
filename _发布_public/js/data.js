@@ -1718,7 +1718,7 @@ const BATCHES = {
     title: "8月17 周一批次",
     model: "V10.36",
     predictDate: "2026-08-17",
-    updated: "2026-08-17 17:21",
+    updated: "2026-08-17 18:52",
     stats: { dir: "-", dirPct: "-", score: "-", scorePct: "-", ht: "-", htPct: "-" },
     predict: {
       matches: [
