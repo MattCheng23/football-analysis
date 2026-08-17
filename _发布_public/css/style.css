@@ -502,6 +502,14 @@ html.dark .avoid-sec.sec-blue > summary { color: #7db1ff; border-left: 4px solid
 .avoid-stat.st-blue .avoid-stat-num { color: #3a7bd5; }
 html.dark .avoid-stat.st-blue { border-color: rgba(88,160,255,.4); }
 html.dark .avoid-stat.st-blue .avoid-stat-num { color: #7db1ff; }
+/* 联赛徽章云（红黑总榜联赛分布，替代条形图） */
+.avoid-lg-cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.avoid-lg-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px 3px 4px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; transition: border-color .15s; }
+.avoid-lg-badge:hover { border-color: var(--primary); }
+.avoid-lg-cnt { font-size: 11px; font-weight: 800; color: var(--risk-mid); }
+.avoid-lg-badge.lgc-mid .avoid-lg-cnt { color: var(--risk-mid); }
+.avoid-lg-badge.lgc-hot { border-color: color-mix(in srgb, var(--risk-high) 50%, transparent); background: color-mix(in srgb, var(--risk-high) 6%, var(--card)); }
+.avoid-lg-badge.lgc-hot .avoid-lg-cnt { color: var(--risk-high); }
 .avoid-item-name { font-size: 14px; font-weight: 800; color: var(--ink); }
 .avoid-item-lg { margin-left: auto; }
 .avoid-item-lg .lg { font-size: 11px; padding: 1.5px 8px; }

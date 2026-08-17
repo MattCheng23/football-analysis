@@ -737,13 +737,10 @@ function renderAvoid() {
     (a.lg || "未知").split(",").forEach(lg => { leagueCnt[lg.trim()] = (leagueCnt[lg.trim()] || 0) + 1; });
   });
   const lgEntries = Object.entries(leagueCnt).sort((x, y) => y[1] - x[1]);
-  const maxCnt = Math.max(1, ...lgEntries.map(e => e[1]));
-  const lgBars = lgEntries.map(([lg, cnt]) => `
-    <div class="avoid-lbar">
-      ${lgBadge(lg, true)}
-      <div class="avoid-lbar-track"><div class="avoid-lbar-fill" style="width:${(cnt / maxCnt * 100).toFixed(0)}%"></div></div>
-      <span class="avoid-lbar-num">${cnt}</span>
-    </div>`).join("");
+  const lgCloud = lgEntries.map(([lg, cnt]) => {
+    const hot = cnt >= 3 ? "lgc-hot" : (cnt === 2 ? "lgc-mid" : "");
+    return `<span class="avoid-lg-badge ${hot}">${lgBadge(lg, true)}<span class="avoid-lg-cnt">×${cnt}</span></span>`;
+  }).join("");
 
   // —— 单队折叠条目 ——
   const ITEM_DEF = {
@@ -785,8 +782,8 @@ function renderAvoid() {
 
       <!-- 联赛分布可视化 -->
       <div class="avoid-league">
-        <h4>📊 黑榜+偏黑联赛分布 <span class="avoid-league-hint">（假球重灾区）</span></h4>
-        ${lgBars || '<div class="note">暂无数据</div>'}
+        <h4>📊 黑榜+偏黑联赛分布 <span class="avoid-league-hint">（假球重灾区，徽章 ×数量）</span></h4>
+        <div class="avoid-lg-cloud">${lgCloud || '<div class="note">暂无数据</div>'}</div>
       </div>
 
       <!-- 红榜·稳定（默认展开） -->
