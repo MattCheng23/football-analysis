@@ -1719,7 +1719,7 @@ const BATCHES = {
     model: "V10.36",
     predictDate: "2026-08-17",
     updated: "2026-08-17 18:52",
-    stats: { dir: "-", dirPct: "-", score: "-", scorePct: "-", ht: "-", htPct: "-" },
+    stats: { dir: "1/1", dirPct: "100%", score: "0/1", scorePct: "0%", ht: "0/1", htPct: "0%" },
     predict: {
       matches: [
         { no: "001", home: "赫尔火花", away: "坦山猫", league: "芬超", lg: "lg-fin", time: "23:00",
@@ -1773,7 +1773,11 @@ const BATCHES = {
         { no: "005", teams: "卡萨皮亚 vs 本菲卡", p: 8, lv: "tag-yellow", lvTxt: "中等" }
       ]
     },
-    review: { results: [], evidence: [] }
+    review: { results: [
+        { no: "001", teams: "赫尔火花 vs 坦山猫", league: "芬超", lg: "lg-fin", score: "3-2（2-2）", d: "ok", s: "miss", h: "miss", signal: "方向✅ 比分❌ 半全场❌（胜胜/平平/负负* 实际平胜）", sc: "miss" },
+      ], evidence: [
+        { no: "001", teams: "赫尔火花 3-2 坦山猫", league: "芬超", lg: "lg-fin", stats: "射门 25:7、射正 7:4、控球 48%:52%、角球 8:3、大机会 0:3、最佳=Bogdan Milovanov 8.6（主队，24'黄+81'制胜球）", signal: "🟡 方向命中·剧本浓度中等（客队两黄变一红+半场补时双球）", txt: "3-2（半场2-2）：4'客队Väisänen乌龙0-1→14'Hytönen扳平→42'Popovitch反超1-2→45'主队Akinyemi补时追平2-2→56'客队Väisänen两黄变一红罚下→81'Milovanov制胜3-2。演戏排查：🟡 射门25:7碾压（R326沾边但赢球方）+客队3大机会全浪费+56'红牌改变走势；4'乌龙+42'/45'半场补时双球=剧本信号（R344中等）；81'制胜非补时、3-2后收手。控分排查：🟡 42'+45'热点段双球、总进球5球跨4.5线、56'红牌为关键事件时机（少一人后81'被制胜）、81'后收手未扩大，浓度中。", sc: "miss" },
+      ] }
   }
 };
 /* 红黑总榜（队伍评级，R358，由 redblack_analyze.py 自动生成） */
@@ -2040,8 +2044,8 @@ const TEAM_RATING = [
 ];
 
 const GLOBAL_STATS = {
-  dir: "140/245", dirPct: "57.1%",
-  score: "84/245", scorePct: "34.3%",
-  ht: "146/245", htPct: "59.6%",
-  updated: "2026-08-17"
+  dir: "141/246", dirPct: "57.3%",
+  score: "84/246", scorePct: "34.1%",
+  ht: "146/246", htPct: "59.3%",
+  updated: "2026-08-18"
 };

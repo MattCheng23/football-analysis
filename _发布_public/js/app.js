@@ -46,13 +46,16 @@ function renderCalendar() {
       <div class="cal-grid cal-days">`;
 
   for (let i = 0; i < startDow; i++) html += `<div class="cal-cell empty"></div>`;
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   for (let d = 1; d <= daysInMonth; d++) {
     const key = fmtKey(new Date(calYear, calMonth, d));
     const batch = BATCHES[key];
     const has = !!batch;
     const reviewed = batch && batch.reviewed;
     const isCur = key === currentKey;
-    html += `<div class="cal-cell ${has ? "has-data" : ""} ${isCur ? "current" : ""}" ${has ? `onclick="selectDate('${key}')" title="${fmtDate(key)}"` : ""}>
+    const isToday = key === todayKey;
+    html += `<div class="cal-cell ${has ? "has-data" : ""} ${isCur ? "current" : ""} ${isToday ? "today" : ""}" ${has ? `onclick="selectDate('${key}')" title="${fmtDate(key)}"` : ""}>
       <span class="cal-num">${d}</span>
       ${has ? `<span class="cal-dot ${reviewed ? "done" : "pending"}" title="${reviewed ? "已复盘" : "预测已发布"}"></span>` : ""}
     </div>`;
@@ -116,13 +119,21 @@ function renderPredict(batch) {
     if (d.includes("B")) return "lvl-b";
     return "lvl-c";
   };
+  // 方向文本精简：保留方向+等级，冷门联动只显示"（冷门第N）"，去掉长描述
+  const shortDir = d => {
+    const s = (d || "").trim();
+    return s.replace(/（冷门第(\d+)）?联动[^）]*）|（冷门第(\d+)联动[^）]*）|（冷门第(\d+)）?联动[^）]*）/, (m, a, b, c) => {
+      const n = a || b || c;
+      return n ? "（冷门第" + n + "）" : m;
+    });
+  };
   const rows = sorted.map(m => {
     const revHtml = m.scores.replace(/(\d+-\d+)\*/g, '<span class="rev-score">$1*</span>');
     const revHt = m.ht.replace(/([胜负平]{2})\*/g, '<span class="rev-score">$1*</span>');
     return `<tr>
     <td><span class="no-badge">${m.no}</span></td>
-    <td>${m.home} vs ${m.away}<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time || "-"}</span></span></td>
-    <td class="${lvlClass(m.dir)}">${m.dir}</td>
+    <td><b class="m-team">${m.home} vs ${m.away}</b><br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time || "-"}</span></span></td>
+    <td class="${lvlClass(m.dir)}">${shortDir(m.dir)}</td>
     <td class="score-nums">${revHtml}</td>
     <td>${revHt}</td>
     <td>${m.ou}</td>
@@ -139,7 +150,7 @@ function renderPredict(batch) {
     .slice()
     .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
     .map(c => `<tr>
-    <td>${c.rank}</td><td>${c.no} ${c.teams}</td><td>${c.dir}</td>
+    <td>${c.rank}</td><td>${c.no} ${c.teams}</td><td>${shortDir(c.dir)}</td>
     <td><span class="tag ${c.lv}">${c.lvTxt}</span></td>
     <td><details>
       <summary>${cut(c.logic || "-", 30)}</summary>
@@ -184,7 +195,7 @@ function renderPredict(batch) {
   // 核心逻辑速览：预览 30 字 + 点击展开全文（与复盘页技术统计统一风格）
   const logicRows = sorted.map(m => `<tr>
     <td><span class="no-badge">${m.no}</span></td>
-    <td>${m.home} vs ${m.away}${m.time ? `<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time}</span></span>` : ""}</td>
+    <td><b class="m-team">${m.home} vs ${m.away}</b>${m.time ? `<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time}</span></span>` : ""}</td>
     <td><details>
       <summary>${cut(m.logic, 30) || "-"}</summary>
       <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${m.logic || ""}</div>
@@ -193,7 +204,9 @@ function renderPredict(batch) {
 
   el.innerHTML = `
     <div class="card">
-      <h2><span class="icon">📋</span> 一、完整预测清单（${batch.title}）${batch.updated ? `<span class="mt-line" style="font-size:12px;color:var(--sub);margin-left:10px;">🕐 更新于 ${batch.updated}</span>` : ""}</h2>
+      <h2><span class="icon">📋</span> 一、完整预测清单（${batch.title}）${batch.updated ? `<span class="mt-line" style="font-size:12px;color:var(--sub);margin-left:10px;">🕐 更新于 ${batch.updated}</span>` : ""}
+        <button class="batch-nav" style="margin-left:auto" onclick="copyBatchText('${currentKey}')" title="复制本批全部预测为文本">📄 复制清单</button>
+      </h2>
       <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);margin-bottom:6px;">
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#15803d"></span> A+ 极高</span>
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#16a34a"></span> A 高</span>
@@ -355,7 +368,7 @@ function renderReview(batch) {
     const homeNm = nms[0] || "", awayNm = nms[1] || "";
     return `<tr class="${m.d === "ok" ? "ok-row" : ""}">
       <td><span class="no-badge">${m.no}</span></td>
-      <td>${homeNm} vs ${awayNm}<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span>${pm && pm.time ? `<span class="match-time">🕐 ${pm.time}</span>` : ""}</span></td>
+      <td><b class="m-team">${homeNm} vs ${awayNm}</b><br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span>${pm && pm.time ? `<span class="match-time">🕐 ${pm.time}</span>` : ""}</span></td>
       <td><b>${m.score}</b></td>
       <td>${dTag(m.d)}</td>
       <td>${hitTag(sTop)}</td>
@@ -372,7 +385,7 @@ function renderReview(batch) {
     const evAway = em ? em[2] : "";
     return `<tr>
     <td><b>${e.no}</b> ${evHome} vs ${evAway}<br><span class="mt-line"><span class="lg ${e.lg}">${e.league}</span></span></td>
-    <td><details>
+    <td><details class="ev-detail">
       <summary><span class="tag ${e.sc === "danger" ? "tag-red" : e.sc === "watch" ? "tag-yellow" : "tag-green"}">${e.signal}</span> <span style="font-size:12px;color:var(--sub)">点击展开</span></summary>
       <div style="margin-top:8px;font-size:12.5px;color:var(--sub);line-height:1.8">${e.stats || "—"}<br><br>${cleanTxt(e.txt) || ""}</div>
     </details></td>
@@ -399,7 +412,12 @@ function renderReview(batch) {
     </div>
 
     <div class="card">
-      <h2><span class="icon">🔎</span> 关键场次技术统计（演戏信号实证）<span class="hint">点击信号标签展开完整数据</span></h2>
+      <h2><span class="icon">🔎</span> 关键场次技术统计（演戏信号实证）<span class="hint">点击信号标签展开完整数据</span>
+        <span style="margin-left:auto;display:inline-flex;gap:6px">
+          <button class="batch-nav" onclick="toggleEvDetails(true)">全部展开</button>
+          <button class="batch-nav" onclick="toggleEvDetails(false)">全部折叠</button>
+        </span>
+      </h2>
       <div class="table-wrap"><table>
         <thead><tr><th>场次</th><th>演戏信号（点击展开）</th></tr></thead>
         <tbody>${evRows}</tbody>
@@ -408,6 +426,45 @@ function renderReview(batch) {
 }
 
 /* ---------- 站点总览统计条 + 批次趋势图 ---------- */
+function toggleEvDetails(open) {
+  document.querySelectorAll(".ev-detail").forEach(d => { d.open = open; });
+}
+
+/* 复制批次预测清单为纯文本（分享/对比用） */
+function copyBatchText(key) {
+  const b = BATCHES[key];
+  if (!b || !b.predict || !b.predict.matches) return;
+  const tMin = t => { if (!t) return 9999; const d = t.indexOf("次日") >= 0 ? 1440 : 0; const m = t.match(/(\d+):(\d+)/); return d + (m ? +m[1] * 60 + +m[2] : 0); };
+  const sorted = b.predict.matches.slice().sort((a, z) => tMin(a.time) - tMin(z.time));
+  const lines = [`${b.title}（${b.model}）`, `更新：${b.updated || "-"}`, ""];
+  sorted.forEach(m => {
+    lines.push(`[${m.no}] ${m.home} vs ${m.away}（${m.league}${m.time ? " " + m.time : ""}）`);
+    lines.push(`  方向：${shortDir(m.dir)}`);
+    lines.push(`  比分：${m.scores}`);
+    lines.push(`  半全场：${m.ht}`);
+    lines.push(`  总进球：${m.ou}`);
+    lines.push("");
+  });
+  const txt = lines.join("\n");
+  // 剪贴板复制（带降级）
+  const done = () => {
+    const btn = event && event.target;
+    if (btn) { const o = btn.textContent; btn.textContent = "✅ 已复制"; setTimeout(() => btn.textContent = o, 1500); }
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(done).catch(() => fallbackCopy(txt, done));
+  } else {
+    fallbackCopy(txt, done);
+  }
+}
+function fallbackCopy(txt, done) {
+  const ta = document.createElement("textarea");
+  ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); } catch (e) {}
+  document.body.removeChild(ta);
+  if (done) done();
+}
 function renderSiteStats() {
   const el = document.getElementById("site-stats");
   if (!el) return;
@@ -771,6 +828,12 @@ function renderAvoid() {
       <h2><span class="icon">🚨</span> 队伍红黑总榜（R358 · 假赛风险评估）</h2>
       <div class="note">赛前分析看双方评级：双红榜=放心正路；任一黑方参与=抓鬼重点。红榜=正路稳定不演戏（三指标全中），黑榜=演戏/剧本嫌疑（避雷/危险信号）。当前 ${R.length} 队（7/21-8/16 全 26 批次聚合），中性 ${n.length} 队未展示。</div>
 
+      <!-- 队伍搜索 -->
+      <div class="avoid-search">
+        <input id="avoidSearchInput" type="text" placeholder="🔍 搜索队伍（如 天狼星 / 本菲卡）…" oninput="renderAvoidSearch(this.value)">
+        <button class="avoid-search-clear" onclick="document.getElementById('avoidSearchInput').value='';renderAvoidSearch('')" title="清空">✕</button>
+      </div>
+
       <!-- 统计仪表盘 -->
       <div class="avoid-dash">
         <div class="avoid-stat st-green"><div class="avoid-stat-num">${r2.length}</div><div class="avoid-stat-lbl">⭐ 红榜·稳定</div></div>
@@ -784,6 +847,12 @@ function renderAvoid() {
       <div class="avoid-league">
         <h4>📊 黑榜+偏黑联赛分布 <span class="avoid-league-hint">（假球重灾区，徽章 ×数量）</span></h4>
         <div class="avoid-lg-cloud">${lgCloud || '<div class="note">暂无数据</div>'}</div>
+      </div>
+
+      <!-- 搜索结果（搜索时显示，替代分组） -->
+      <div id="avoidSearchResult" style="display:none">
+        <div class="avoid-grid" id="avoidSearchGrid"></div>
+        <div class="note" id="avoidSearchEmpty" style="display:none">未找到匹配队伍，换个关键词试试</div>
       </div>
 
       <!-- 红榜·稳定（默认展开） -->
@@ -810,6 +879,46 @@ function renderAvoid() {
         <div class="avoid-grid">${b2.map(a => item(a, "B2")).join("") || '<div class="note">暂无</div>'}</div>
       </details>
     </div>`;
+}
+
+/* 红黑榜队伍搜索（按名称/联赛过滤，命中任意档位） */
+function renderAvoidSearch(q) {
+  const R = (typeof TEAM_RATING !== "undefined") ? TEAM_RATING : [];
+  const resBox = document.getElementById("avoidSearchResult");
+  const grid = document.getElementById("avoidSearchGrid");
+  const empty = document.getElementById("avoidSearchEmpty");
+  const sections = document.querySelectorAll(".avoid-sec");
+  if (!resBox || !grid) return;
+  const kw = (q || "").trim().toLowerCase();
+  if (!kw) {
+    resBox.style.display = "none";
+    sections.forEach(s => s.style.display = "");
+    return;
+  }
+  // 命中匹配（队名/联赛）
+  const hits = R.filter(a => (a.t || "").toLowerCase().includes(kw) || (a.lg || "").toLowerCase().includes(kw));
+  const ITEM_DEF = { R2: ["⭐ 红榜", "tag-green", "red"], R1: ["🟢 偏红", "tag-blue", "blue"], B1: ["🟡 偏黑", "tag-yellow", "watch"], B2: ["🔴 黑榜", "tag-red", "high"] };
+  const itemHtml = (a, g) => {
+    const d = ITEM_DEF[g];
+    return `<details class="avoid-item ${d[2]}"><summary>
+      <span class="avoid-item-ic">${d[0][0]}</span>
+      <span class="avoid-item-name">${a.t}</span>
+      <span class="avoid-item-lg">${lgBadge((a.lg || "").split(",")[0])}</span>
+      <span style="margin-left:8px;font-size:11px;opacity:.7">场次${a.p} · 三指标${a.tp} · 红${a.r}/黑${a.b}</span>
+      <span class="tag ${d[1]}">${d[0]}</span>
+    </summary><div class="avoid-item-body">${a.rs || ""}</div></details>`;
+  };
+  const order = { R2: 0, R1: 1, B1: 2, B2: 3 };
+  hits.sort((x, y) => order[x.g] - order[y.g]);
+  resBox.style.display = "block";
+  sections.forEach(s => s.style.display = "none");
+  if (hits.length) {
+    empty.style.display = "none";
+    grid.innerHTML = hits.map(a => itemHtml(a, a.g)).join("");
+  } else {
+    empty.style.display = "block";
+    grid.innerHTML = "";
+  }
 }
 
 /* ---------- 入口 ---------- */
