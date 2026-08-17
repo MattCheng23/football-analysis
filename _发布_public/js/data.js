@@ -1764,13 +1764,13 @@ const BATCHES = {
       zeroZero: [
         { no: "006", teams: "巴西国际 vs 里莫", p: 13, lv: "tag-yellow", lvTxt: "中等" },
         { no: "003", teams: "加的夫 vs 雷克斯", p: 12, lv: "tag-yellow", lvTxt: "中等" },
-        { no: "002", teams: "赫根 vs 哈尔姆斯", p: 10, lv: "tag-gray", lvTxt: "低" },
-        { no: "001", teams: "赫尔火花 vs 坦山猫", p: 10, lv: "tag-gray", lvTxt: "低" },
+        { no: "002", teams: "赫根 vs 哈尔姆斯", p: 10, lv: "tag-yellow", lvTxt: "中等" },
+        { no: "001", teams: "赫尔火花 vs 坦山猫", p: 10, lv: "tag-yellow", lvTxt: "中等" },
         { no: "005", teams: "卡萨皮亚 vs 本菲卡", p: 5, lv: "tag-gray", lvTxt: "低" },
         { no: "004", teams: "拉科 vs 埃尔切", p: 6, lv: "tag-gray", lvTxt: "低" }
       ],
       bigSeven: [
-        { no: "005", teams: "卡萨皮亚 vs 本菲卡", p: 8, lv: "tag-gray", lvTxt: "低" }
+        { no: "005", teams: "卡萨皮亚 vs 本菲卡", p: 8, lv: "tag-yellow", lvTxt: "中等" }
       ]
     },
     review: { results: [], evidence: [] }
