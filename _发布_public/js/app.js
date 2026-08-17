@@ -208,9 +208,7 @@ function renderPredict(batch) {
         <button class="batch-nav" style="margin-left:auto" onclick="copyBatchText('${currentKey}')" title="复制本批全部预测为文本">📄 复制清单</button>
       </h2>
       <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);margin-bottom:6px;">
-        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#15803d"></span> A+ 极高</span>
-        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#16a34a"></span> A 高</span>
-        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#4ade80"></span> A- 中高</span>
+        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#16a34a"></span> A 高（3 正路）</span>
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#d97706"></span> B 中（2 正 1 反，1 个反向比分标 <span class="rev-score">*</span>）</span>
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#dc2626"></span> C 低（1 正 2 反，2 个反向比分标 <span class="rev-score">*</span>）</span>
       </div>
@@ -539,7 +537,7 @@ function renderLevelStats() {
       <thead><tr><th>预测级别</th><th>方向命中</th><th>命中率</th></tr></thead>
       <tbody>${row("A+")}${row("A")}${row("A-")}${row("B+")}${row("B")}${row("C")}</tbody>
     </table></div>
-    <div class="note">A+ 极高置信 ｜ A 高置信 ｜ A- 中高 ｜ B 中置信（2正1反，方向双选）｜ C 低置信（1正2反，方向反向倾斜）——ABC 三档制（2026-08-18 简化，B+/B- 并入 B）。用于检验"高置信更可靠"假设。</div>`;
+    <div class="note">A 高置信（3正路）｜ B 中置信（2正1反，方向双选）｜ C 低置信（1正2反，方向反向倾斜）——ABC 三档制（2026-08-18 简化，A+/A-/B+/B- 全部并入）。用于检验"高置信更可靠"假设。</div>`;
 }
 
 /* ---------- 联赛表现统计（V10.36：方向/比分/半全场三指标） ---------- */
