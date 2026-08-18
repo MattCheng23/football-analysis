@@ -103,9 +103,9 @@ function renderPredict(batch) {
   if (!el) return; // 复盘页无预测视图，跳过
   const p = batch.predict;
 
-  // 预测清单（含假赛评分列）；按北京时间开球排序
-  const tMin = t => { if (!t) return 9999; const d = t.indexOf("次日") >= 0 ? 1440 : 0; const m = t.match(/(\d+):(\d+)/); return d + (m ? +m[1] * 60 + +m[2] : 0); };
-  const sorted = p.matches.slice().sort((a, b) => tMin(a.time) - tMin(b.time));
+  // 预测清单（含假赛评分列）；严格按场次号 001-00n 排序（2026-08-18 用户要求，不再按开赛时间）
+  const byNo = (a, b) => parseInt(a.no) - parseInt(b.no);
+  const sorted = p.matches.slice().sort(byNo);
   const riskTag = r => r >= 7 ? `<span class="tag tag-red">🔴 ${r}</span>`
     : r >= 5 ? `<span class="tag tag-orange">🟠 ${r}</span>`
     : `<span class="tag tag-green">🟢 ${r}</span>`;
@@ -336,7 +336,7 @@ function renderReview(batch) {
         <div class="kpi"><div class="num">${r.results.filter(m => m.h === "ok").length}</div><div class="lbl">半全场已命中</div></div>
         ${ouKpi}`;
 
-  const rows = r.results.map(m => {
+  const rows = r.results.slice().sort((a, b) => parseInt(a.no) - parseInt(b.no)).map(m => {
     const pm = batch.predict.matches.find(x => x.no === m.no);
     const scoreMain = m.score.split("（")[0];
     const sTop = pm ? topOf(scoreMain, pm.scores) : null;
@@ -430,8 +430,8 @@ function toggleEvDetails(open) {
 function copyBatchText(key) {
   const b = BATCHES[key];
   if (!b || !b.predict || !b.predict.matches) return;
-  const tMin = t => { if (!t) return 9999; const d = t.indexOf("次日") >= 0 ? 1440 : 0; const m = t.match(/(\d+):(\d+)/); return d + (m ? +m[1] * 60 + +m[2] : 0); };
-  const sorted = b.predict.matches.slice().sort((a, z) => tMin(a.time) - tMin(z.time));
+  const byNo = (a, b) => parseInt(a.no) - parseInt(b.no);
+  const sorted = b.predict.matches.slice().sort(byNo);
   const lines = [`${b.title}（${b.model}）`, `更新：${b.updated || "-"}`, ""];
   sorted.forEach(m => {
     lines.push(`[${m.no}] ${m.home} vs ${m.away}（${m.league}${m.time ? " " + m.time : ""}）`);
