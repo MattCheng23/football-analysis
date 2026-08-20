@@ -492,6 +492,7 @@ function renderSiteStats() {
       <div class="site-stat"><span class="ss-num">${totalMatches}</span><span class="ss-lbl">已复盘场次</span></div>
       <div class="site-stat"><span class="ss-num">${dirPct}</span><span class="ss-lbl">批次方向命中</span></div>
       <div class="site-stat"><span class="ss-num">${GLOBAL_STATS.dirPct}</span><span class="ss-lbl">累计方向命中</span></div>
+      <div class="site-stat"><span class="ss-num">${GLOBAL_STATS.ouPct || "-"}</span><span class="ss-lbl">累计总进球命中${GLOBAL_STATS.ouNote ? "（" + GLOBAL_STATS.ouNote + "）" : ""}</span></div>
       <div class="site-stat"><span class="ss-num">${reviewed}/${totalBatches}</span><span class="ss-lbl">已复盘批次</span></div>
       <div class="site-stat"><span class="ss-num">${GLOBAL_STATS.updated.slice(5)}</span><span class="ss-lbl">最后更新</span></div>
     </div>
