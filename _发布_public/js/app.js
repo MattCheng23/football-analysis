@@ -2,6 +2,15 @@
    足球分析预测站 · 应用逻辑（日历 + 动态渲染）
    ============================================================ */
 
+/* 复盘数据合并（2026-08-20 拆分：data-review.js 由复盘页加载后并入 BATCHES；首页不加载则 review 为空壳） */
+(function(){
+  if (typeof REVIEW_EXTRA !== "undefined" && typeof BATCHES !== "undefined") {
+    Object.keys(REVIEW_EXTRA).forEach(function(k){
+      if (BATCHES[k]) BATCHES[k].review = REVIEW_EXTRA[k];
+    });
+  }
+})();
+
 /* ---------- 工具 ---------- */
 function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 function h(tag, cls, html) { return `<${tag} class="${cls}">${html}</${tag}>`; }
@@ -130,7 +139,8 @@ function renderPredict(batch) {
   const rows = sorted.map(m => {
     const revHtml = m.scores.replace(/(\d+-\d+)\*/g, '<span class="rev-score">$1*</span>');
     const revHt = m.ht.replace(/([胜负平]{2})\*/g, '<span class="rev-score">$1*</span>');
-    return `<tr>
+    const lv = (m.dir.match(/([ABC])级/) || [])[1] || "";
+    return `<tr data-lvl="${lv.toLowerCase()}">
     <td><span class="no-badge">${m.no}</span></td>
     <td><b class="m-team">${m.home} vs ${m.away}</b><br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time || "-"}</span></span></td>
     <td class="${lvlClass(m.dir)}">${shortDir(m.dir)}</td>
@@ -144,9 +154,26 @@ function renderPredict(batch) {
   // 通用截断工具：预览 30 字 + 点击展开全文（必须先于所有使用处定义）
   const cut = (s, n) => { s = (s || "").trim(); return s.length > n ? s.slice(0, n) + "…" : s; };
 
-  // 冷门风险（全部比赛全量展示，按等级从高到低排序，逻辑列预览 30 字 + 点击展开）
+  // 关键信息提取（8/21 用户要求：大段逻辑→简洁关键信息）：取 logic 中 **加粗段**，方向/伤停/天气 优先，前 3 段各截 36 字，｜ 连接；无加粗段退回 30 字截断
+  const logicKey = (l) => {
+    if (!l) return "-";
+    const segs = [];
+    const re = /\*\*(.+?)\*\*/g;
+    let m;
+    while ((m = re.exec(l))) segs.push(m[1]);
+    if (!segs.length) return cut(l, 30);
+    const pri = s => s.indexOf("方向") === 0 ? 0 : s.indexOf("伤停") === 0 ? 1 : s.indexOf("天气") === 0 ? 2 : 3;
+    const uniq = segs.filter((s, i) => segs.indexOf(s) === i);
+    uniq.sort((a, b) => pri(a) - pri(b));
+    return uniq.slice(0, 3).map(s => cut(s, 36)).join(" ｜ ");
+  };
+  // 全文加粗渲染：**X** → <b>X</b>，展开后重点一目了然
+  const logicHtml = (l) => (l || "").replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+
+  // 冷门风险（数据全比赛覆盖；展示仅过滤"低"等级——比赛多时全显示太乱，2026-08-22 用户拍板，与 0-0/7+ 预警一致；按等级从高到低排序，逻辑列预览 30 字 + 点击展开）
   const lvW = { "较高": 4, "中等偏高": 3, "中等": 2, "低": 1 };
   const coldRows = (p.coldRisk || [])
+    .filter(c => c.lvTxt !== "低")
     .slice()
     .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
     .map(c => `<tr>
@@ -154,7 +181,7 @@ function renderPredict(batch) {
     <td><span class="tag ${c.lv}">${c.lvTxt}</span></td>
     <td><details>
       <summary>${cut(c.logic || "-", 30)}</summary>
-      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${c.logic || "-"}</div>
+      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicHtml(c.logic)}</div>
     </details></td>
   </tr>`).join("");
 
@@ -166,7 +193,7 @@ function renderPredict(batch) {
     <td><span class="tag ${a.lv}">${a.lvTxt}</span></td>
     <td><details>
       <summary>${cut(a.logic, 30) || "-"}</summary>
-      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${a.logic || ""}</div>
+      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicHtml(a.logic)}</div>
     </details></td>
   </tr>`).join("");
 
@@ -192,13 +219,13 @@ function renderPredict(batch) {
     <td><span class="tag ${z.lv}">${z.lvTxt}</span></td>
   </tr>`).join("");
 
-  // 核心逻辑速览：预览 30 字 + 点击展开全文（与复盘页技术统计统一风格）
+  // 核心逻辑速览：自动提取关键信息（方向/伤停/天气）预览 + 点击展开全文（加粗渲染）
   const logicRows = sorted.map(m => `<tr>
     <td><span class="no-badge">${m.no}</span></td>
     <td><b class="m-team">${m.home} vs ${m.away}</b>${m.time ? `<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time}</span></span>` : ""}</td>
     <td><details>
-      <summary>${cut(m.logic, 30) || "-"}</summary>
-      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${m.logic || ""}</div>
+      <summary>${logicKey(m.logic)}</summary>
+      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicHtml(m.logic)}</div>
     </details></td>
   </tr>`).join("");
 
@@ -207,12 +234,26 @@ function renderPredict(batch) {
       <h2><span class="icon">📋</span> 一、完整预测清单（${batch.title}）${batch.updated ? `<span class="mt-line" style="font-size:12px;color:var(--sub);margin-left:10px;">🕐 更新于 ${batch.updated}</span>` : ""}
         <button class="batch-nav" style="margin-left:auto" onclick="copyBatchText('${currentKey}')" title="复制本批全部预测为文本">📄 复制清单</button>
       </h2>
+      <div class="batch-overview">
+        <span class="bo-item">⚽ 本批 <b>${sorted.length} 场</b></span>
+        <span class="bo-item bo-a">A 级 <b>${sorted.filter(m => /A级/.test(m.dir)).length}</b></span>
+        <span class="bo-item bo-b">B 级 <b>${sorted.filter(m => /B级/.test(m.dir)).length}</b></span>
+        <span class="bo-item bo-c">C 级 <b>${sorted.filter(m => /C级/.test(m.dir)).length}</b></span>
+        <span class="bo-item">🌡️ 冷门预警 <b>${(p.coldRisk || []).length} 场</b></span>
+        <span class="bo-item">🚨 高价值预警 <b>${(p.alerts || []).filter(a => a.lvTxt !== "低").length} 条</b></span>
+      </div>
+      <div class="lvl-filter">
+        <button class="active" data-f="all" onclick="filterLvl(this,'all')">全部</button>
+        <button data-f="a" onclick="filterLvl(this,'a')">A 级</button>
+        <button data-f="b" onclick="filterLvl(this,'b')">B 级</button>
+        <button data-f="c" onclick="filterLvl(this,'c')">C 级</button>
+      </div>
       <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);margin-bottom:6px;">
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#16a34a"></span> A 高（3 正路）</span>
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#d97706"></span> B 中（2 正 1 反，1 个反向比分标 <span class="rev-score">*</span>）</span>
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#dc2626"></span> C 低（1 正 2 反，2 个反向比分标 <span class="rev-score">*</span>）</span>
       </div>
-      <div class="table-wrap"><table>
+      <div class="table-wrap"><table class="batch-table">
         <thead><tr><th>场次</th><th>对阵（北京时间）</th><th>方向</th><th>比分 TOP3</th><th>半全场 TOP3</th><th>总进球</th><th>假赛分</th></tr></thead>
         <tbody>${rows}</tbody>
       </table></div>
@@ -224,6 +265,7 @@ function renderPredict(batch) {
         <thead><tr><th>排名</th><th>场次</th><th>冷门方向</th><th>风险等级</th><th>核心逻辑</th></tr></thead>
         <tbody>${coldRows}</tbody>
       </table></div>
+      <div class="note">仅显示中等及以上等级（数据覆盖全部比赛），按等级从高到低排序。</div>
     </div>
 
     <div class="card">
@@ -254,12 +296,22 @@ function renderPredict(batch) {
     </div>
 
     <div class="card">
-      <h2><span class="icon">💡</span> 各场核心逻辑 <span class="hint">点击展开全文</span></h2>
+      <h2><span class="icon">💡</span> 各场核心逻辑 <span class="hint">关键信息预览，点击展开全文</span></h2>
       <div class="table-wrap"><table>
         <thead><tr><th>场次</th><th>对阵</th><th>核心逻辑</th></tr></thead>
         <tbody>${logicRows}</tbody>
       </table></div>
     </div>`;
+}
+
+/* ---------- 等级筛选（2026-08-22 新增：批次概览+按 A/B/C 过滤预测表） ---------- */
+function filterLvl(btn, lvl) {
+  document.querySelectorAll(".lvl-filter button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  document.querySelectorAll("#predict-view .batch-table tbody tr").forEach(tr => {
+    const l = tr.getAttribute("data-lvl") || "";
+    tr.style.display = (lvl === "all" || l === lvl) ? "" : "none";
+  });
 }
 
 /* ---------- 渲染：复盘 ---------- */
@@ -636,13 +688,14 @@ function initSortable() {
 }
 
 /* ---------- 全局统计（近7日 + 预警命中率） + 批次头 ---------- */
-function renderGlobal() {
+function renderGlobal(mode) {
   const el = document.getElementById("global-kpi");
   if (!el) return;
   const pct = (h, n) => n ? Math.round(100 * h / n) + "%" : "—";
   const pctN = (h, n) => n ? Math.round(100 * h / n) : 0;
   const keys = Object.keys(BATCHES).sort();
   const weekStart = fmtKey(new Date(Date.now() - 7 * 864e5));
+  const isAll = mode === "all"; // 累计全量口径（2026-08-22 新增切换）
 
   // SVG 环形（专业仪表盘风格）
   const ring = (id, p, size) => {
@@ -671,7 +724,7 @@ function renderGlobal() {
   keys.forEach(k => {
     const b = BATCHES[k];
     if (!b.review || !b.review.results) return;
-    if (k < weekStart) return; // 仅近 7 日
+    if (!isAll && k < weekStart) return; // 近 7 日口径；累计全量不过滤
     b.review.results.forEach(m => {
       week.n++; if (m.d === "ok") week.d++; if (m.s === "ok") week.s++; if (m.h === "ok") week.h++;
       const pm = b.predict && b.predict.matches.find(x => x.no === m.no);
@@ -704,10 +757,14 @@ function renderGlobal() {
   });
 
   el.innerHTML = `
+    <div class="kpi-tabs">
+      <button class="${isAll ? "" : "active"}" onclick="renderGlobal('week')">近 7 日</button>
+      <button class="${isAll ? "active" : ""}" onclick="renderGlobal('all')">累计全量</button>
+    </div>
     <div class="kpi-row" style="margin-bottom:6px">
-      ${kpiRing("g-ring-d", pctN(week.d, week.n), week.d, week.n, "近7日方向")}
-      ${kpiRing("g-ring-s", pctN(week.s, week.n), week.s, week.n, "近7日比分 TOP3")}
-      ${kpiRing("g-ring-h", pctN(week.h, week.n), week.h, week.n, "近7日半全场 TOP3")}
+      ${kpiRing("g-ring-d", pctN(week.d, week.n), week.d, week.n, isAll ? "累计方向" : "近7日方向")}
+      ${kpiRing("g-ring-s", pctN(week.s, week.n), week.s, week.n, isAll ? "累计比分 TOP3" : "近7日比分 TOP3")}
+      ${kpiRing("g-ring-h", pctN(week.h, week.n), week.h, week.n, isAll ? "累计半全场 TOP3" : "近7日半全场 TOP3")}
     </div>
     <div class="kpi-row">
       <div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${ou.h}/${ou.n} <span style="font-size:12px">${pct(ou.h, ou.n)}</span></div><div class="lbl">⚽ 总进球命中</div></div>
@@ -772,7 +829,11 @@ const LG_CLS = {
   "葡超": "lg-prime", "芬超": "lg-fin", "挪超": "lg-nor", "英冠": "lg-champ",
   "巴甲": "lg-bras", "西甲": "lg-laliga", "荷甲": "lg-ered", "荷乙": "lg-eers",
   "英社区盾": "lg-eng", "英超": "lg-eng", "美职联": "lg-mls", "沙特联": "lg-spl",
-  "法乙": "lg-l2", "德乙": "lg-bundes2", "欧冠": "lg-ucl", "欧联资格赛": "lg-uel"
+  "法乙": "lg-l2", "德乙": "lg-bundes2", "欧冠": "lg-ucl", "欧联资格赛": "lg-uel",
+  "意甲": "lg-sa", "德甲": "lg-bundes", "德超杯": "lg-bundes", "法甲": "lg-ligue1",
+  "英联杯": "lg-champ", "德国杯": "lg-dfb", "巴西杯": "lg-bras", "解放者杯": "lg-copaLib",
+  "韩国杯": "lg-k1", "亚冠": "lg-k1", "欧协": "lg-uel", "欧协联": "lg-uel",
+  "欧罗巴资格赛": "lg-uel", "欧联": "lg-uel"
 };
 function lgCls(lg) { return LG_CLS[lg] || "lg-other"; }
 function lgBadge(lg, small) {
