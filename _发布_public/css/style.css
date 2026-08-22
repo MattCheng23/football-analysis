@@ -83,12 +83,13 @@ html { scroll-behavior: smooth; }
 body {
 font-family: var(--font-body);
 background:
-radial-gradient(1200px 560px at 50% -160px, var(--bg-glow), transparent 55%),
-radial-gradient(760px 400px at 92% 14%, color-mix(in srgb, var(--gold) 6%, transparent), transparent 60%),
-radial-gradient(720px 420px at -6% 44%, color-mix(in srgb, var(--primary) 5%, transparent), transparent 60%),
-linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 90%, #fff) 100%),
+radial-gradient(1300px 620px at 50% -180px, var(--bg-glow), transparent 55%),
+radial-gradient(820px 440px at 94% 12%, color-mix(in srgb, var(--gold) 8%, transparent), transparent 58%),
+radial-gradient(780px 460px at -8% 42%, color-mix(in srgb, var(--primary) 6%, transparent), transparent 58%),
+radial-gradient(1000px 520px at 50% 108%, color-mix(in srgb, var(--primary) 5%, transparent), transparent 60%),
+linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 88%, #fff) 100%),
 var(--bg);
-background-size: auto, auto, auto, auto, auto;
+background-size: auto, auto, auto, auto, auto, auto;
 background-attachment: fixed;
 color: var(--ink); line-height: 1.8; font-size: 15.5px;
 font-weight: 400; letter-spacing: .2px;
@@ -96,33 +97,36 @@ font-weight: 400; letter-spacing: .2px;
 text-rendering: optimizeLegibility;
 transition: background .25s, color .25s;
 }
-/* 科技感应背景层：极淡网格 + 顶部光带（覆盖默认 body 背景，virtual 层避免干扰内容） */
+/* 科技感应背景层：全页可见的极淡网格（2026-08-23 修复：去掉 mask 渐隐导致下半部纯白的问题） */
 body::before {
 content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
 background:
-linear-gradient(rgba(51, 80, 110, .028) 1px, transparent 1px),
-linear-gradient(90deg, rgba(51, 80, 110, .028) 1px, transparent 1px),
-linear-gradient(rgba(184, 147, 90, .020) 1px, transparent 1px),
-linear-gradient(90deg, rgba(184, 147, 90, .020) 1px, transparent 1px);
-background-size: 56px 56px, 56px 56px, 280px 280px, 280px 280px;
-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 20%, transparent 78%);
--webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 20%, transparent 78%);
+linear-gradient(rgba(51, 80, 110, .045) 1px, transparent 1px),
+linear-gradient(90deg, rgba(51, 80, 110, .045) 1px, transparent 1px),
+linear-gradient(rgba(184, 147, 90, .030) 1px, transparent 1px),
+linear-gradient(90deg, rgba(184, 147, 90, .030) 1px, transparent 1px),
+radial-gradient(680px 380px at 100% 0%, rgba(184, 147, 90, .05), transparent 60%),
+radial-gradient(680px 380px at 0% 100%, rgba(51, 80, 110, .04), transparent 60%);
+background-size: 44px 44px, 44px 44px, 220px 220px, 220px 220px, auto, auto;
 }
 html.dark body::before {
 background:
-linear-gradient(rgba(0, 229, 255, .030) 1px, transparent 1px),
-linear-gradient(90deg, rgba(0, 229, 255, .030) 1px, transparent 1px),
-linear-gradient(rgba(255, 45, 120, .020) 1px, transparent 1px),
-linear-gradient(90deg, rgba(255, 45, 120, .020) 1px, transparent 1px);
-background-size: 64px 64px, 64px 64px, 320px 320px, 320px 320px;
+linear-gradient(rgba(0, 229, 255, .040) 1px, transparent 1px),
+linear-gradient(90deg, rgba(0, 229, 255, .040) 1px, transparent 1px),
+linear-gradient(rgba(255, 45, 120, .030) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255, 45, 120, .030) 1px, transparent 1px),
+radial-gradient(680px 380px at 100% 0%, rgba(255, 45, 120, .05), transparent 60%),
+radial-gradient(680px 380px at 0% 100%, rgba(0, 229, 255, .045), transparent 60%);
+background-size: 52px 52px, 52px 52px, 260px 260px, 260px 260px, auto, auto;
 }
 html.dark body {
 background-image:
 radial-gradient(1100px 480px at 50% -120px, var(--bg-glow), transparent 58%),
-radial-gradient(900px 420px at 85% 25%, rgba(255, 45, 120, .04), transparent 60%),
-radial-gradient(700px 380px at -4% 50%, rgba(0, 229, 255, .03), transparent 60%),
+radial-gradient(900px 420px at 85% 25%, rgba(255, 45, 120, .05), transparent 60%),
+radial-gradient(700px 380px at -4% 50%, rgba(0, 229, 255, .04), transparent 60%),
+radial-gradient(1000px 500px at 50% 110%, rgba(0, 229, 255, .03), transparent 60%),
 var(--bg);
-background-size: auto, auto, auto, auto;
+background-size: auto, auto, auto, auto, auto;
 background-attachment: fixed;
 }
 header.site {
@@ -698,6 +702,13 @@ cursor: pointer; transition: all .15s; box-shadow: var(--shadow); font-family: v
 .batch-nav:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
 .batch-nav:disabled { opacity: .35; cursor: default; }
 h2 .hint { margin-left: auto; font-size: 12px; font-weight: 400; color: var(--sub); letter-spacing: .3px; font-family: var(--font-body); }
+/* 标题左侧按钮（2026-08-23：贴图标右侧、标题文字左侧，方便顺手） */
+.h2-btn {
+padding: 3px 12px !important; border-radius: 14px !important; font-size: 12px !important;
+border: 1px solid var(--border) !important; background: var(--card) !important;
+color: var(--primary) !important; flex-shrink: 0;
+}
+.h2-btn:hover { border-color: var(--primary) !important; transform: none !important; }
 .back-link { display: inline-block; margin-bottom: 16px; color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 700; }
 .back-link:hover { text-decoration: underline; }
 ::selection { background: color-mix(in srgb, var(--primary) 22%, transparent); color: var(--ink); }

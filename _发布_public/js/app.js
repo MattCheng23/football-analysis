@@ -324,9 +324,9 @@ function renderPredict(batch) {
     </div>
 
     <div class="card">
-      <h2><span class="icon">💡</span> 各场核心逻辑 <span class="hint">关键信息预览，点击展开全文</span>
-        <button class="batch-nav" style="margin-left:auto" onclick="toggleAllLogic(this, true)" title="展开全部逻辑">🔽 全体展开</button>
-        <button class="batch-nav" onclick="toggleAllLogic(this, false)" title="折叠全部逻辑">🔼 全体折叠</button>
+      <h2><span class="icon">💡</span>
+        <button class="batch-nav h2-btn" id="logicToggleBtn" onclick="toggleAllLogic(this)" title="展开/折叠全部逻辑">🔽 展开全部</button>
+        <span>各场核心逻辑</span> <span class="hint">关键信息预览，点击展开全文</span>
       </h2>
       <div class="table-wrap"><table>
         <thead><tr><th>场次</th><th>对阵</th><th>核心逻辑</th></tr></thead>
@@ -345,11 +345,14 @@ function filterLvl(btn, lvl) {
   });
 }
 
-/* 核心逻辑全体展开/折叠（2026-08-23：逻辑卡内 details 批量切换） */
-function toggleAllLogic(btn, open) {
+/* 核心逻辑全体展开/折叠（2026-08-23：单按钮切换，位置贴标题左侧） */
+function toggleAllLogic(btn) {
   const card = btn.closest(".card");
   if (!card) return;
-  card.querySelectorAll("details").forEach(d => { d.open = open; });
+  const all = Array.from(card.querySelectorAll("details"));
+  const anyClosed = all.some(d => !d.open);
+  all.forEach(d => { d.open = anyClosed; });
+  btn.textContent = anyClosed ? "🔼 折叠全部" : "🔽 展开全部";
 }
 
 /* ---------- 渲染：复盘 ---------- */
@@ -498,8 +501,9 @@ function renderReview(batch) {
     </div>
 
     <div class="card">
-      <h2><span class="icon">🔎</span> 关键场次技术统计（演戏信号实证）<span class="hint">点击信号标签展开完整数据</span>
-        <button class="batch-nav" style="margin-left:auto" onclick="toggleEvDetails(this)" title="展开/折叠全部技术统计">🔽 展开全部</button>
+      <h2><span class="icon">🔎</span>
+        <button class="batch-nav h2-btn" onclick="toggleEvDetails(this)" title="展开/折叠全部技术统计">🔽 展开全部</button>
+        <span>关键场次技术统计（演戏信号实证）</span><span class="hint">点击信号标签展开完整数据</span>
       </h2>
       <div class="table-wrap"><table>
         <thead><tr><th>场次</th><th>演戏信号（点击展开）</th></tr></thead>
@@ -565,7 +569,8 @@ function renderSiteStats() {
   let totalMatches = 0, dirHit = 0;
   keys.forEach(k => {
     const b = BATCHES[k];
-    if (b.reviewed && b.review.results) {
+    // 已复盘判定：review.results 非空（2026-08-23 修复：部分复盘批次 reviewed=false 仍计入）
+    if (b.review && b.review.results && b.review.results.length) {
       b.review.results.forEach(m => { totalMatches++; if (m.d === "ok") dirHit++; });
     }
   });
