@@ -863,13 +863,17 @@ transition: none;
 .table-wrap tbody tr:first-child { margin-top: 0; }
 .table-wrap tbody tr:hover { background: var(--card); }
 .table-wrap tbody tr.ok-row { background: color-mix(in srgb, var(--risk-ok) 6%, transparent); }
-.table-wrap tbody td { display: block; border: 0; padding: 0; font-size: 13.5px; box-shadow: none !important; }
+.table-wrap tbody td { display: block; border: 0; padding: 0; font-size: 13.5px; box-shadow: none !important; min-width: 0; }
 .table-wrap tbody td::before { content: attr(data-l); display: block; font-size: 10.5px; font-weight: 600; color: var(--sub); letter-spacing: .5px; margin-bottom: 2px; }
 .table-wrap tbody td[data-sf] { grid-column: 1 / -1; }
 .table-wrap tbody td .m-team { font-size: 15.5px; display: block; }
 .table-wrap tbody td .mt-line { font-size: 11.5px; }
 .table-wrap tbody td details { margin-top: 0; }
 .table-wrap tbody td details summary { font-size: 13px; line-height: 1.6; }
+/* 手机端标签/长文本防溢出（2026-08-23 用户指出：关键场次技术统计信号标签超屏需拖动） */
+.table-wrap tbody td .tag { white-space: normal; overflow-wrap: anywhere; line-height: 1.45; }
+.table-wrap tbody td details summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 6px; }
+.table-wrap tbody td details div { overflow-wrap: anywhere; word-break: break-word; }
 .table-wrap tbody td .prob-bar { max-width: 100%; }
 .table-wrap tbody tr:last-child td { border-bottom: 0; }
 }
