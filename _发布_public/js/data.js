@@ -1423,7 +1423,7 @@ const BATCHES = {
   "2026-08-22": {
     title: "8月22 周六批次",
     model: "规则驱动模型 V10.40",
-    updated: "21:32",
+    updated: "22:01",
     predict: {
       matches: [
         { no: "001", home: "鹿岛鹿角", away: "福冈黄蜂", league: "日职联", lg: "lg-j1", time: "17:00",
@@ -1530,33 +1530,33 @@ const BATCHES = {
         { rank: "20", no: "001", teams: "鹿岛鹿角 vs 福冈黄蜂", dir: "客胜", lv: "tag-gray", lvTxt: "低", logic: "福冈 3-0 樱花状态回暖——客胜概率低（鹿岛主场+H2H 全量占优）" },
       ],
       alerts: [
+        { script: "胜负", no: "001", teams: "鹿岛鹿角 vs 福冈黄蜂", lv: "tag-gray", lvTxt: "低", logic: "鹿岛先进被福冈逆转（福冈 3-0 状态回暖+鹿岛赢得惊险）" },
+        { script: "平胜", no: "003", teams: "大阪樱花 vs 清水鼓动", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 樱花下半场破门（清水攻击孱弱）" },
         { script: "胜负", no: "005", teams: "全北现代 vs 蔚山现代", lv: "tag-yellow", lvTxt: "中等", logic: "全北主场先进被蔚山逆转（现代德比剧本+全北避雷放水前科）" },
         { script: "胜负", no: "006", teams: "安养FC vs 首尔FC", lv: "tag-yellow", lvTxt: "中等", logic: "安养先进被首尔逆转（首尔🔴避雷转化率剧本）" },
-        { script: "胜负", no: "027", teams: "西班牙人 vs 皇马", lv: "tag-yellow", lvTxt: "中等", logic: "西班牙人先进被皇马逆转（皇马防线 4 缺首秀慢热）" },
-        { script: "胜负", no: "022", teams: "多特蒙德 vs 拜仁", lv: "tag-yellow", lvTxt: "中等", logic: "多特先进被拜仁逆转（国家德比+杯赛对攻）" },
-        { script: "平负", no: "023", teams: "热那亚 vs 那不勒斯", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 那不勒斯下半场破门（H2H 碾压+慢热，平负=强队下半场破门高概率场景 2026-08-22 评级修正）" },
-        { script: "平胜", no: "019", teams: "乌迪内斯 vs 科莫", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 乌迪内斯下半场 1-0（1-0 系惯性，平胜=强队下半场破门高概率场景 2026-08-22 评级修正）" },
-        { script: "平负", no: "026", teams: "图卢兹 vs 里昂", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 里昂下半场破门（H2H 碾压，平负=强队下半场破门高概率场景 2026-08-22 评级修正）" },
-        { script: "胜负", no: "007", teams: "赫尔城 vs 曼联", lv: "tag-gray", lvTxt: "低", logic: "赫尔城先进被曼联逆转（升班马首秀冲劲，胜负=弱队先进被逆转低概率冷门 2026-08-22 评级修正）" },
-        { script: "平胜", no: "020", teams: "国际米兰 vs 蒙扎", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 国米下半场 1-0（意甲首轮慢热，平胜=强队下半场破门高概率场景 2026-08-22 评级修正）" },
-        { script: "胜负", no: "001", teams: "鹿岛鹿角 vs 福冈黄蜂", lv: "tag-gray", lvTxt: "低", logic: "鹿岛先进被福冈逆转（福冈 3-0 状态回暖+鹿岛赢得惊险，胜负=弱队先进被逆转低概率冷门 2026-08-22 评级修正）" },
-        { script: "平胜", no: "010", teams: "埃弗顿 vs 水晶宫", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 埃弗顿下半场破门（英超首轮慢热+H2H 平局 12，平胜=强队下半场破门高概率场景 2026-08-22 评级修正）" },
-        { script: "平负", no: "011", teams: "诺丁汉 vs 利兹联", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 利兹下半场偷分（利兹热身 4 胜 1 平状态火热，平负=强队下半场破门高概率场景 2026-08-22 评级修正）" },
-        { script: "平胜", no: "012", teams: "伊普斯 vs 桑德兰", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 伊普斯下半场破门（升班马首秀战意，平胜=主场下半场破门高概率场景 2026-08-22 评级修正）" },
-        { script: "胜负", no: "025", teams: "尼斯 vs 洛里昂", lv: "tag-gray", lvTxt: "低", logic: "尼斯先进被洛里昂追平（H2H 平局 10，胜负=弱队先进被逆转低概率冷门 2026-08-22 评级修正）" },
-        { script: "平胜", no: "017", teams: "朗斯 vs 欧塞尔", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 朗斯下半场破门（法超杯冠军慢热开局，平胜=强队下半场破门高概率场景 2026-08-22 评级修正）" },
-        { script: "平负", no: "018", teams: "布伦特 vs 热刺", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 热刺下半场偷分（布伦特主场 5 不败，平负=强队下半场破门高概率场景 2026-08-22 评级修正）" },
-        { script: "平胜", no: "016", teams: "毕尔巴鄂 vs 塞维利亚", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 毕尔巴鄂下半场破门（赛季首战+欧战夹心，平胜=强队下半场破门高概率场景 2026-08-22 评级修正）" },
-        { script: "平负", no: "024", teams: "帕尔马 vs 卡利亚里", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 卡利亚里下半场破门（帕尔马 8 缺门将危机，平负=强队下半场破门高概率场景 2026-08-22 评级修正）" },
-        { script: "平胜", no: "021", teams: "巴伦西亚 vs 塞尔塔", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 巴伦西亚下半场破门（29°C 高温慢节奏，平胜=主场下半场破门高概率场景 2026-08-22 评级修正）" },
-        { script: "平胜", no: "003", teams: "大阪樱花 vs 清水鼓动", lv: "tag-yellow", lvTxt: "中等", logic: "半场 0-0 樱花下半场破门（清水攻击孱弱，平胜=强队下半场破门高概率场景 2026-08-22 评级修正）" },
+        { script: "胜负", no: "007", teams: "赫尔城 vs 曼联", lv: "tag-gray", lvTxt: "低", logic: "赫尔城先进被曼联逆转（升班马首秀冲劲，胜负=冷门低概率）" },
+        { script: "胜平", no: "010", teams: "埃弗顿 vs 水晶宫", lv: "tag-yellow", lvTxt: "中等", logic: "埃弗顿先进被水晶宫追平（水晶宫客场取分 53% 强+埃弗顿揭幕魔咒，胜平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
+        { script: "负平", no: "011", teams: "诺丁汉 vs 利兹联", lv: "tag-yellow", lvTxt: "中等", logic: "利兹先进被诺丁汉追平（诺丁汉主场 14 场不败 54 年纪录韧性，负平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
+        { script: "胜平", no: "012", teams: "伊普斯 vs 桑德兰", lv: "tag-yellow", lvTxt: "中等", logic: "伊普斯先进被桑德兰追平（伊普斯首秀战意先进球+桑德兰中游韧性，胜平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
+        { script: "负胜", no: "016", teams: "毕尔巴鄂 vs 塞维利亚", lv: "tag-yellow", lvTxt: "中等", logic: "塞维利亚先进被毕尔巴鄂逆转（圣马梅斯魔鬼主场+克星压制，负胜=主队落后逆转剧本 2026-08-22 评级定稿）" },
+        { script: "胜负", no: "017", teams: "朗斯 vs 欧塞尔", lv: "tag-gray", lvTxt: "低", logic: "朗斯先进被欧塞尔逆转（历史反证：欧塞尔 2025-04 客场 4-0 大胜朗斯，胜负=冷门低概率）" },
+        { script: "负平", no: "018", teams: "布伦特 vs 热刺", lv: "tag-yellow", lvTxt: "中等", logic: "热刺先进被布伦特追平（布伦特主场 5 不败+热刺在此从未输球，负平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
+        { script: "胜平", no: "019", teams: "乌迪内斯 vs 科莫", lv: "tag-yellow", lvTxt: "中等", logic: "乌迪内斯先进被科莫追平（科莫 3 平客稳韧性，胜平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
+        { script: "负胜", no: "020", teams: "国际米兰 vs 蒙扎", lv: "tag-gray", lvTxt: "低", logic: "蒙扎先进被国米逆转（升班马首秀冲劲偷 1 球+国米防线重组，负胜=冷门剧本低概率）" },
+        { script: "负平", no: "021", teams: "巴伦西亚 vs 塞尔塔", lv: "tag-yellow", lvTxt: "中等", logic: "塞尔塔先进被巴伦西亚追平（塞尔塔客近况强先进球+巴伦西亚主场韧性，负平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
+        { script: "胜负", no: "022", teams: "多特蒙德 vs 拜仁", lv: "tag-yellow", lvTxt: "中等", logic: "多特先进被拜仁逆转（国家德比+杯赛对攻+拜仁身价碾压）" },
+        { script: "负平", no: "023", teams: "热那亚 vs 那不勒斯", lv: "tag-yellow", lvTxt: "中等", logic: "那不勒斯先进被热那亚追平（热那亚主场+Colombo 锋线火力，负平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
+        { script: "负平", no: "024", teams: "帕尔马 vs 卡利亚里", lv: "tag-yellow", lvTxt: "中等", logic: "卡利亚里先进被帕尔马追平（帕尔马主场+卡利亚里 H2H 近 2 年 3 胜先进球，负平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
+        { script: "胜平", no: "025", teams: "尼斯 vs 洛里昂", lv: "tag-yellow", lvTxt: "中等", logic: "尼斯先进被洛里昂追平（H2H 近 10 次交锋 5 平+洛里昂近 3 次对尼斯不败，胜平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
+        { script: "负平", no: "026", teams: "图卢兹 vs 里昂", lv: "tag-yellow", lvTxt: "中等", logic: "里昂先进被图卢兹追平（上季图卢兹双杀里昂+揭幕战 5 场不败，负平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
+        { script: "胜负", no: "027", teams: "西班牙人 vs 皇马", lv: "tag-yellow", lvTxt: "中等", logic: "西班牙人先进被皇马逆转（皇马防线 4 缺首秀慢热+身价碾压）" },
       ],
       zeroZero: [
       ],
       bigSeven: [
       ]
     },
-    stats: { dir: "-", dirPct: "-", score: "-", scorePct: "-", ht: "-", htPct: "-", ou: "-", ouPct: "-", updated: "21:32" },
+    stats: { dir: "-", dirPct: "-", score: "-", scorePct: "-", ht: "-", htPct: "-", ou: "-", ouPct: "-", updated: "22:01" },
     review: { results: [], evidence: [], avoidHigh: [], avoidWatch: [] }
   }
 };
