@@ -314,13 +314,24 @@ display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
 .g-rings, .g-stats, .g-stats.g-4 { grid-template-columns: repeat(1, 1fr); }
 }
 .lvl-filter { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 12px; }
-.lvl-filter button {
-  border: 1px solid var(--border); background: var(--card); color: var(--sub);
-  padding: 4px 15px; border-radius: 999px; font-size: 12.5px; cursor: pointer;
-  transition: all .15s; font-weight: 600;
+/* 等级筛选胶囊（2026-08-23：等级色按钮直接含解释+数量，合并图例不堆积） */
+.lvl-pill {
+display: inline-flex; flex-direction: column; align-items: flex-start; gap: 1px;
+border: 1px solid var(--border); background: var(--card); color: var(--sub);
+padding: 6px 16px; border-radius: 12px; font-size: 12.5px; cursor: pointer;
+transition: all .15s; line-height: 1.35; font-weight: 600;
 }
-.lvl-filter button:hover { border-color: var(--primary); color: var(--primary); }
-.lvl-filter button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.lvl-pill b { font-size: 13.5px; letter-spacing: .5px; }
+.lvl-pill i { font-style: normal; font-size: 11px; opacity: .85; }
+.lvl-pill:hover { border-color: var(--primary); transform: translateY(-1px); }
+.lvl-pill.lvl-a { border-left: 3px solid #5e9e83; }
+.lvl-pill.lvl-b { border-left: 3px solid #c1904a; }
+.lvl-pill.lvl-c { border-left: 3px solid #c96a6a; }
+.lvl-pill.lvl-a.active { background: rgba(94, 158, 131, .14); color: #4a8568; border-color: rgba(94, 158, 131, .5); }
+.lvl-pill.lvl-b.active { background: rgba(193, 144, 74, .14); color: #9c7231; border-color: rgba(193, 144, 74, .5); }
+.lvl-pill.lvl-c.active { background: rgba(201, 106, 106, .14); color: #a84f4f; border-color: rgba(201, 106, 106, .5); }
+.lvl-pill.lvl-all.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.lvl-pill.lvl-all.active i { opacity: .85; }
 .batch-overview { display: flex; gap: 14px; flex-wrap: wrap; margin: 6px 0 10px; font-size: 13px; color: var(--sub); }
 .batch-overview .bo-item b { color: var(--ink); font-size: 14px; }
 .batch-overview .bo-a b { color: #4a8a6e; }
@@ -520,13 +531,25 @@ padding: 14px 10px; text-align: center; box-shadow: var(--shadow); transition: t
 .avoid-stat.st-watch { border-color: color-mix(in srgb, var(--risk-mid) 40%, transparent); }
 .avoid-stat.st-watch .avoid-stat-num { color: var(--risk-mid); }
 .avoid-stat.st-lg .avoid-stat-num, .avoid-stat.st-batch .avoid-stat-num { color: var(--primary); }
+/* 风险指数（2026-08-23 丰富：蓝紫渐变强调） */
+.avoid-stat.st-index { border-color: color-mix(in srgb, var(--primary) 45%, transparent); }
+.avoid-stat.st-index .avoid-stat-num {
+color: var(--primary); font-size: 26px;
+text-shadow: 0 0 18px color-mix(in srgb, var(--primary) 30%, transparent);
+}
 .avoid-league {
 margin: 14px 0 18px; padding: 14px 16px;
 background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow);
 }
 .avoid-league h4 { margin: 0 0 10px; font-size: 13.5px; color: var(--ink); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .avoid-league-hint { font-size: 11px; color: var(--sub); font-weight: 400; }
-.avoid-lbar { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+/* 联赛条形图列表（2026-08-23 丰富） */
+.avoid-lbar-list {
+display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 22px; margin-top: 12px;
+padding-top: 12px; border-top: 1px dashed var(--border);
+}
+@media (max-width: 640px) { .avoid-lbar-list { grid-template-columns: 1fr; } }
+.avoid-lbar { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
 .avoid-lbar .lg-sm { width: 72px; text-align: center; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; }
 .avoid-lbar-track { flex: 1; height: 14px; border-radius: 7px; background: color-mix(in srgb, var(--border) 60%, transparent); overflow: hidden; }
 .avoid-lbar-fill { height: 100%; border-radius: 7px; background: linear-gradient(90deg, color-mix(in srgb, var(--risk-high) 55%, transparent), var(--risk-high)); transition: width .5s; }

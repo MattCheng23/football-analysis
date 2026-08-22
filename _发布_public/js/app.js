@@ -272,23 +272,14 @@ function renderPredict(batch) {
       </h2>
       <div class="batch-overview">
         <span class="bo-item">⚽ 本批 <b>${sorted.length} 场</b></span>
-        <span class="bo-item bo-a">A 级 <b>${sorted.filter(m => /A级/.test(m.dir)).length}</b></span>
-        <span class="bo-item bo-b">B 级 <b>${sorted.filter(m => /B级/.test(m.dir)).length}</b></span>
-        <span class="bo-item bo-c">C 级 <b>${sorted.filter(m => /C级/.test(m.dir)).length}</b></span>
         <span class="bo-item">🌡️ 冷门预警 <b>${(p.coldRisk || []).length} 场</b></span>
-        <span class="bo-item">🚨 高价值预警 <b>${(p.alerts || []).length} 条</b></span>
         ${leagueStat}
       </div>
       <div class="lvl-filter">
-        <button class="active" data-f="all" onclick="filterLvl(this,'all')">全部</button>
-        <button data-f="a" onclick="filterLvl(this,'a')">A 级</button>
-        <button data-f="b" onclick="filterLvl(this,'b')">B 级</button>
-        <button data-f="c" onclick="filterLvl(this,'c')">C 级</button>
-      </div>
-      <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);margin-bottom:6px;">
-        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#16a34a"></span> A 高（3 正路）</span>
-        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#d97706"></span> B 中（2 正 1 反，1 个反向比分标 <span class="rev-score">*</span>）</span>
-        <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#dc2626"></span> C 低（1 正 2 反，2 个反向比分标 <span class="rev-score">*</span>）</span>
+        <button class="lvl-pill lvl-all active" data-f="all" onclick="filterLvl(this,'all')"><b>全部</b><i>${sorted.length} 场</i></button>
+        <button class="lvl-pill lvl-a" data-f="a" onclick="filterLvl(this,'a')"><b>A 高</b><i>3 正路 · ${sorted.filter(m => /A级/.test(m.dir)).length} 场</i></button>
+        <button class="lvl-pill lvl-b" data-f="b" onclick="filterLvl(this,'b')"><b>B 中</b><i>2 正 1 反 · ${sorted.filter(m => /B级/.test(m.dir)).length} 场</i></button>
+        <button class="lvl-pill lvl-c" data-f="c" onclick="filterLvl(this,'c')"><b>C 低</b><i>1 正 2 反 · ${sorted.filter(m => /C级/.test(m.dir)).length} 场</i></button>
       </div>
       <div class="table-wrap"><table class="batch-table">
         <thead><tr><th>场次</th><th>对阵（北京时间）</th><th>方向</th><th>比分 TOP3</th><th>半全场 TOP3</th><th>总进球</th><th>假赛分</th></tr></thead>
@@ -890,10 +881,18 @@ function renderAvoid() {
     (a.lg || "未知").split(",").forEach(lg => { leagueCnt[lg.trim()] = (leagueCnt[lg.trim()] || 0) + 1; });
   });
   const lgEntries = Object.entries(leagueCnt).sort((x, y) => y[1] - x[1]);
+  const lgMax = Math.max(1, ...lgEntries.map(([, c]) => c));
   const lgCloud = lgEntries.map(([lg, cnt]) => {
     const hot = cnt >= 3 ? "lgc-hot" : (cnt === 2 ? "lgc-mid" : "");
     return `<span class="avoid-lg-badge ${hot}">${lgBadge(lg, true)}<span class="avoid-lg-cnt">×${cnt}</span></span>`;
   }).join("");
+  // 联赛横向条形图（2026-08-23 丰富：直观显示重灾区量级）
+  const lgBars = lgEntries.slice(0, 8).map(([lg, cnt]) => `
+    <div class="avoid-lbar">
+      <span class="lg lg-sm">${lg}</span>
+      <div class="avoid-lbar-track"><div class="avoid-lbar-fill" style="width:${Math.round(100 * cnt / lgMax)}%"></div></div>
+      <span class="avoid-lbar-num">×${cnt}</span>
+    </div>`).join("");
 
   // —— 单队折叠条目 ——
   const ITEM_DEF = {
@@ -930,19 +929,21 @@ function renderAvoid() {
         <button class="avoid-search-clear" onclick="document.getElementById('avoidSearchInput').value='';renderAvoidSearch('')" title="清空">✕</button>
       </div>
 
-      <!-- 统计仪表盘 -->
+      <!-- 统计仪表盘（含风险指数，2026-08-23 丰富） -->
       <div class="avoid-dash">
         <div class="avoid-stat st-green"><div class="avoid-stat-num">${r2.length}</div><div class="avoid-stat-lbl">⭐ 红榜·稳定</div></div>
         <div class="avoid-stat st-blue"><div class="avoid-stat-num">${r1.length}</div><div class="avoid-stat-lbl">🟢 偏红</div></div>
         <div class="avoid-stat st-batch"><div class="avoid-stat-num">${n.length}</div><div class="avoid-stat-lbl">⚪ 中性</div></div>
         <div class="avoid-stat st-watch"><div class="avoid-stat-num">${b1.length}</div><div class="avoid-stat-lbl">🟡 偏黑</div></div>
         <div class="avoid-stat st-high"><div class="avoid-stat-num">${b2.length}</div><div class="avoid-stat-lbl">🔴 黑榜</div></div>
+        <div class="avoid-stat st-index"><div class="avoid-stat-num">${R.length ? Math.round(100 * (b1.length + b2.length) / R.length) : 0}%</div><div class="avoid-stat-lbl">⚠️ 风险指数</div></div>
       </div>
 
-      <!-- 联赛分布可视化 -->
+      <!-- 联赛分布可视化（徽章云 + 条形图，2026-08-23 丰富） -->
       <div class="avoid-league">
-        <h4>📊 黑榜+偏黑联赛分布 <span class="avoid-league-hint">（假球重灾区，徽章 ×数量）</span></h4>
+        <h4>📊 黑榜+偏黑联赛分布 <span class="avoid-league-hint">（假球重灾区，徽章 + 量级条形）</span></h4>
         <div class="avoid-lg-cloud">${lgCloud || '<div class="note">暂无数据</div>'}</div>
+        ${lgBars ? `<div class="avoid-lbar-list">${lgBars}</div>` : ""}
       </div>
 
       <!-- 搜索结果（搜索时显示，替代分组） -->
