@@ -272,8 +272,6 @@ function renderPredict(batch) {
       </h2>
       <div class="batch-overview">
         <span class="bo-item">⚽ 本批 <b>${sorted.length} 场</b></span>
-        <span class="bo-item">🌡️ 冷门预警 <b>${(p.coldRisk || []).length} 场</b></span>
-        ${leagueStat}
       </div>
       <div class="lvl-filter">
         <button class="lvl-pill lvl-all active" data-f="all" onclick="filterLvl(this,'all')"><b>全部</b><i>${sorted.length} 场</i></button>

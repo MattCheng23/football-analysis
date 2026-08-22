@@ -141,6 +141,18 @@ background: radial-gradient(circle, var(--header-glow), transparent 65%);
 top: -180px; left: 30%; pointer-events: none;
 animation: heroDrift 14s ease-in-out infinite alternate;
 }
+/* 头部流光带（2026-08-23 突破：缓慢移动的光带增强科技感） */
+header.site .hero-sheen {
+content: ""; position: absolute; inset: -80% 0 auto; height: 160px;
+background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .10) 50%, transparent 70%);
+transform: skewY(-4deg); pointer-events: none;
+animation: heroSheen 9s ease-in-out infinite;
+}
+@keyframes heroSheen {
+0%   { transform: skewY(-4deg) translateX(-55%); }
+55%  { transform: skewY(-4deg) translateX(20%); }
+100% { transform: skewY(-4deg) translateX(60%); opacity: .2; }
+}
 @keyframes heroDrift {
 from { transform: translateX(-30px) scale(1); }
 to   { transform: translateX(40px) scale(1.15); }
@@ -234,9 +246,11 @@ nav a.active::after { display: none; }
 .container { max-width: 1100px; margin: 0 auto; padding: 26px 24px 54px; }
 .card {
 background: var(--card);
-border: 1px solid var(--border); border-radius: 16px;
+border: 1px solid var(--border); border-radius: 18px;
 padding: 26px 30px; margin-bottom: 24px; box-shadow: var(--shadow); position: relative;
 transition: box-shadow .25s, background .25s, transform .25s;
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
 }
 html.dark .card { background: var(--card); }
 .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); border-color: color-mix(in srgb, var(--primary) 22%, var(--border)); }
@@ -483,7 +497,9 @@ font-size: 32px; font-weight: 700;
 background: linear-gradient(135deg, var(--primary), var(--gold));
 -webkit-background-clip: text; background-clip: text; color: transparent;
 font-family: var(--font-num); font-variant-numeric: tabular-nums; letter-spacing: 1px;
+filter: drop-shadow(0 2px 6px color-mix(in srgb, var(--primary) 18%, transparent));
 }
+html.dark .kpi .num { text-shadow: 0 0 14px rgba(0, 229, 255, .22); }
 html.dark .kpi .num { text-shadow: 0 0 14px rgba(76, 195, 221, .22); }
 .kpi .lbl { font-size: 12px; color: var(--sub); margin-top: 4px; letter-spacing: .5px; }
 .ring-kpi { padding: 16px 10px 14px; }
