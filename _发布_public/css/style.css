@@ -1,77 +1,80 @@
 @import url("../fonts/font.css");
+/* ============ 双主题体系（2026-08-23 用户拍板） ============
+   主风格（默认浅色）=「现代电竞数据看板」：深空蓝紫渐变头部 + 亮白玻璃卡片 + 蓝紫双色渐变点缀
+   次风格（暗色切换）=「赛博 HUD」：深空黑 + 霓虹青/荧光粉 + 发光边框（html.dark 保留） */
 :root {
---bg: #f7f5f0;
---bg-glow: rgba(38, 92, 130, .06);
---card: #fffdf9;
---card-hover: #ffffff;
---border: #e2ddd0;
---ink: #26241f;
---sub: #7a766a;
---primary: #25537a;
---primary-dark: #1b3d5c;
---primary-soft: #e8eff5;
---gold: #a38b3a;
---gold-bright: #bfa94f;
---gold-bg: #f6f1e0;
---gold-deep: #66581f;
---risk-high: #bf4a4a;  --risk-high-bg: #f7e3e1;
---risk-mid: #9c7a1e;   --risk-mid-bg: #f6efd0;
---risk-ok: #2c7a59;    --risk-ok-bg: #e1ede7;
---risk-row-bg: rgba(191, 74, 74, .05);
---thead-bg: #efece3;
---stripe: #f9f7f2;
---hover: #eef1ef;
---nav-bg: rgba(255, 253, 249, .9);
---nav-border: #e2ddd0;
---nav-ink: #7a766a;
---nav-active: #25537a;
---shadow: 0 1px 2px rgba(30, 38, 48, .04), 0 2px 8px rgba(30, 38, 48, .04), 0 12px 32px rgba(30, 38, 48, .06);
---shadow-hover: 0 2px 4px rgba(37, 83, 122, .06), 0 10px 24px rgba(37, 83, 122, .10), 0 24px 56px rgba(37, 83, 122, .12);
---header-grad: linear-gradient(135deg, #1a3a58 0%, #25537a 52%, #3a6f9e 100%);
---header-glow: rgba(191, 169, 79, .22);
---toggle-bg: #e2ddd0;
---toggle-ink: #3a3833;
---footer-ink: #8d8878;
---footer-line: rgba(37, 83, 122, .14);
+--bg: #f2f5fb;
+--bg-glow: rgba(99, 102, 241, .10);
+--card: #ffffff;
+--card-hover: #f7f9ff;
+--border: rgba(99, 102, 241, .14);
+--ink: #1c2340;
+--sub: #6b78a0;
+--primary: #6366f1;
+--primary-dark: #4738d6;
+--primary-soft: rgba(99, 102, 241, .08);
+--gold: #f59e0b;
+--gold-bright: #fbbf24;
+--gold-bg: rgba(245, 158, 11, .07);
+--gold-deep: #92400e;
+--risk-high: #e11d48;  --risk-high-bg: rgba(225, 29, 72, .08);
+--risk-mid: #d97706;   --risk-mid-bg: rgba(217, 119, 6, .09);
+--risk-ok: #059669;    --risk-ok-bg: rgba(5, 150, 105, .08);
+--risk-row-bg: rgba(225, 29, 72, .04);
+--thead-bg: #eef1fb;
+--stripe: #f6f8fd;
+--hover: #eef1fb;
+--nav-bg: rgba(255, 255, 255, .88);
+--nav-border: rgba(99, 102, 241, .14);
+--nav-ink: #6b78a0;
+--nav-active: #6366f1;
+--shadow: 0 1px 2px rgba(28, 35, 64, .05), 0 3px 10px rgba(28, 35, 64, .05), 0 14px 36px rgba(28, 35, 64, .07);
+--shadow-hover: 0 2px 5px rgba(99, 102, 241, .10), 0 12px 28px rgba(99, 102, 241, .14), 0 26px 60px rgba(99, 102, 241, .16);
+--header-grad: linear-gradient(135deg, #312e81 0%, #4738d6 45%, #7c3aed 100%);
+--header-glow: rgba(251, 191, 36, .20);
+--toggle-bg: #e6e9f7;
+--toggle-ink: #4738d6;
+--footer-ink: #8a96ba;
+--footer-line: rgba(99, 102, 241, .14);
 --mono: "Consolas", "SF Mono", "Cascadia Mono", "Menlo", "Courier New", monospace;
 --font-body: "Smiley Sans Oblique", "Segoe UI", "HarmonyOS Sans SC", "MiSans", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
 --font-num: "Bahnschrift", "DIN Alternate", "Arial Narrow", "Segoe UI", sans-serif;
 --font-title: "Smiley Sans Oblique", "Bahnschrift SemiCondensed", "Bahnschrift", "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
 }
-html.dark {
---bg: #0a1220;
---bg-glow: rgba(76, 195, 221, .05);
---card: #0d1728;
---card-hover: #111e33;
---border: rgba(120, 180, 200, .16);
---ink: #c9d6e6;
---sub: #5f7898;
---primary: #4cc3dd;
---primary-dark: #3798ab;
---primary-soft: rgba(76, 195, 221, .07);
---gold: #d9b45c;
---gold-bright: #e6c87a;
---gold-bg: rgba(217, 180, 92, .07);
---gold-deep: #e6c87a;
---risk-high: #e8707f;  --risk-high-bg: rgba(232, 112, 127, .10);
---risk-mid: #e2b45a;   --risk-mid-bg: rgba(226, 180, 90, .09);
---risk-ok: #58c89a;    --risk-ok-bg: rgba(88, 200, 154, .09);
---risk-row-bg: rgba(232, 112, 127, .05);
---thead-bg: rgba(76, 195, 221, .06);
---stripe: rgba(76, 195, 221, .018);
---hover: rgba(76, 195, 221, .05);
---nav-bg: rgba(10, 18, 32, .9);
---nav-border: rgba(120, 180, 200, .18);
---nav-ink: #5f7898;
---nav-active: #4cc3dd;
---shadow: 0 1px 2px rgba(0, 0, 0, .25), 0 0 14px rgba(76, 195, 221, .03);
---shadow-hover: 0 2px 6px rgba(0, 0, 0, .35), 0 0 20px rgba(76, 195, 221, .06);
---header-grad: linear-gradient(135deg, #0a1424 0%, #10243d 55%, #163250 100%);
---header-glow: rgba(76, 195, 221, .10);
---toggle-bg: #16263d;
---toggle-ink: #4cc3dd;
+html.dark { /* 次风格=赛博 HUD：深空黑 + 霓虹青/荧光粉（保留并微调） */
+--bg: #070b14;
+--bg-glow: rgba(0, 229, 255, .07);
+--card: #0b1120;
+--card-hover: #0e1628;
+--border: rgba(0, 229, 255, .16);
+--ink: #d6e4f5;
+--sub: #5f7699;
+--primary: #00e5ff;
+--primary-dark: #00b8d4;
+--primary-soft: rgba(0, 229, 255, .08);
+--gold: #ff2d78;
+--gold-bright: #ff6a9f;
+--gold-bg: rgba(255, 45, 120, .07);
+--gold-deep: #ff9dbd;
+--risk-high: #ff4d6d;  --risk-high-bg: rgba(255, 77, 109, .12);
+--risk-mid: #ffc400;   --risk-mid-bg: rgba(255, 196, 0, .10);
+--risk-ok: #00e676;    --risk-ok-bg: rgba(0, 230, 118, .10);
+--risk-row-bg: rgba(255, 77, 109, .06);
+--thead-bg: rgba(0, 229, 255, .06);
+--stripe: rgba(0, 229, 255, .02);
+--hover: rgba(0, 229, 255, .06);
+--nav-bg: rgba(7, 11, 20, .88);
+--nav-border: rgba(0, 229, 255, .18);
+--nav-ink: #5f7699;
+--nav-active: #00e5ff;
+--shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 0 18px rgba(0, 229, 255, .05);
+--shadow-hover: 0 2px 6px rgba(0, 0, 0, .5), 0 0 28px rgba(0, 229, 255, .12), 0 0 40px rgba(255, 45, 120, .06);
+--header-grad: linear-gradient(135deg, #04070e 0%, #0a1428 48%, #14264a 100%);
+--header-glow: rgba(0, 229, 255, .14);
+--toggle-bg: #0e1628;
+--toggle-ink: #00e5ff;
 --footer-ink: #4e6886;
---footer-line: rgba(120, 180, 200, .14);
+--footer-line: rgba(0, 229, 255, .14);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 button, input, select, textarea { font-family: inherit; }
@@ -81,10 +84,11 @@ body {
 font-family: var(--font-body);
 background:
 radial-gradient(1100px 480px at 50% -120px, var(--bg-glow), transparent 60%),
-linear-gradient(rgba(30, 40, 50, .014) 1px, transparent 1px),
-linear-gradient(90deg, rgba(30, 40, 50, .014) 1px, transparent 1px),
+radial-gradient(900px 400px at 85% 30%, color-mix(in srgb, var(--primary) 4%, transparent), transparent 60%),
+linear-gradient(rgba(28, 35, 64, .018) 1px, transparent 1px),
+linear-gradient(90deg, rgba(28, 35, 64, .018) 1px, transparent 1px),
 var(--bg);
-background-size: auto, 36px 36px, 36px 36px, auto;
+background-size: auto, auto, 36px 36px, 36px 36px, auto;
 color: var(--ink); line-height: 1.8; font-size: 15.5px;
 font-weight: 400; letter-spacing: .2px;
 -webkit-font-smoothing: antialiased;
@@ -94,10 +98,11 @@ transition: background .25s, color .25s;
 html.dark body {
 background-image:
 radial-gradient(1100px 480px at 50% -120px, var(--bg-glow), transparent 60%),
-linear-gradient(rgba(76, 195, 221, .022) 1px, transparent 1px),
-linear-gradient(90deg, rgba(76, 195, 221, .022) 1px, transparent 1px),
+radial-gradient(900px 420px at 85% 25%, rgba(255, 45, 120, .04), transparent 60%),
+linear-gradient(rgba(0, 229, 255, .022) 1px, transparent 1px),
+linear-gradient(90deg, rgba(0, 229, 255, .022) 1px, transparent 1px),
 var(--bg);
-background-size: auto, 34px 34px, 34px 34px, auto;
+background-size: auto, auto, 34px 34px, 34px 34px, auto;
 background-attachment: fixed;
 }
 header.site {
@@ -118,7 +123,7 @@ font-size: 120px; opacity: .08; filter: drop-shadow(0 4px 24px rgba(0,0,0,.2));
 }
 header.site .hero-glow {
 content: ""; position: absolute; width: 420px; height: 420px; border-radius: 50%;
-background: radial-gradient(circle, rgba(191, 169, 79, .14), transparent 65%);
+background: radial-gradient(circle, var(--header-glow), transparent 65%);
 top: -180px; left: 30%; pointer-events: none;
 animation: heroDrift 14s ease-in-out infinite alternate;
 }
