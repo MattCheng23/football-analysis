@@ -1423,7 +1423,7 @@ const BATCHES = {
   "2026-08-22": {
     title: "8月22 周六批次",
     model: "规则驱动模型 V10.40",
-    updated: "22:25",
+    updated: "22:41",
     predict: {
       matches: [
         { no: "001", home: "鹿岛鹿角", away: "福冈黄蜂", league: "日职联", lg: "lg-j1", time: "17:00",
@@ -1535,7 +1535,7 @@ const BATCHES = {
         { script: "胜负", no: "005", teams: "全北现代 vs 蔚山现代", lv: "tag-yellow", lvTxt: "中等", logic: "全北主场先进被蔚山逆转（现代德比剧本+全北避雷放水前科）" },
         { script: "胜负", no: "006", teams: "安养FC vs 首尔FC", lv: "tag-yellow", lvTxt: "中等", logic: "安养先进被首尔逆转（首尔🔴避雷转化率剧本）" },
         { script: "胜负", no: "007", teams: "赫尔城 vs 曼联", lv: "tag-gray", lvTxt: "低", logic: "赫尔城先进被曼联逆转（升班马首秀冲劲，胜负=冷门低概率）" },
-        { script: "胜平", no: "010", teams: "埃弗顿 vs 水晶宫", lv: "tag-yellow", lvTxt: "中等", logic: "埃弗顿先进被水晶宫追平（水晶宫客场取分 53% 强+埃弗顿揭幕魔咒，胜平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
+        { script: "胜平", no: "010", teams: "埃弗顿 vs 水晶宫", lv: "tag-gray", lvTxt: "低", logic: "埃弗顿先进被水晶宫追平（水晶宫客场取分 53% 强，但埃弗顿揭幕 4 连败 0 进球魔咒=先进球概率极低，胜平形态难成立 2026-08-22 晚评级优化）" },
         { script: "负平", no: "011", teams: "诺丁汉 vs 利兹联", lv: "tag-yellow", lvTxt: "中等", logic: "利兹先进被诺丁汉追平（诺丁汉主场 14 场不败 54 年纪录韧性，负平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
         { script: "胜平", no: "012", teams: "伊普斯 vs 桑德兰", lv: "tag-yellow", lvTxt: "中等", logic: "伊普斯先进被桑德兰追平（伊普斯首秀战意先进球+桑德兰中游韧性，胜平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
         { script: "负胜", no: "016", teams: "毕尔巴鄂 vs 塞维利亚", lv: "tag-yellow", lvTxt: "中等", logic: "塞维利亚先进被毕尔巴鄂逆转（圣马梅斯魔鬼主场+克星压制，负胜=主队落后逆转剧本 2026-08-22 评级定稿）" },
@@ -1547,7 +1547,7 @@ const BATCHES = {
         { script: "胜负", no: "022", teams: "多特蒙德 vs 拜仁", lv: "tag-yellow", lvTxt: "中等", logic: "多特先进被拜仁逆转（国家德比+杯赛对攻+拜仁身价碾压）" },
         { script: "负平", no: "023", teams: "热那亚 vs 那不勒斯", lv: "tag-yellow", lvTxt: "中等", logic: "那不勒斯先进被热那亚追平（热那亚主场+Colombo 锋线火力，负平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
         { script: "负平", no: "024", teams: "帕尔马 vs 卡利亚里", lv: "tag-yellow", lvTxt: "中等", logic: "卡利亚里先进被帕尔马追平（帕尔马主场+卡利亚里 H2H 近 2 年 3 胜先进球，负平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
-        { script: "胜平", no: "025", teams: "尼斯 vs 洛里昂", lv: "tag-yellow", lvTxt: "中等", logic: "尼斯先进被洛里昂追平（H2H 近 10 次交锋 5 平+洛里昂近 3 次对尼斯不败，胜平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
+        { script: "胜平", no: "025", teams: "尼斯 vs 洛里昂", lv: "tag-gray", lvTxt: "低", logic: "尼斯先进被洛里昂追平（H2H 近 10 次交锋 5 平+洛里昂近 3 次对尼斯不败，但尼斯上季末 8 场不胜每场≤1 球+双射手离队攻击重建=先进球概率低，胜平形态难成立 2026-08-22 晚评级优化）" },
         { script: "负平", no: "026", teams: "图卢兹 vs 里昂", lv: "tag-yellow", lvTxt: "中等", logic: "里昂先进被图卢兹追平（上季图卢兹双杀里昂+揭幕战 5 场不败，负平=实力接近场高概率剧本 2026-08-22 评级定稿）" },
         { script: "胜负", no: "027", teams: "西班牙人 vs 皇马", lv: "tag-yellow", lvTxt: "中等", logic: "西班牙人先进被皇马逆转（皇马防线 4 缺首秀慢热+身价碾压）" },
       ],
@@ -1556,7 +1556,7 @@ const BATCHES = {
       bigSeven: [
       ]
     },
-    stats: { dir: "4/5", dirPct: "80%", score: "2/5", scorePct: "40%", ht: "4/5", htPct: "80%", ou: "3/5", ouPct: "60%", updated: "22:25" },
+    stats: { dir: "4/5", dirPct: "80%", score: "2/5", scorePct: "40%", ht: "4/5", htPct: "80%", ou: "3/5", ouPct: "60%", updated: "22:41" },
     review: { results: [
         { no: "001", teams: "鹿岛鹿角 vs 福冈黄蜂", league: "日职联", lg: "lg-j1", score: "3-2（1-1）", d: "ok", s: "no", h: "ok", signal: "方向✅（主胜）+半全场✅（平胜TOP3，半场1-1全场3-2）+比分❌（3-2未覆盖）+总进球❌（5球 vs 2·3）；🟡天气误判（open-meteo 94%雨 vs 实际多云0%）致小球局误判+数据-结果割裂（福冈xG/射门占优却输）", sc: "watch" },
         { no: "003", teams: "大阪樱花 vs 清水鼓动", league: "日职联", lg: "lg-j1", score: "1-0（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐四指标全中（方向✅主胜在双选+比分✅1-0=TOP1+半全场✅平胜TOP2，半场0-0全场1-0+总进球✅1球 in 1·2；小球局判断兑现+天气核验正确（无雨，与001对照））", sc: "ok" },
