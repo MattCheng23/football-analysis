@@ -185,9 +185,10 @@ function renderPredict(batch) {
     </details></td>
   </tr>`).join("");
 
-  // 高价值预警：只显示中等偏低及以上等级（排除"低"），逻辑列预览 30 字 + 点击展开
+  // 高价值预警：全部展示（2026-08-22 用户拍板：胜负/负胜=冷门低概率低等级也要保留展示；等级评级=平胜/平负强队下半场破门高概率→中等+，胜负/负胜弱队先进被逆转→低），逻辑列预览 30 字 + 点击展开
   const alertRows = (p.alerts || [])
-    .filter(a => a.lvTxt !== "低")
+    .slice()
+    .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
     .map(a => `<tr>
     <td>${a.script}</td><td>${a.no} ${a.teams}</td>
     <td><span class="tag ${a.lv}">${a.lvTxt}</span></td>
@@ -197,16 +198,7 @@ function renderPredict(batch) {
     </details></td>
   </tr>`).join("");
 
-  // 0-0 预警：只显示中等偏低及以上等级，按概率排序（全部展示，不截断）
-  const zzRows = (p.zeroZero || [])
-    .filter(z => z.lvTxt !== "低")
-    .slice()
-    .sort((a, z) => z.p - a.p)
-    .map(z => `<tr>
-    <td>${z.no} ${z.teams}</td>
-    <td><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${z.p}%"></div></div><span class="prob-txt num">${z.p}%</span></div></td>
-    <td><span class="tag ${z.lv}">${z.lvTxt}</span></td>
-  </tr>`).join("");
+  // 0-0 预警已废弃（2026-08-22 用户拍板：33 条 0 命中系统性反向，该大球的场全在预警 0-0——网页卡片移除，数据保留历史）
 
   // 7+ 球预警：总进球 ≥7 的极端大球，只显示中等偏低及以上等级（全部展示，不截断）
   const bigRows = (p.bigSeven || [])
@@ -240,7 +232,7 @@ function renderPredict(batch) {
         <span class="bo-item bo-b">B 级 <b>${sorted.filter(m => /B级/.test(m.dir)).length}</b></span>
         <span class="bo-item bo-c">C 级 <b>${sorted.filter(m => /C级/.test(m.dir)).length}</b></span>
         <span class="bo-item">🌡️ 冷门预警 <b>${(p.coldRisk || []).length} 场</b></span>
-        <span class="bo-item">🚨 高价值预警 <b>${(p.alerts || []).filter(a => a.lvTxt !== "低").length} 条</b></span>
+        <span class="bo-item">🚨 高价值预警 <b>${(p.alerts || []).length} 条</b></span>
       </div>
       <div class="lvl-filter">
         <button class="active" data-f="all" onclick="filterLvl(this,'all')">全部</button>
@@ -274,16 +266,7 @@ function renderPredict(batch) {
         <thead><tr><th>剧本</th><th>场次</th><th>概率</th><th>核心逻辑</th></tr></thead>
         <tbody>${alertRows}</tbody>
       </table></div>
-      <div class="note">仅显示中等偏低及以上等级的剧本，其余已过滤。全部剧本按概率排序展示。</div>
-    </div>
-
-    <div class="card">
-      <h2><span class="icon">🛡️</span> 0-0 预警（${(p.zeroZero || []).length} 场全量）</h2>
-      <div class="table-wrap"><table>
-        <thead><tr><th>场次</th><th>0-0 概率</th><th>等级</th></tr></thead>
-        <tbody>${zzRows}</tbody>
-      </table></div>
-      <div class="note">仅显示中等偏低及以上等级（泊松计算），全量展示按概率排序。</div>
+      <div class="note">全量展示按概率排序（2026-08-22 用户拍板：平胜/平负=强队半场 0-0 后破门高概率→中等+；胜负/负胜=弱队先进被逆转/爆冷冷门→低，保留展示）。</div>
     </div>
 
     <div class="card">
@@ -346,10 +329,6 @@ function renderReview(batch) {
     if (batch.alerts) {
       const a = batch.alerts.find(x => x.no === m.no);
       if (a && a.script === actualHt) return `🎯 ${a.script}（${a.lvTxt}）`;
-    }
-    if (batch.zeroZero) {
-      const z = batch.zeroZero.find(x => x.no === m.no);
-      if (z && scoreMain === "0-0") return `🎯 0-0（预警${z.p}%）`;
     }
     return "";
   };
@@ -768,7 +747,6 @@ function renderGlobal(mode) {
     </div>
     <div class="kpi-row">
       <div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${ou.h}/${ou.n} <span style="font-size:12px">${pct(ou.h, ou.n)}</span></div><div class="lbl">⚽ 总进球命中</div></div>
-      <div class="kpi" style="background:rgba(22,163,74,.08);border-color:#16a34a"><div class="num">${zz.h}/${zz.n} <span style="font-size:12px">${pct(zz.h, zz.n)}</span></div><div class="lbl">🛡️ 0-0 预警命中</div></div>
       <div class="kpi" style="background:rgba(22,163,74,.08);border-color:#16a34a"><div class="num">${bs.h}/${bs.n} <span style="font-size:12px">${pct(bs.h, bs.n)}</span></div><div class="lbl">🎆 7+ 球预警命中</div></div>
       <div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${aw.h}/${aw.n} <span style="font-size:12px">${pct(aw.h, aw.n)}</span></div><div class="lbl">🚨 高价值预警命中</div></div>
     </div>`;
