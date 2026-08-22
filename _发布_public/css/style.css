@@ -84,9 +84,9 @@ body {
 font-family: var(--font-body);
 background:
 radial-gradient(1200px 560px at 50% -160px, var(--bg-glow), transparent 55%),
-radial-gradient(760px 400px at 92% 18%, color-mix(in srgb, var(--gold) 5%, transparent), transparent 60%),
-radial-gradient(720px 420px at -6% 48%, color-mix(in srgb, var(--primary) 4.5%, transparent), transparent 60%),
-linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 92%, #fff) 100%),
+radial-gradient(760px 400px at 92% 14%, color-mix(in srgb, var(--gold) 6%, transparent), transparent 60%),
+radial-gradient(720px 420px at -6% 44%, color-mix(in srgb, var(--primary) 5%, transparent), transparent 60%),
+linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 90%, #fff) 100%),
 var(--bg);
 background-size: auto, auto, auto, auto, auto;
 background-attachment: fixed;
@@ -95,6 +95,26 @@ font-weight: 400; letter-spacing: .2px;
 -webkit-font-smoothing: antialiased;
 text-rendering: optimizeLegibility;
 transition: background .25s, color .25s;
+}
+/* 科技感应背景层：极淡网格 + 顶部光带（覆盖默认 body 背景，virtual 层避免干扰内容） */
+body::before {
+content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+background:
+linear-gradient(rgba(51, 80, 110, .028) 1px, transparent 1px),
+linear-gradient(90deg, rgba(51, 80, 110, .028) 1px, transparent 1px),
+linear-gradient(rgba(184, 147, 90, .020) 1px, transparent 1px),
+linear-gradient(90deg, rgba(184, 147, 90, .020) 1px, transparent 1px);
+background-size: 56px 56px, 56px 56px, 280px 280px, 280px 280px;
+mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 20%, transparent 78%);
+-webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 20%, transparent 78%);
+}
+html.dark body::before {
+background:
+linear-gradient(rgba(0, 229, 255, .030) 1px, transparent 1px),
+linear-gradient(90deg, rgba(0, 229, 255, .030) 1px, transparent 1px),
+linear-gradient(rgba(255, 45, 120, .020) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255, 45, 120, .020) 1px, transparent 1px);
+background-size: 64px 64px, 64px 64px, 320px 320px, 320px 320px;
 }
 html.dark body {
 background-image:
@@ -279,6 +299,25 @@ margin-right: 8px; vertical-align: -2px;
 }
 .kpi-tabs button:hover { border-color: var(--primary); color: var(--primary); }
 .kpi-tabs button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+/* 全局命中率仪表盘（2026-08-23 重构：口径 tab 置顶 + 环形三卡 + 指标三卡 三段式） */
+.global-dash { display: flex; flex-direction: column; gap: 14px; }
+.g-tabs {
+display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+padding: 8px 4px 0;
+}
+.g-tabs-lbl { font-size: 12px; font-weight: 700; color: var(--sub); letter-spacing: .5px; }
+.g-tabs .kpi-tabs { margin: 0; }
+.g-tabs .kpi-tabs button { padding: 6px 19px; font-size: 13px; }
+.g-rings {
+display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+.g-stats {
+display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+.g-stats .kpi { padding: 16px 12px; }
+@media (max-width: 640px) {
+.g-rings, .g-stats { grid-template-columns: repeat(1, 1fr); }
+}
 .lvl-filter { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 12px; }
 .lvl-filter button {
   border: 1px solid var(--border); background: var(--card); color: var(--sub);
@@ -733,6 +772,13 @@ td { padding: 10px 10px; }
 .avoid-grid { grid-template-columns: 1fr; }
 .avoid-card { padding: 12px 13px; }
 body { font-size: 14.5px; line-height: 1.7; }
+/* 手机端按钮换行与卡片头部紧凑（2026-08-23 适配检查） */
+h2 { flex-wrap: wrap; gap: 8px; }
+h2 .hint { flex-basis: 100%; margin-left: 0; }
+h2 button { margin-left: 0 !important; }
+.g-tabs { gap: 8px; }
+.batch-overview { gap: 8px; }
+.g-tabs-btn-wrap { display: flex; flex-wrap: wrap; }
 }
 @media (max-width: 480px) {
 .card { padding: 12px 10px; }

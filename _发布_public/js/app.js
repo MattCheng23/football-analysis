@@ -268,7 +268,7 @@ function renderPredict(batch) {
   el.innerHTML = `
     <div class="card">
       <h2><span class="icon">📋</span> 一、完整预测清单（${batch.title}）${batch.updated ? `<span class="mt-line" style="font-size:12px;color:var(--sub);margin-left:10px;">🕐 更新于 ${batch.updated}</span>` : ""}
-        <button class="batch-nav" style="margin-left:auto" onclick="copyBatchText('${currentKey}')" title="复制本批全部预测为文本">📄 复制清单</button>
+        <button class="batch-nav" style="margin-left:auto" onclick="copyBatchText('${currentKey}', this)" title="复制本批全部预测为文本">📄 复制清单</button>
       </h2>
       <div class="batch-overview">
         <span class="bo-item">⚽ 本批 <b>${sorted.length} 场</b></span>
@@ -324,7 +324,10 @@ function renderPredict(batch) {
     </div>
 
     <div class="card">
-      <h2><span class="icon">💡</span> 各场核心逻辑 <span class="hint">关键信息预览，点击展开全文</span></h2>
+      <h2><span class="icon">💡</span> 各场核心逻辑 <span class="hint">关键信息预览，点击展开全文</span>
+        <button class="batch-nav" style="margin-left:auto" onclick="toggleAllLogic(this, true)" title="展开全部逻辑">🔽 全体展开</button>
+        <button class="batch-nav" onclick="toggleAllLogic(this, false)" title="折叠全部逻辑">🔼 全体折叠</button>
+      </h2>
       <div class="table-wrap"><table>
         <thead><tr><th>场次</th><th>对阵</th><th>核心逻辑</th></tr></thead>
         <tbody>${logicRows}</tbody>
@@ -340,6 +343,13 @@ function filterLvl(btn, lvl) {
     const l = tr.getAttribute("data-lvl") || "";
     tr.style.display = (lvl === "all" || l === lvl) ? "" : "none";
   });
+}
+
+/* 核心逻辑全体展开/折叠（2026-08-23：逻辑卡内 details 批量切换） */
+function toggleAllLogic(btn, open) {
+  const card = btn.closest(".card");
+  if (!card) return;
+  card.querySelectorAll("details").forEach(d => { d.open = open; });
 }
 
 /* ---------- 渲染：复盘 ---------- */
@@ -400,6 +410,8 @@ function renderReview(batch) {
   });
   const ouPct = ouN ? Math.round(100 * ouH / ouN) + "%" : "—";
   const ouKpi = `<div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${ouH}/${ouN} <span style="font-size:12px">${ouPct}</span></div><div class="lbl">⚽ 总进球命中</div></div>`;
+  // 部分复盘 KPI：统一 x/y + 百分比（2026-08-23 用户要求：与总进球同款）
+  const statCell = (hit, total) => total ? `${hit}/${total} <span style="font-size:12px">${Math.round(100 * hit / total)}%</span>` : `0/0 <span style="font-size:12px">—</span>`;
   const statusTag = batch.reviewed
     ? `<span class="tag tag-green">完整复盘</span>`
     : `<span class="tag tag-yellow">部分复盘（已确认 ${confirmedN}/${totalN} 场）</span>`;
@@ -409,9 +421,9 @@ function renderReview(batch) {
         <div class="kpi"><div class="num">${batch.stats.ht}</div><div class="lbl">半全场 TOP3 ${batch.stats.htPct}</div></div>
         ${ouKpi}` : `
         <div class="kpi"><div class="num">${confirmedN}/${totalN}</div><div class="lbl">已确认场次</div></div>
-        <div class="kpi"><div class="num">${r.results.filter(m => m.d === "ok").length}</div><div class="lbl">方向已命中</div></div>
-        <div class="kpi"><div class="num">${r.results.filter(m => m.s === "ok").length}</div><div class="lbl">比分已命中</div></div>
-        <div class="kpi"><div class="num">${r.results.filter(m => m.h === "ok").length}</div><div class="lbl">半全场已命中</div></div>
+        <div class="kpi"><div class="num">${statCell(r.results.filter(m => m.d === "ok").length, confirmedN)}</div><div class="lbl">方向已命中</div></div>
+        <div class="kpi"><div class="num">${statCell(r.results.filter(m => m.s === "ok").length, confirmedN)}</div><div class="lbl">比分已命中</div></div>
+        <div class="kpi"><div class="num">${statCell(r.results.filter(m => m.h === "ok").length, confirmedN)}</div><div class="lbl">半全场已命中</div></div>
         ${ouKpi}`;
 
   const rows = r.results.slice().sort((a, b) => parseInt(a.no) - parseInt(b.no)).map(m => {
@@ -487,10 +499,7 @@ function renderReview(batch) {
 
     <div class="card">
       <h2><span class="icon">🔎</span> 关键场次技术统计（演戏信号实证）<span class="hint">点击信号标签展开完整数据</span>
-        <span style="margin-left:auto;display:inline-flex;gap:6px">
-          <button class="batch-nav" onclick="toggleEvDetails(true)">全部展开</button>
-          <button class="batch-nav" onclick="toggleEvDetails(false)">全部折叠</button>
-        </span>
+        <button class="batch-nav" style="margin-left:auto" onclick="toggleEvDetails(this)" title="展开/折叠全部技术统计">🔽 展开全部</button>
       </h2>
       <div class="table-wrap"><table>
         <thead><tr><th>场次</th><th>演戏信号（点击展开）</th></tr></thead>
@@ -500,12 +509,17 @@ function renderReview(batch) {
 }
 
 /* ---------- 站点总览统计条 + 批次趋势图 ---------- */
-function toggleEvDetails(open) {
-  document.querySelectorAll(".ev-detail").forEach(d => { d.open = open; });
+/* 技术统计全局展开/折叠（2026-08-23 合并为单按钮切换） */
+function toggleEvDetails(btn) {
+  const card = btn.closest(".card");
+  const all = card ? Array.from(card.querySelectorAll(".ev-detail")) : Array.from(document.querySelectorAll(".ev-detail"));
+  const anyClosed = all.some(d => !d.open);
+  all.forEach(d => { d.open = anyClosed; });
+  btn.textContent = anyClosed ? "🔼 折叠全部" : "🔽 展开全部";
 }
 
 /* 复制批次预测清单为纯文本（分享/对比用） */
-function copyBatchText(key) {
+function copyBatchText(key, btn) {
   const b = BATCHES[key];
   if (!b || !b.predict || !b.predict.matches) return;
   const byNo = (a, b) => parseInt(a.no) - parseInt(b.no);
@@ -520,24 +534,27 @@ function copyBatchText(key) {
     lines.push("");
   });
   const txt = lines.join("\n");
-  // 剪贴板复制（带降级）
+  // 复制反馈（点击按钮/任意反馈元素统一：传入 btn，无 btn 时查 up 链）
   const done = () => {
-    const btn = event && event.target;
-    if (btn) { const o = btn.textContent; btn.textContent = "✅ 已复制"; setTimeout(() => btn.textContent = o, 1500); }
+    const t = btn || document.querySelector(".batch-nav[onclick*='copyBatchText']");
+    if (t) { const o = t.textContent; t.textContent = "✅ 已复制"; setTimeout(() => t.textContent = o, 1600); }
+  };
+  // clipboard API 优先（https 必需），失败降级 execCommand；均无反馈时 alert（仅异常兜底）
+  const fallback = () => {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      if (ok) done(); else throw new Error("execCommand failed");
+    } catch (e) { alert("复制失败，请手动全选复制"); }
   };
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(txt).then(done).catch(() => fallbackCopy(txt, done));
+    navigator.clipboard.writeText(txt).then(done).catch(fallback);
   } else {
-    fallbackCopy(txt, done);
+    fallback();
   }
-}
-function fallbackCopy(txt, done) {
-  const ta = document.createElement("textarea");
-  ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
-  document.body.appendChild(ta); ta.select();
-  try { document.execCommand("copy"); } catch (e) {}
-  document.body.removeChild(ta);
-  if (done) done();
 }
 function renderSiteStats() {
   const el = document.getElementById("site-stats");
@@ -784,20 +801,26 @@ function renderGlobal(mode) {
 
   // KPI 数值：无评估数据时显示「—」（0/0 无信息量，2026-08-23 优化）
   const kpiStat = (h, n) => n ? `${h}/${n} <span style="font-size:12px">${pct(h, n)}</span>` : `<span style="font-size:20px;opacity:.55">—</span>`;
+  const kpiTag = (h, n) => n ? `${h}/${n} <span style="font-size:12px">${pct(h, n)}</span>` : `<span style="font-size:20px;opacity:.55">—</span>`;
   el.innerHTML = `
-    <div class="kpi-tabs">
-      <button class="${isAll ? "" : "active"}" onclick="renderGlobal('week')">近 7 日</button>
-      <button class="${isAll ? "active" : ""}" onclick="renderGlobal('all')">累计全量</button>
-    </div>
-    <div class="kpi-row" style="margin-bottom:6px">
-      ${kpiRing("g-ring-d", pctN(week.d, week.n), week.d, week.n, isAll ? "累计方向" : "近7日方向")}
-      ${kpiRing("g-ring-s", pctN(week.s, week.n), week.s, week.n, isAll ? "累计比分 TOP3" : "近7日比分 TOP3")}
-      ${kpiRing("g-ring-h", pctN(week.h, week.n), week.h, week.n, isAll ? "累计半全场 TOP3" : "近7日半全场 TOP3")}
-    </div>
-    <div class="kpi-row">
-      <div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${kpiStat(ou.h, ou.n)}</div><div class="lbl">⚽ 总进球命中${isAll ? "" : "（近7日）"}</div></div>
-      <div class="kpi" style="background:rgba(22,163,74,.08);border-color:#16a34a"><div class="num">${kpiStat(bs.h, bs.n)}</div><div class="lbl">🎆 7+ 球预警命中</div></div>
-      <div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${kpiStat(aw.h, aw.n)}</div><div class="lbl">🚨 高价值预警命中</div></div>
+    <div class="global-dash">
+      <div class="g-tabs">
+        <span class="g-tabs-lbl">📊 口径</span>
+        <div class="kpi-tabs">
+          <button class="${isAll ? "btn" : "btn active"}" onclick="renderGlobal('week')">近 7 日</button>
+          <button class="${isAll ? "btn active" : "btn"}" onclick="renderGlobal('all')">累计全量</button>
+        </div>
+      </div>
+      <div class="g-rings">
+        ${kpiRing("g-ring-d", pctN(week.d, week.n), week.d, week.n, isAll ? "累计方向" : "近7日方向")}
+        ${kpiRing("g-ring-s", pctN(week.s, week.n), week.s, week.n, isAll ? "累计比分 TOP3" : "近7日比分 TOP3")}
+        ${kpiRing("g-ring-h", pctN(week.h, week.n), week.h, week.n, isAll ? "累计半全场 TOP3" : "近7日半全场 TOP3")}
+      </div>
+      <div class="g-stats">
+        <div class="kpi"><div class="num">${kpiTag(ou.h, ou.n)}</div><div class="lbl">⚽ 总进球命中${isAll ? "" : "（近7日）"}</div></div>
+        <div class="kpi"><div class="num">${kpiTag(bs.h, bs.n)}</div><div class="lbl">🎆 7+ 球预警命中</div></div>
+        <div class="kpi"><div class="num">${kpiTag(aw.h, aw.n)}</div><div class="lbl">🚨 高价值预警命中</div></div>
+      </div>
     </div>`;
 }
 
