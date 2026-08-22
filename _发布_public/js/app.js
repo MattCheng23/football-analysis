@@ -146,13 +146,13 @@ function renderPredict(batch) {
     const revHt = m.ht.replace(/([胜负平]{2})\*/g, '<span class="rev-score">$1*</span>');
     const lv = (m.dir.match(/([ABC])级/) || [])[1] || "";
     return `<tr data-lvl="${lv.toLowerCase()}">
-    <td><span class="no-badge">${m.no}</span></td>
-    <td><b class="m-team">${m.home} vs ${m.away}</b><br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time || "-"}</span></span></td>
-    <td class="${lvlClass(m.dir)}">${shortDir(m.dir)}</td>
-    <td class="score-nums">${revHtml}</td>
-    <td>${revHt}</td>
-    <td>${m.ou}</td>
-    <td>${riskTag(m.risk || 0)}</td>
+    <td data-l="场次"><span class="no-badge">${m.no}</span></td>
+    <td data-l="对阵（北京时间）" data-sf><b class="m-team">${m.home} vs ${m.away}</b><br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time || "-"}</span></span></td>
+    <td class="${lvlClass(m.dir)}" data-l="方向">${shortDir(m.dir)}</td>
+    <td class="score-nums" data-l="比分 TOP3">${revHtml}</td>
+    <td data-l="半全场 TOP3">${revHt}</td>
+    <td data-l="总进球">${m.ou}</td>
+    <td data-l="假赛分">${riskTag(m.risk || 0)}</td>
   </tr>`;
   }).join("");
 
@@ -199,9 +199,9 @@ function renderPredict(batch) {
     .slice()
     .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
     .map(c => `<tr>
-    <td>${c.rank}</td><td>${c.no} ${c.teams}${coldVerifyOf(c)}</td><td>${shortDir(c.dir)}</td>
-    <td><span class="tag ${c.lv}">${c.lvTxt}</span></td>
-    <td><details>
+    <td data-l="排名">${c.rank}</td><td data-l="场次" data-sf>${c.no} ${c.teams}${coldVerifyOf(c)}</td><td data-l="冷门方向">${shortDir(c.dir)}</td>
+    <td data-l="风险等级"><span class="tag ${c.lv}">${c.lvTxt}</span></td>
+    <td data-l="核心逻辑" data-sf><details>
       <summary>${cut(c.logic || "-", 30)}</summary>
       <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicHtml(c.logic)}</div>
     </details></td>
@@ -227,9 +227,9 @@ function renderPredict(batch) {
     .slice()
     .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
     .map(a => `<tr>
-    <td>${a.script}</td><td>${a.no} ${a.teams}${alertVerifyOf(a)}</td>
-    <td><span class="tag ${a.lv}">${a.lvTxt}</span></td>
-    <td><details>
+    <td data-l="剧本">${a.script}</td><td data-l="场次" data-sf>${a.no} ${a.teams}${alertVerifyOf(a)}</td>
+    <td data-l="概率"><span class="tag ${a.lv}">${a.lvTxt}</span></td>
+    <td data-l="核心逻辑" data-sf><details>
       <summary>${cut(a.logic, 30) || "-"}</summary>
       <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicHtml(a.logic)}</div>
     </details></td>
@@ -250,16 +250,16 @@ function renderPredict(batch) {
     .slice()
     .sort((a, z) => z.p - a.p)
     .map(z => `<tr>
-    <td>${z.no} ${z.teams}${bigVerifyOf(z)}</td>
-    <td><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${z.p}%"></div></div><span class="prob-txt num">${z.p}%</span></div></td>
-    <td><span class="tag ${z.lv}">${z.lvTxt}</span></td>
+    <td data-l="场次" data-sf>${z.no} ${z.teams}${bigVerifyOf(z)}</td>
+    <td data-l="7+ 球概率"><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${z.p}%"></div></div><span class="prob-txt num">${z.p}%</span></div></td>
+    <td data-l="等级"><span class="tag ${z.lv}">${z.lvTxt}</span></td>
   </tr>`).join("");
 
   // 核心逻辑速览：自动提取关键信息（方向/伤停/天气）预览 + 点击展开全文（加粗渲染）
   const logicRows = sorted.map(m => `<tr>
-    <td><span class="no-badge">${m.no}</span></td>
-    <td><b class="m-team">${m.home} vs ${m.away}</b>${m.time ? `<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time}</span></span>` : ""}</td>
-    <td><details>
+    <td data-l="场次"><span class="no-badge">${m.no}</span></td>
+    <td data-l="对阵" data-sf><b class="m-team">${m.home} vs ${m.away}</b>${m.time ? `<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time}</span></span>` : ""}</td>
+    <td data-l="核心逻辑" data-sf><details>
       <summary>${logicKey(m.logic)}</summary>
       <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicHtml(m.logic)}</div>
     </details></td>
@@ -444,13 +444,13 @@ function renderReview(batch) {
     const nms = (m.teams || "").split(" vs ");
     const homeNm = nms[0] || "", awayNm = nms[1] || "";
     return `<tr class="${m.d === "ok" ? "ok-row" : ""}">
-      <td><span class="no-badge">${m.no}</span></td>
-      <td><b class="m-team">${homeNm} vs ${awayNm}</b><br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span>${pm && pm.time ? `<span class="match-time">🕐 ${pm.time}</span>` : ""}</span></td>
-      <td><b>${m.score}</b></td>
-      <td>${dTag(m.d)}</td>
-      <td>${hitTag(sTop)}</td>
-      <td>${hCell}</td>
-      <td>${ouCell()}</td>
+      <td data-l="场次"><span class="no-badge">${m.no}</span></td>
+      <td data-l="对阵" data-sf><b class="m-team">${homeNm} vs ${awayNm}</b><br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span>${pm && pm.time ? `<span class="match-time">🕐 ${pm.time}</span>` : ""}</span></td>
+      <td data-l="赛果（半场）"><b>${m.score}</b></td>
+      <td data-l="方向">${dTag(m.d)}</td>
+      <td data-l="比分">${hitTag(sTop)}</td>
+      <td data-l="半全场">${hCell}</td>
+      <td data-l="总进球">${ouCell()}</td>
     </tr>`;
   }).join("");
 
@@ -461,8 +461,8 @@ function renderReview(batch) {
     const evHome = em ? em[1] : (e.teams || "");
     const evAway = em ? em[2] : "";
     return `<tr>
-    <td><b>${e.no}</b> ${evHome} vs ${evAway}<br><span class="mt-line"><span class="lg ${e.lg}">${e.league}</span></span></td>
-    <td><details class="ev-detail">
+    <td data-l="场次" data-sf><b>${e.no}</b> ${evHome} vs ${evAway}<br><span class="mt-line"><span class="lg ${e.lg}">${e.league}</span></span></td>
+    <td data-l="演戏信号（点击展开）" data-sf><details class="ev-detail">
       <summary><span class="tag ${e.sc === "danger" ? "tag-red" : e.sc === "watch" ? "tag-yellow" : "tag-green"}">${e.signal}</span> <span style="font-size:12px;color:var(--sub)">点击展开</span></summary>
       <div style="margin-top:8px;font-size:12.5px;color:var(--sub);line-height:1.8">${e.stats || "—"}<br><br>${cleanTxt(e.txt) || ""}</div>
     </details></td>

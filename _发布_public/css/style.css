@@ -847,6 +847,32 @@ h2 button { margin-left: 0 !important; }
 .batch-overview { gap: 8px; }
 .g-tabs-btn-wrap { display: flex; flex-wrap: wrap; }
 }
+/* 手机端表格→卡片化（2026-08-23：赛前分析/赛后复盘 与红黑总榜同款卡片风格）
+   表格行变 2 列网格卡片：字段标签=data-l 显示在值上方；data-sf=整行跨列 */
+@media (max-width: 640px) {
+.table-wrap { overflow: visible; border: 0; background: transparent; margin: 6px 0 10px; }
+.table-wrap table { display: block; min-width: 0; }
+.table-wrap thead { display: none; }
+.table-wrap tbody { display: block; }
+.table-wrap tbody tr {
+display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px;
+padding: 12px 13px; margin: 10px 0;
+background: var(--card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow);
+transition: none;
+}
+.table-wrap tbody tr:first-child { margin-top: 0; }
+.table-wrap tbody tr:hover { background: var(--card); }
+.table-wrap tbody tr.ok-row { background: color-mix(in srgb, var(--risk-ok) 6%, transparent); }
+.table-wrap tbody td { display: block; border: 0; padding: 0; font-size: 13.5px; box-shadow: none !important; }
+.table-wrap tbody td::before { content: attr(data-l); display: block; font-size: 10.5px; font-weight: 600; color: var(--sub); letter-spacing: .5px; margin-bottom: 2px; }
+.table-wrap tbody td[data-sf] { grid-column: 1 / -1; }
+.table-wrap tbody td .m-team { font-size: 15.5px; display: block; }
+.table-wrap tbody td .mt-line { font-size: 11.5px; }
+.table-wrap tbody td details { margin-top: 0; }
+.table-wrap tbody td details summary { font-size: 13px; line-height: 1.6; }
+.table-wrap tbody td .prob-bar { max-width: 100%; }
+.table-wrap tbody tr:last-child td { border-bottom: 0; }
+}
 @media (max-width: 480px) {
 .card { padding: 12px 10px; }
 .kpi { min-width: 92px; }
