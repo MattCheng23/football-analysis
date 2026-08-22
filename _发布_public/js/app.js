@@ -268,7 +268,6 @@ function renderPredict(batch) {
   el.innerHTML = `
     <div class="card">
       <h2><span class="icon">📋</span> 一、完整预测清单（${batch.title}）${batch.updated ? `<span class="mt-line" style="font-size:12px;color:var(--sub);margin-left:10px;">🕐 更新于 ${batch.updated}</span>` : ""}
-        <button class="batch-nav" style="margin-left:auto" onclick="copyBatchText('${currentKey}', this)" title="复制本批全部预测为文本">📄 复制清单</button>
       </h2>
       <div class="batch-overview">
         <span class="bo-item">⚽ 本批 <b>${sorted.length} 场</b></span>
@@ -511,44 +510,7 @@ function toggleEvDetails(btn) {
   btn.textContent = anyClosed ? "🔼 折叠全部" : "🔽 展开全部";
 }
 
-/* 复制批次预测清单为纯文本（分享/对比用） */
-function copyBatchText(key, btn) {
-  const b = BATCHES[key];
-  if (!b || !b.predict || !b.predict.matches) return;
-  const byNo = (a, b) => parseInt(a.no) - parseInt(b.no);
-  const sorted = b.predict.matches.slice().sort(byNo);
-  const lines = [`${b.title}（${b.model}）`, `更新：${b.updated || "-"}`, ""];
-  sorted.forEach(m => {
-    lines.push(`[${m.no}] ${m.home} vs ${m.away}（${m.league}${m.time ? " " + m.time : ""}）`);
-    lines.push(`  方向：${shortDir(m.dir)}`);
-    lines.push(`  比分：${m.scores}`);
-    lines.push(`  半全场：${m.ht}`);
-    lines.push(`  总进球：${m.ou}`);
-    lines.push("");
-  });
-  const txt = lines.join("\n");
-  // 复制反馈（点击按钮/任意反馈元素统一：传入 btn，无 btn 时查 up 链）
-  const done = () => {
-    const t = btn || document.querySelector(".batch-nav[onclick*='copyBatchText']");
-    if (t) { const o = t.textContent; t.textContent = "✅ 已复制"; setTimeout(() => t.textContent = o, 1600); }
-  };
-  // clipboard API 优先（https 必需），失败降级 execCommand；均无反馈时 alert（仅异常兜底）
-  const fallback = () => {
-    try {
-      const ta = document.createElement("textarea");
-      ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
-      document.body.appendChild(ta); ta.select();
-      const ok = document.execCommand("copy");
-      document.body.removeChild(ta);
-      if (ok) done(); else throw new Error("execCommand failed");
-    } catch (e) { alert("复制失败，请手动全选复制"); }
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(txt).then(done).catch(fallback);
-  } else {
-    fallback();
-  }
-}
+/* 复制批次预测清单功能已删除（2026-08-23 用户拍板：没必要修复） */
 function renderSiteStats() {
   const el = document.getElementById("site-stats");
   if (!el) return;
