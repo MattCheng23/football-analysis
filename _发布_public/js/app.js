@@ -835,24 +835,24 @@ function renderAvoid() {
   const by = (g) => R.filter(x => x.g === g);
   const r2 = by("R2"), r1 = by("R1"), n = by("N"), b1 = by("B1"), b2 = by("B2");
 
-  // —— 联赛分布（黑榜+偏黑 = 假球重灾区）——
+  // —— 联赛分布（黑榜+偏黑 = 假球重灾区，2026-08-23 重排：全量排序条形+分级配色+图例）——
   const leagueCnt = {};
   b2.concat(b1).forEach(a => {
     (a.lg || "未知").split(",").forEach(lg => { leagueCnt[lg.trim()] = (leagueCnt[lg.trim()] || 0) + 1; });
   });
   const lgEntries = Object.entries(leagueCnt).sort((x, y) => y[1] - x[1]);
   const lgMax = Math.max(1, ...lgEntries.map(([, c]) => c));
-  const lgCloud = lgEntries.map(([lg, cnt]) => {
-    const hot = cnt >= 3 ? "lgc-hot" : (cnt === 2 ? "lgc-mid" : "");
-    return `<span class="avoid-lg-badge ${hot}">${lgBadge(lg, true)}<span class="avoid-lg-cnt">×${cnt}</span></span>`;
-  }).join("");
-  // 联赛横向条形图（2026-08-23 丰富：直观显示重灾区量级）
-  const lgBars = lgEntries.slice(0, 8).map(([lg, cnt]) => `
+  const lgTier = (cnt) => cnt >= 7 ? "hot" : (cnt >= 4 ? "mid" : "low");
+  const lgRow = ([lg, cnt], rank) => `
     <div class="avoid-lbar">
-      <span class="lg lg-sm">${lg}</span>
-      <div class="avoid-lbar-track"><div class="avoid-lbar-fill" style="width:${Math.round(100 * cnt / lgMax)}%"></div></div>
-      <span class="avoid-lbar-num">×${cnt}</span>
-    </div>`).join("");
+      <span class="avoid-lbar-lg">${lgBadge(lg, true)}</span>
+      <div class="avoid-lbar-track"><div class="avoid-lbar-fill ${lgTier(cnt)}" style="width:${Math.round(100 * cnt / lgMax)}%"></div></div>
+      <span class="avoid-lbar-num" title="${lg} · 黑榜+偏黑 ${cnt} 队">${rank <= 3 ? "🔥" : ""}×${cnt}</span>
+    </div>`;
+  const lgRows = lgEntries.map((e, i) => lgRow(e, i + 1));
+  const lgHalf = Math.ceil(lgRows.length / 2);
+  const lgBars = [lgRows.slice(0, lgHalf).join(""), lgRows.slice(lgHalf).join("")]
+    .map(c => `<div class="avoid-lg-col">${c}</div>`).join("");
 
   // —— 单队折叠条目 ——
   const ITEM_DEF = {
@@ -899,11 +899,11 @@ function renderAvoid() {
         <div class="avoid-stat st-index"><div class="avoid-stat-num">${R.length ? Math.round(100 * (b1.length + b2.length) / R.length) : 0}%</div><div class="avoid-stat-lbl">⚠️ 风险指数</div></div>
       </div>
 
-      <!-- 联赛分布可视化（徽章云 + 条形图，2026-08-23 丰富） -->
+      <!-- 联赛分布可视化（全量排序条形+分级配色，2026-08-23 重排） -->
       <div class="avoid-league">
-        <h4>📊 黑榜+偏黑联赛分布 <span class="avoid-league-hint">（假球重灾区，徽章 + 量级条形）</span></h4>
-        <div class="avoid-lg-cloud">${lgCloud || '<div class="note">暂无数据</div>'}</div>
-        ${lgBars ? `<div class="avoid-lbar-list">${lgBars}</div>` : ""}
+        <h4>📊 黑榜+偏黑联赛分布 <span class="avoid-league-hint">（假球重灾区 = 黑榜+偏黑队伍最多的联赛，按数量排序，柱条与联赛一一对应）</span></h4>
+        ${lgBars ? `<div class="avoid-lg-grid">${lgBars}</div>
+        <div class="avoid-lg-legend"><span class="lgdot lgdot-hot"></span>≥7 队 重灾区　<span class="lgdot lgdot-mid"></span>4-6 队 中等　<span class="lgdot lgdot-low"></span>≤3 队 较低　<span class="avoid-lg-legend-note">（黑榜+偏黑合并计数，多联赛队伍重复计入；🔥 = 前三）</span></div>` : '<div class="note">暂无数据</div>'}
       </div>
 
       <!-- 搜索结果（搜索时显示，替代分组） -->

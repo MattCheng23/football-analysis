@@ -575,17 +575,27 @@ background: var(--card); border: 1px solid var(--border); border-radius: 14px; b
 }
 .avoid-league h4 { margin: 0 0 10px; font-size: 13.5px; color: var(--ink); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .avoid-league-hint { font-size: 11px; color: var(--sub); font-weight: 400; }
-/* 联赛条形图列表（2026-08-23 丰富） */
-.avoid-lbar-list {
-display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 22px; margin-top: 12px;
+/* 联赛分级条形列表（2026-08-23 重排：全量排序+分级配色+图例） */
+.avoid-lg-grid {
+display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 26px; margin-top: 12px;
 padding-top: 12px; border-top: 1px dashed var(--border);
 }
-@media (max-width: 640px) { .avoid-lbar-list { grid-template-columns: 1fr; } }
-.avoid-lbar { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
-.avoid-lbar .lg-sm { width: 72px; text-align: center; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; }
-.avoid-lbar-track { flex: 1; height: 14px; border-radius: 7px; background: color-mix(in srgb, var(--border) 60%, transparent); overflow: hidden; }
-.avoid-lbar-fill { height: 100%; border-radius: 7px; background: linear-gradient(90deg, color-mix(in srgb, var(--risk-high) 55%, transparent), var(--risk-high)); transition: width .5s; }
-.avoid-lbar-num { width: 22px; font-size: 12px; font-weight: 700; color: var(--ink); }
+@media (max-width: 640px) { .avoid-lg-grid { grid-template-columns: 1fr; } }
+.avoid-lg-col { display: flex; flex-direction: column; gap: 7px; }
+.avoid-lbar { display: flex; align-items: center; gap: 10px; }
+.avoid-lbar .lg-sm { width: 92px; text-align: left; flex-shrink: 0; font-size: 11.5px; padding: 2px 8px; }
+.avoid-lbar-track { flex: 1; height: 16px; border-radius: 8px; background: color-mix(in srgb, var(--border) 55%, transparent); overflow: hidden; }
+.avoid-lbar-fill { height: 100%; border-radius: 8px; transition: width .5s; }
+.avoid-lbar-fill.hot { background: linear-gradient(90deg, color-mix(in srgb, var(--risk-high) 42%, transparent), var(--risk-high)); }
+.avoid-lbar-fill.mid { background: linear-gradient(90deg, color-mix(in srgb, var(--risk-mid) 45%, transparent), var(--risk-mid)); }
+.avoid-lbar-fill.low { background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 38%, transparent), var(--primary)); }
+.avoid-lbar-num { min-width: 44px; font-size: 13px; font-weight: 800; color: var(--ink); white-space: nowrap; }
+.avoid-lg-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin-top: 12px; font-size: 11px; color: var(--sub); }
+.avoid-lg-legend-note { opacity: .8; }
+.lgdot { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 5px; }
+.lgdot-hot { background: var(--risk-high); }
+.lgdot-mid { background: var(--risk-mid); }
+.lgdot-low { background: var(--primary); }
 .avoid-sec { margin-top: 16px; }
 .avoid-sec > summary {
 cursor: pointer; list-style: none; user-select: none;
