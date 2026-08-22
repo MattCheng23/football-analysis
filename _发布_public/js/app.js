@@ -320,7 +320,9 @@ function renderReview(batch) {
     return h + f;
   };
   const topOf = (actual, listStr) => {
-    const i = (listStr || "").split("/").map(s => s.trim()).indexOf(actual);
+    // 忽略反向项星号（0-1* 命中实际 0-1 也应计入 TOP N，2026-08-23 修复：011 诺丁汉 0-1* 命中未显示）
+    const items = (listStr || "").split("/").map(s => s.trim().replace(/\*$/, ""));
+    const i = items.indexOf(actual);
     return i >= 0 ? i + 1 : null;
   };
   const hitTag = top => top ? `<span class="tag tag-green">✅ TOP${top}</span>` : noT;
