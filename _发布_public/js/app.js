@@ -575,17 +575,6 @@ function renderSiteStats() {
     }
   });
   const dirPct = totalMatches ? Math.round(100 * dirHit / totalMatches) + "%" : "—";
-  // 批次趋势：近 10 个已复盘批次方向命中率柱状
-  const trend = keys.filter(k => BATCHES[k].reviewed && BATCHES[k].stats).slice(-10).map(k => {
-    const b = BATCHES[k];
-    const pct = parseInt(b.stats.dirPct) || 0;
-    const short = (b.title || "").split("批次")[0].split(" ")[0];
-    return `<div class="trend-col" title="${b.title}：方向 ${b.stats.dir}（${b.stats.dirPct}）">
-      <div class="trend-lbl">${pct}%</div>
-      <div class="trend-bar" style="height:${Math.max(6, pct * 0.8)}px"></div>
-      <div class="trend-date">${short}</div>
-    </div>`;
-  }).join("");
   el.innerHTML = `
     <div class="site-stats">
       <div class="site-stat"><span class="ss-num">${totalBatches}</span><span class="ss-lbl">总批次</span></div>
@@ -595,8 +584,7 @@ function renderSiteStats() {
       <div class="site-stat"><span class="ss-num">${GLOBAL_STATS.ouPct || "-"}</span><span class="ss-lbl">累计总进球命中${GLOBAL_STATS.ouNote ? "（" + GLOBAL_STATS.ouNote + "）" : ""}</span></div>
       <div class="site-stat"><span class="ss-num">${reviewed}/${totalBatches}</span><span class="ss-lbl">已复盘批次</span></div>
       <div class="site-stat"><span class="ss-num">${GLOBAL_STATS.updated.slice(5)}</span><span class="ss-lbl">最后更新</span></div>
-    </div>
-    ${trend ? `<div class="trend-row">${trend}</div><div class="note">📈 近 10 个已复盘批次方向命中率趋势</div>` : ""}`;
+    </div>`;
 }
 
 /* ---------- 预测级别表现分析 ---------- */
@@ -805,26 +793,21 @@ function renderGlobal(mode) {
   });
 
   // KPI 数值：无评估数据时显示「—」（0/0 无信息量，2026-08-23 优化）
-  const kpiStat = (h, n) => n ? `${h}/${n} <span style="font-size:12px">${pct(h, n)}</span>` : `<span style="font-size:20px;opacity:.55">—</span>`;
   const kpiTag = (h, n) => n ? `${h}/${n} <span style="font-size:12px">${pct(h, n)}</span>` : `<span style="font-size:20px;opacity:.55">—</span>`;
   el.innerHTML = `
     <div class="global-dash">
       <div class="g-tabs">
         <span class="g-tabs-lbl">📊 口径</span>
         <div class="kpi-tabs">
-          <button class="${isAll ? "btn" : "btn active"}" onclick="renderGlobal('week')">近 7 日</button>
-          <button class="${isAll ? "btn active" : "btn"}" onclick="renderGlobal('all')">累计全量</button>
+          <button class="${isAll ? "" : "active"}" onclick="renderGlobal('week')">近 7 日</button>
+          <button class="${isAll ? "active" : ""}" onclick="renderGlobal('all')">累计全量</button>
         </div>
       </div>
-      <div class="g-rings">
-        ${kpiRing("g-ring-d", pctN(week.d, week.n), week.d, week.n, isAll ? "累计方向" : "近7日方向")}
-        ${kpiRing("g-ring-s", pctN(week.s, week.n), week.s, week.n, isAll ? "累计比分 TOP3" : "近7日比分 TOP3")}
-        ${kpiRing("g-ring-h", pctN(week.h, week.n), week.h, week.n, isAll ? "累计半全场 TOP3" : "近7日半全场 TOP3")}
-      </div>
-      <div class="g-stats">
+      <div class="g-stats g-4">
+        <div class="kpi"><div class="num">${kpiTag(week.d, week.n)}</div><div class="lbl">🧭 方向命中${isAll ? "" : "（近7日）"}</div></div>
+        <div class="kpi"><div class="num">${kpiTag(week.s, week.n)}</div><div class="lbl">🎯 比分 TOP3${isAll ? "" : "（近7日）"}</div></div>
+        <div class="kpi"><div class="num">${kpiTag(week.h, week.n)}</div><div class="lbl">⏱️ 半全场 TOP3${isAll ? "" : "（近7日）"}</div></div>
         <div class="kpi"><div class="num">${kpiTag(ou.h, ou.n)}</div><div class="lbl">⚽ 总进球命中${isAll ? "" : "（近7日）"}</div></div>
-        <div class="kpi"><div class="num">${kpiTag(bs.h, bs.n)}</div><div class="lbl">🎆 7+ 球预警命中</div></div>
-        <div class="kpi"><div class="num">${kpiTag(aw.h, aw.n)}</div><div class="lbl">🚨 高价值预警命中</div></div>
       </div>
     </div>`;
 }

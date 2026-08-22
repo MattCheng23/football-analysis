@@ -1,41 +1,41 @@
 @import url("../fonts/font.css");
-/* ============ 高级灰蓝 × 香槟金（V3·2026-08-23 用户拍板：低饱和不刺眼+排版升级） ============
-   主风格（默认浅色）：雾灰蓝底 + 深岩蓝主色 + 香槟金点缀——温润克制的编辑部质感
-   次风格（暗色切换）：赛博 HUD（html.dark 保留） */
+/* ============ 软蓝 · 玻璃拟态（V8.1·2026-08-23 用户拍板：不刺眼不惨白，舒适优先） ============
+   主风格（默认浅色）：雾蓝底 + 柔和靛蓝主色（低饱和）+ 蓝绿微光点缀 + 玻璃卡片
+   设计要点：①背景=浅雾蓝渐变+双层低透明光斑（非纯白）②主色饱和度降低（不刺眼）③阴影柔和 */
 :root {
---bg: #eff2f6;
---bg-glow: rgba(51, 80, 110, .08);
---card: #ffffff;
---card-hover: #fafbfc;
---border: rgba(51, 80, 110, .12);
---ink: #2b3440;
---sub: #8a94a4;
---primary: #33506e;
---primary-dark: #24384f;
---primary-soft: rgba(51, 80, 110, .06);
---gold: #b8935a;
---gold-bright: #c9a86c;
---gold-bg: rgba(184, 147, 90, .08);
---gold-deep: #7a6238;
---risk-high: #c2544e;  --risk-high-bg: rgba(194, 84, 78, .08);
---risk-mid: #a8842c;   --risk-mid-bg: rgba(168, 132, 44, .09);
---risk-ok: #4a8a6e;    --risk-ok-bg: rgba(74, 138, 110, .08);
---risk-row-bg: rgba(194, 84, 78, .035);
---thead-bg: #edeff3;
---stripe: #f7f8fa;
---hover: #f0f3f7;
---nav-bg: rgba(255, 255, 255, .90);
---nav-border: rgba(51, 65, 85, .10);
---nav-ink: #8a94a4;
---nav-active: #33506e;
---shadow: 0 1px 2px rgba(43, 52, 64, .04), 0 2px 8px rgba(43, 52, 64, .04), 0 12px 30px rgba(43, 52, 64, .05);
---shadow-hover: 0 2px 4px rgba(51, 80, 110, .07), 0 10px 24px rgba(51, 80, 110, .09), 0 22px 50px rgba(51, 80, 110, .11);
---header-grad: linear-gradient(135deg, #1f3249 0%, #2c4a6b 55%, #3d6388 100%);
---header-glow: rgba(201, 168, 108, .20);
---toggle-bg: #e8ecf1;
---toggle-ink: #33506e;
---footer-ink: #95a0b0;
---footer-line: rgba(51, 80, 110, .12);
+--bg: #e9eef6;
+--bg-glow: rgba(74, 123, 181, .12);
+--card: #fdfeff;
+--card-hover: #ffffff;
+--border: rgba(74, 123, 181, .16);
+--ink: #26344a;
+--sub: #76889e;
+--primary: #4a7bb5;
+--primary-dark: #3a6697;
+--primary-soft: rgba(74, 123, 181, .08);
+--gold: #5aa3a8;
+--gold-bright: #6fb4b9;
+--gold-bg: rgba(90, 163, 168, .10);
+--gold-deep: #3a7378;
+--risk-high: #c96a6a;  --risk-high-bg: rgba(201, 106, 106, .09);
+--risk-mid: #c1904a;   --risk-mid-bg: rgba(193, 144, 74, .09);
+--risk-ok: #5e9e83;    --risk-ok-bg: rgba(94, 158, 131, .09);
+--risk-row-bg: rgba(201, 106, 106, .04);
+--thead-bg: #e5ecf5;
+--stripe: #f3f7fb;
+--hover: #eaf1f8;
+--nav-bg: rgba(253, 254, 255, .94);
+--nav-border: rgba(74, 123, 181, .14);
+--nav-ink: #76889e;
+--nav-active: #4a7bb5;
+--shadow: 0 1px 3px rgba(38, 52, 74, .05), 0 4px 16px rgba(38, 52, 74, .06), 0 14px 36px rgba(74, 123, 181, .08);
+--shadow-hover: 0 2px 6px rgba(74, 123, 181, .10), 0 12px 28px rgba(74, 123, 181, .13), 0 24px 56px rgba(74, 123, 181, .15);
+--header-grad: linear-gradient(135deg, #2c4a6e 0%, #3f6a99 52%, #4e7fae 100%);
+--header-glow: rgba(111, 180, 185, .24);
+--toggle-bg: #dde8f4;
+--toggle-ink: #3a6697;
+--footer-ink: #8ba0b6;
+--footer-line: rgba(74, 123, 181, .14);
 --mono: "Consolas", "SF Mono", "Cascadia Mono", "Menlo", "Courier New", monospace;
 --font-body: "Smiley Sans Oblique", "Segoe UI", "HarmonyOS Sans SC", "MiSans", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
 --font-num: "Bahnschrift", "DIN Alternate", "Arial Narrow", "Segoe UI", sans-serif;
@@ -84,9 +84,9 @@ body {
 font-family: var(--font-body);
 background:
 radial-gradient(1300px 620px at 50% -180px, var(--bg-glow), transparent 55%),
-radial-gradient(820px 440px at 94% 12%, color-mix(in srgb, var(--gold) 8%, transparent), transparent 58%),
-radial-gradient(780px 460px at -8% 42%, color-mix(in srgb, var(--primary) 6%, transparent), transparent 58%),
-radial-gradient(1000px 520px at 50% 108%, color-mix(in srgb, var(--primary) 5%, transparent), transparent 60%),
+radial-gradient(860px 460px at 95% 10%, rgba(90, 163, 168, .10), transparent 58%),
+radial-gradient(820px 500px at -6% 40%, rgba(74, 123, 181, .08), transparent 58%),
+radial-gradient(1000px 520px at 50% 110%, rgba(74, 123, 181, .06), transparent 62%),
 linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 88%, #fff) 100%),
 var(--bg);
 background-size: auto, auto, auto, auto, auto, auto;
@@ -97,27 +97,17 @@ font-weight: 400; letter-spacing: .2px;
 text-rendering: optimizeLegibility;
 transition: background .25s, color .25s;
 }
-/* 科技感应背景层：全页可见的极淡网格（2026-08-23 修复：去掉 mask 渐隐导致下半部纯白的问题） */
+/* 柔和光晕点缀层（2026-08-23：低透明光斑丰富层次，无格子无噪点——舒适优先） */
 body::before {
 content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
 background:
-linear-gradient(rgba(51, 80, 110, .045) 1px, transparent 1px),
-linear-gradient(90deg, rgba(51, 80, 110, .045) 1px, transparent 1px),
-linear-gradient(rgba(184, 147, 90, .030) 1px, transparent 1px),
-linear-gradient(90deg, rgba(184, 147, 90, .030) 1px, transparent 1px),
-radial-gradient(680px 380px at 100% 0%, rgba(184, 147, 90, .05), transparent 60%),
-radial-gradient(680px 380px at 0% 100%, rgba(51, 80, 110, .04), transparent 60%);
-background-size: 44px 44px, 44px 44px, 220px 220px, 220px 220px, auto, auto;
+radial-gradient(500px 300px at 100% 0%, rgba(90, 163, 168, .07), transparent 60%),
+radial-gradient(500px 300px at 0% 100%, rgba(74, 123, 181, .06), transparent 60%);
 }
 html.dark body::before {
 background:
-linear-gradient(rgba(0, 229, 255, .040) 1px, transparent 1px),
-linear-gradient(90deg, rgba(0, 229, 255, .040) 1px, transparent 1px),
-linear-gradient(rgba(255, 45, 120, .030) 1px, transparent 1px),
-linear-gradient(90deg, rgba(255, 45, 120, .030) 1px, transparent 1px),
-radial-gradient(680px 380px at 100% 0%, rgba(255, 45, 120, .05), transparent 60%),
-radial-gradient(680px 380px at 0% 100%, rgba(0, 229, 255, .045), transparent 60%);
-background-size: 52px 52px, 52px 52px, 260px 260px, 260px 260px, auto, auto;
+radial-gradient(500px 300px at 100% 0%, rgba(255, 45, 120, .05), transparent 60%),
+radial-gradient(500px 300px at 0% 100%, rgba(0, 229, 255, .045), transparent 60%);
 }
 html.dark body {
 background-image:
@@ -318,9 +308,10 @@ display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
 .g-stats {
 display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
 }
+.g-stats.g-4 { grid-template-columns: repeat(4, 1fr); }
 .g-stats .kpi { padding: 16px 12px; }
 @media (max-width: 640px) {
-.g-rings, .g-stats { grid-template-columns: repeat(1, 1fr); }
+.g-rings, .g-stats, .g-stats.g-4 { grid-template-columns: repeat(1, 1fr); }
 }
 .lvl-filter { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 12px; }
 .lvl-filter button {
@@ -410,13 +401,13 @@ color: #fff; letter-spacing: .5px;
 .dir-win     { background: var(--risk-ok-bg); color: var(--risk-ok); font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid color-mix(in srgb, var(--risk-ok) 30%, transparent); }
 .dir-windraw { background: var(--risk-mid-bg); color: var(--risk-mid); font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid color-mix(in srgb, var(--risk-mid) 30%, transparent); }
 .dir-drawloss{ background: var(--risk-high-bg); color: var(--risk-high); font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid color-mix(in srgb, var(--risk-high) 30%, transparent); }
-.lvl-aplus   { background: rgba(58, 122, 86, .10);  color: #3a7a56; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(58, 122, 86, .28); }
-.lvl-a       { background: rgba(74, 138, 110, .10);  color: #4a8a6e; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(74, 138, 110, .26); }
-.lvl-aminus  { background: rgba(88, 150, 118, .10); color: #508d74; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(88, 150, 118, .28); }
-.lvl-bplus   { background: rgba(72, 108, 150, .10);  color: #486c96; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(72, 108, 150, .26); }
-.lvl-b       { background: rgba(168, 132, 44, .10);  color: #a8842c; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(168, 132, 44, .28); }
-.lvl-bminus  { background: rgba(122, 98, 138, .10); color: #7a628a; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(122, 98, 138, .28); }
-.lvl-c       { background: rgba(194, 84, 78, .10);  color: #c2544e; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(194, 84, 78, .26); }
+.lvl-aplus   { background: rgba(94, 158, 131, .10);  color: #5e9e83; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(94, 158, 131, .28); }
+.lvl-a       { background: rgba(94, 158, 131, .10);  color: #5e9e83; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(94, 158, 131, .26); }
+.lvl-aminus  { background: rgba(112, 171, 145, .10); color: #70ab91; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(112, 171, 145, .28); }
+.lvl-bplus   { background: rgba(74, 123, 181, .10);  color: #4a7bb5; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(74, 123, 181, .26); }
+.lvl-b       { background: rgba(193, 144, 74, .10);  color: #c1904a; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(193, 144, 74, .28); }
+.lvl-bminus  { background: rgba(129, 108, 152, .10); color: #816c98; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(129, 108, 152, .28); }
+.lvl-c       { background: rgba(201, 106, 106, .10); color: #c96a6a; font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid rgba(201, 106, 106, .26); }
 html.dark .lvl-aplus { background: rgba(21,128,61,.22); }
 html.dark .lvl-a { background: rgba(22,163,74,.20); }
 html.dark .lvl-aminus { background: rgba(74,222,128,.16); }
