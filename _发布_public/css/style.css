@@ -3,11 +3,11 @@
    主风格（默认浅色）：雾灰蓝底 + 深岩蓝主色 + 香槟金点缀——温润克制的编辑部质感
    次风格（暗色切换）：赛博 HUD（html.dark 保留） */
 :root {
---bg: #f4f5f7;
---bg-glow: rgba(51, 65, 85, .07);
+--bg: #eff2f6;
+--bg-glow: rgba(51, 80, 110, .08);
 --card: #ffffff;
 --card-hover: #fafbfc;
---border: rgba(51, 65, 85, .10);
+--border: rgba(51, 80, 110, .12);
 --ink: #2b3440;
 --sub: #8a94a4;
 --primary: #33506e;
@@ -83,10 +83,13 @@ html { scroll-behavior: smooth; }
 body {
 font-family: var(--font-body);
 background:
-radial-gradient(1100px 520px at 50% -140px, var(--bg-glow), transparent 60%),
-radial-gradient(800px 380px at 88% 26%, color-mix(in srgb, var(--gold) 4.5%, transparent), transparent 62%),
+radial-gradient(1200px 560px at 50% -160px, var(--bg-glow), transparent 55%),
+radial-gradient(760px 400px at 92% 18%, color-mix(in srgb, var(--gold) 5%, transparent), transparent 60%),
+radial-gradient(720px 420px at -6% 48%, color-mix(in srgb, var(--primary) 4.5%, transparent), transparent 60%),
+linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 92%, #fff) 100%),
 var(--bg);
-background-size: auto, auto, auto;
+background-size: auto, auto, auto, auto, auto;
+background-attachment: fixed;
 color: var(--ink); line-height: 1.8; font-size: 15.5px;
 font-weight: 400; letter-spacing: .2px;
 -webkit-font-smoothing: antialiased;
@@ -95,10 +98,11 @@ transition: background .25s, color .25s;
 }
 html.dark body {
 background-image:
-radial-gradient(1100px 480px at 50% -120px, var(--bg-glow), transparent 60%),
+radial-gradient(1100px 480px at 50% -120px, var(--bg-glow), transparent 58%),
 radial-gradient(900px 420px at 85% 25%, rgba(255, 45, 120, .04), transparent 60%),
+radial-gradient(700px 380px at -4% 50%, rgba(0, 229, 255, .03), transparent 60%),
 var(--bg);
-background-size: auto, auto, auto;
+background-size: auto, auto, auto, auto;
 background-attachment: fixed;
 }
 header.site {
@@ -129,15 +133,32 @@ to   { transform: translateX(40px) scale(1.15); }
 }
 header.site .inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 2; }
 header.site h1 {
-font-family: var(--font-title); font-size: 36px; font-weight: 700; letter-spacing: 3.5px;
+font-family: var(--font-title); font-size: 36px; font-weight: 700; letter-spacing: 4px;
 text-shadow: 0 2px 20px rgba(0, 0, 0, .32), 0 0 40px rgba(255, 255, 255, .06);
 }
+header.site h1 .hl {
+background: linear-gradient(90deg, #fff 30%, var(--gold-bright) 100%);
+-webkit-background-clip: text; background-clip: text; color: transparent;
+}
 header.site .sub {
-opacity: .88; font-size: 13px; margin-top: 9px; letter-spacing: .8px; color: #f2e4d4;
+opacity: .92; font-size: 13px; margin-top: 10px; letter-spacing: 1px; color: #e8eef5;
 line-height: 1.8; font-weight: 400;
 }
-header.site .sub::before { content: ""; display: inline-block; width: 22px; height: 2px; background: linear-gradient(90deg, var(--gold), transparent); vertical-align: middle; margin-right: 8px; }
-header.site .meta { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+header.site .sub::before { content: ""; display: inline-block; width: 24px; height: 2px; background: linear-gradient(90deg, var(--gold-bright), transparent); vertical-align: middle; margin-right: 9px; }
+header.site .meta { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+header.site .hero-deco {
+position: absolute; right: 6%; top: -60px; width: 260px; height: 260px; border-radius: 50%;
+border: 1px solid rgba(255, 255, 255, .08); pointer-events: none;
+}
+header.site .hero-deco::before {
+content: ""; position: absolute; inset: 26px; border-radius: 50%;
+border: 1px dashed rgba(255, 255, 255, .10);
+}
+header.site .hero-ring {
+position: absolute; left: -80px; bottom: -120px; width: 300px; height: 300px; border-radius: 50%;
+background: radial-gradient(circle, color-mix(in srgb, var(--gold) 10%, transparent), transparent 62%);
+pointer-events: none;
+}
 .header-top {
 display: flex; align-items: center; gap: 8px;
 margin-bottom: 18px;
@@ -266,12 +287,15 @@ margin-right: 8px; vertical-align: -2px;
 }
 .lvl-filter button:hover { border-color: var(--primary); color: var(--primary); }
 .lvl-filter button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-.batch-overview { display: flex; gap: 16px; flex-wrap: wrap; margin: 6px 0 10px; font-size: 13px; color: var(--sub); }
+.batch-overview { display: flex; gap: 14px; flex-wrap: wrap; margin: 6px 0 10px; font-size: 13px; color: var(--sub); }
 .batch-overview .bo-item b { color: var(--ink); font-size: 14px; }
 .batch-overview .bo-a b { color: #4a8a6e; }
 .batch-overview .bo-b b { color: #a8842c; }
 .batch-overview .bo-c b { color: #c2544e; }
 .batch-overview .bo-done b { color: var(--primary); }
+.batch-overview .bo-lg { display: inline-flex; align-items: center; gap: 4px; }
+.batch-overview .bo-lg .lg { font-size: 11px; padding: 1.5px 8px; }
+.batch-overview .bo-lg b { font-family: var(--font-num); font-size: 12.5px; }
 .batch-overview .bo-done {
 background: color-mix(in srgb, var(--primary) 7%, transparent);
 border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);

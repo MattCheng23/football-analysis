@@ -136,7 +136,7 @@ function renderPredict(batch) {
       return n ? "（冷门第" + n + "）" : m;
     });
   };
-  // 已复盘的赛果回填：预测表行内显示实际赛果+命中徽章（有 review 数据时）
+  // 已复盘的赛果回填（供预警命中标注使用；预测表本身不再展示赛果——2026-08-23 用户拍板：赛果只在复盘页）
   const reviewOf = {};
   if (batch.review && Array.isArray(batch.review.results)) {
     batch.review.results.forEach(rv => { reviewOf[rv.no] = rv; });
@@ -145,15 +145,6 @@ function renderPredict(batch) {
     const revHtml = m.scores.replace(/(\d+-\d+)\*/g, '<span class="rev-score">$1*</span>');
     const revHt = m.ht.replace(/([胜负平]{2})\*/g, '<span class="rev-score">$1*</span>');
     const lv = (m.dir.match(/([ABC])级/) || [])[1] || "";
-    const rv = reviewOf[m.no];
-    // 赛果列：无复盘→"—"；有复盘→实际比分+命中情况（方向/比分/半全场三徽章）
-    const resultCell = rv ? `
-      <div class="rv-badge">${rv.score.replace(/（.*$/, "")}</div>
-      <div class="rv-flags">
-        ${rv.d === "ok" ? `<span class="rv-flag rv-hit" title="方向命中">方✓</span>` : `<span class="rv-flag rv-miss" title="方向未中">方✗</span>`}
-        ${rv.s === "ok" ? `<span class="rv-flag rv-hit" title="比分命中">比✓</span>` : `<span class="rv-flag rv-miss" title="比分未中">比✗</span>`}
-        ${rv.h === "ok" ? `<span class="rv-flag rv-hit" title="半全场命中">半✓</span>` : `<span class="rv-flag rv-miss" title="半全场未中">半✗</span>`}
-      </div>` : `<span style="color:var(--sub);font-size:12px">—</span>`;
     return `<tr data-lvl="${lv.toLowerCase()}">
     <td><span class="no-badge">${m.no}</span></td>
     <td><b class="m-team">${m.home} vs ${m.away}</b><br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time || "-"}</span></span></td>
@@ -162,9 +153,16 @@ function renderPredict(batch) {
     <td>${revHt}</td>
     <td>${m.ou}</td>
     <td>${riskTag(m.risk || 0)}</td>
-    <td>${resultCell}</td>
   </tr>`;
   }).join("");
+
+  // 联赛分布（本批按联赛聚合成徽章条，2026-08-23 丰富）
+  const lgMap = {};
+  sorted.forEach(m => { lgMap[m.league] = (lgMap[m.league] || 0) + 1; });
+  const leagueStat = Object.entries(lgMap)
+    .sort((a, b) => b[1] - a[1])
+    .map(([lg, n]) => `<span class="bo-item bo-lg"><span class="lg lg-sm ${sorted.find(m => m.league === lg).lg}">${lg}</span> <b>×${n}</b></span>`)
+    .join("");
 
   // 通用截断工具：预览 30 字 + 点击展开全文（必须先于所有使用处定义）
   const cut = (s, n) => { s = (s || "").trim(); return s.length > n ? s.slice(0, n) + "…" : s; };
@@ -277,9 +275,9 @@ function renderPredict(batch) {
         <span class="bo-item bo-a">A 级 <b>${sorted.filter(m => /A级/.test(m.dir)).length}</b></span>
         <span class="bo-item bo-b">B 级 <b>${sorted.filter(m => /B级/.test(m.dir)).length}</b></span>
         <span class="bo-item bo-c">C 级 <b>${sorted.filter(m => /C级/.test(m.dir)).length}</b></span>
-        ${Object.keys(reviewOf).length ? `<span class="bo-item bo-done">🏁 已完赛 <b>${Object.keys(reviewOf).length}/${sorted.length}</b></span>` : ""}
         <span class="bo-item">🌡️ 冷门预警 <b>${(p.coldRisk || []).length} 场</b></span>
         <span class="bo-item">🚨 高价值预警 <b>${(p.alerts || []).length} 条</b></span>
+        ${leagueStat}
       </div>
       <div class="lvl-filter">
         <button class="active" data-f="all" onclick="filterLvl(this,'all')">全部</button>
@@ -293,7 +291,7 @@ function renderPredict(batch) {
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#dc2626"></span> C 低（1 正 2 反，2 个反向比分标 <span class="rev-score">*</span>）</span>
       </div>
       <div class="table-wrap"><table class="batch-table">
-        <thead><tr><th>场次</th><th>对阵（北京时间）</th><th>方向</th><th>比分 TOP3</th><th>半全场 TOP3</th><th>总进球</th><th>假赛分</th><th>赛果</th></tr></thead>
+        <thead><tr><th>场次</th><th>对阵（北京时间）</th><th>方向</th><th>比分 TOP3</th><th>半全场 TOP3</th><th>总进球</th><th>假赛分</th></tr></thead>
         <tbody>${rows}</tbody>
       </table></div>
     </div>
