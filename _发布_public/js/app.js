@@ -136,10 +136,24 @@ function renderPredict(batch) {
       return n ? "（冷门第" + n + "）" : m;
     });
   };
+  // 已复盘的赛果回填：预测表行内显示实际赛果+命中徽章（有 review 数据时）
+  const reviewOf = {};
+  if (batch.review && Array.isArray(batch.review.results)) {
+    batch.review.results.forEach(rv => { reviewOf[rv.no] = rv; });
+  }
   const rows = sorted.map(m => {
     const revHtml = m.scores.replace(/(\d+-\d+)\*/g, '<span class="rev-score">$1*</span>');
     const revHt = m.ht.replace(/([胜负平]{2})\*/g, '<span class="rev-score">$1*</span>');
     const lv = (m.dir.match(/([ABC])级/) || [])[1] || "";
+    const rv = reviewOf[m.no];
+    // 赛果列：无复盘→"—"；有复盘→实际比分+命中情况（方向/比分/半全场三徽章）
+    const resultCell = rv ? `
+      <div class="rv-badge">${rv.score.replace(/（.*$/, "")}</div>
+      <div class="rv-flags">
+        ${rv.d === "ok" ? `<span class="rv-flag rv-hit" title="方向命中">方✓</span>` : `<span class="rv-flag rv-miss" title="方向未中">方✗</span>`}
+        ${rv.s === "ok" ? `<span class="rv-flag rv-hit" title="比分命中">比✓</span>` : `<span class="rv-flag rv-miss" title="比分未中">比✗</span>`}
+        ${rv.h === "ok" ? `<span class="rv-flag rv-hit" title="半全场命中">半✓</span>` : `<span class="rv-flag rv-miss" title="半全场未中">半✗</span>`}
+      </div>` : `<span style="color:var(--sub);font-size:12px">—</span>`;
     return `<tr data-lvl="${lv.toLowerCase()}">
     <td><span class="no-badge">${m.no}</span></td>
     <td><b class="m-team">${m.home} vs ${m.away}</b><br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time || "-"}</span></span></td>
@@ -148,6 +162,7 @@ function renderPredict(batch) {
     <td>${revHt}</td>
     <td>${m.ou}</td>
     <td>${riskTag(m.risk || 0)}</td>
+    <td>${resultCell}</td>
   </tr>`;
   }).join("");
 
@@ -172,12 +187,21 @@ function renderPredict(batch) {
 
   // 冷门风险（数据全比赛覆盖；展示仅过滤"低"等级——比赛多时全显示太乱，2026-08-22 用户拍板，与 0-0/7+ 预警一致；按等级从高到低排序，逻辑列预览 30 字 + 点击展开）
   const lvW = { "较高": 4, "中等偏高": 3, "中等": 2, "低": 1 };
+  // 已复盘的预警 → 命中标注（2026-08-23 丰富：预测页预警行直接看验证结果）
+  const resDir = s => { const m = (s || "").match(/(\d+)-(\d+)/); if (!m) return ""; const h = +m[1], a = +m[2]; return h > a ? "主胜" : h < a ? "客胜" : "平局"; };
+  const coldVerifyOf = c => {
+    const rv = reviewOf[c.no];
+    if (!rv) return "";
+    const actual = resDir(rv.score);
+    const hit = actual === c.dir;
+    return `<span class="rv-flag ${hit ? "rv-hit" : "rv-miss"}" style="margin-left:8px">${hit ? "✅ 命中" : "未触发"}</span>`;
+  };
   const coldRows = (p.coldRisk || [])
     .filter(c => c.lvTxt !== "低")
     .slice()
     .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
     .map(c => `<tr>
-    <td>${c.rank}</td><td>${c.no} ${c.teams}</td><td>${shortDir(c.dir)}</td>
+    <td>${c.rank}</td><td>${c.no} ${c.teams}${coldVerifyOf(c)}</td><td>${shortDir(c.dir)}</td>
     <td><span class="tag ${c.lv}">${c.lvTxt}</span></td>
     <td><details>
       <summary>${cut(c.logic || "-", 30)}</summary>
@@ -186,12 +210,26 @@ function renderPredict(batch) {
   </tr>`).join("");
 
   // 高价值预警：只显示中等及以上（2026-08-22 晚用户拍板：低概率不显示——与冷门风险/7+ 一致；评级规则=4 冷门形态：胜平/负平=实力接近场高概率剧本→中等（但按形态成立概率评估：先进球方进球能力弱/追平方追平能力弱→降低），胜负/负胜=冷门低概率→低（德比/避雷/防线残阵等强剧本因素→中等）；逻辑列预览 30 字 + 点击展开
+  // 半全场形态命中标注（2026-08-23 丰富）
+  const htOfScore = s => {
+    const m = (s || "").match(/^(\d+)-(\d+)（(\d+)-(\d+)）?/);
+    if (!m) return "";
+    const f = m[1] > m[2] ? "胜" : m[1] < m[2] ? "负" : "平";
+    const hm = m[3] && m[4] ? (m[3] > m[4] ? "胜" : m[3] < m[4] ? "负" : "平") : "";
+    return hm + f;
+  };
+  const alertVerifyOf = a => {
+    const rv = reviewOf[a.no];
+    if (!rv) return "";
+    const hit = htOfScore(rv.score) === a.script;
+    return `<span class="rv-flag ${hit ? "rv-hit" : "rv-miss"}" style="margin-left:8px">${hit ? "✅ 命中" : "未触发"}</span>`;
+  };
   const alertRows = (p.alerts || [])
     .filter(a => a.lvTxt !== "低")
     .slice()
     .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
     .map(a => `<tr>
-    <td>${a.script}</td><td>${a.no} ${a.teams}</td>
+    <td>${a.script}</td><td>${a.no} ${a.teams}${alertVerifyOf(a)}</td>
     <td><span class="tag ${a.lv}">${a.lvTxt}</span></td>
     <td><details>
       <summary>${cut(a.logic, 30) || "-"}</summary>
@@ -202,12 +240,19 @@ function renderPredict(batch) {
   // 0-0 预警已废弃（2026-08-22 用户拍板：33 条 0 命中系统性反向，该大球的场全在预警 0-0——网页卡片移除，数据保留历史）
 
   // 7+ 球预警：总进球 ≥7 的极端大球，只显示中等偏低及以上等级（全部展示，不截断）
+  const bigVerifyOf = z => {
+    const rv = reviewOf[z.no];
+    if (!rv) return "";
+    const sc = rv.score.match(/(\d+)-(\d+)/);
+    const hit = sc && (+sc[1] + +sc[2] >= 7);
+    return `<span class="rv-flag ${hit ? "rv-hit" : "rv-miss"}" style="margin-left:8px">${hit ? "✅ 命中" : "未触发"}</span>`;
+  };
   const bigRows = (p.bigSeven || [])
     .filter(z => z.lvTxt !== "低")
     .slice()
     .sort((a, z) => z.p - a.p)
     .map(z => `<tr>
-    <td>${z.no} ${z.teams}</td>
+    <td>${z.no} ${z.teams}${bigVerifyOf(z)}</td>
     <td><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${z.p}%"></div></div><span class="prob-txt num">${z.p}%</span></div></td>
     <td><span class="tag ${z.lv}">${z.lvTxt}</span></td>
   </tr>`).join("");
@@ -232,6 +277,7 @@ function renderPredict(batch) {
         <span class="bo-item bo-a">A 级 <b>${sorted.filter(m => /A级/.test(m.dir)).length}</b></span>
         <span class="bo-item bo-b">B 级 <b>${sorted.filter(m => /B级/.test(m.dir)).length}</b></span>
         <span class="bo-item bo-c">C 级 <b>${sorted.filter(m => /C级/.test(m.dir)).length}</b></span>
+        ${Object.keys(reviewOf).length ? `<span class="bo-item bo-done">🏁 已完赛 <b>${Object.keys(reviewOf).length}/${sorted.length}</b></span>` : ""}
         <span class="bo-item">🌡️ 冷门预警 <b>${(p.coldRisk || []).length} 场</b></span>
         <span class="bo-item">🚨 高价值预警 <b>${(p.alerts || []).length} 条</b></span>
       </div>
@@ -247,7 +293,7 @@ function renderPredict(batch) {
         <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#dc2626"></span> C 低（1 正 2 反，2 个反向比分标 <span class="rev-score">*</span>）</span>
       </div>
       <div class="table-wrap"><table class="batch-table">
-        <thead><tr><th>场次</th><th>对阵（北京时间）</th><th>方向</th><th>比分 TOP3</th><th>半全场 TOP3</th><th>总进球</th><th>假赛分</th></tr></thead>
+        <thead><tr><th>场次</th><th>对阵（北京时间）</th><th>方向</th><th>比分 TOP3</th><th>半全场 TOP3</th><th>总进球</th><th>假赛分</th><th>赛果</th></tr></thead>
         <tbody>${rows}</tbody>
       </table></div>
     </div>
@@ -738,6 +784,8 @@ function renderGlobal(mode) {
     });
   });
 
+  // KPI 数值：无评估数据时显示「—」（0/0 无信息量，2026-08-23 优化）
+  const kpiStat = (h, n) => n ? `${h}/${n} <span style="font-size:12px">${pct(h, n)}</span>` : `<span style="font-size:20px;opacity:.55">—</span>`;
   el.innerHTML = `
     <div class="kpi-tabs">
       <button class="${isAll ? "" : "active"}" onclick="renderGlobal('week')">近 7 日</button>
@@ -749,9 +797,9 @@ function renderGlobal(mode) {
       ${kpiRing("g-ring-h", pctN(week.h, week.n), week.h, week.n, isAll ? "累计半全场 TOP3" : "近7日半全场 TOP3")}
     </div>
     <div class="kpi-row">
-      <div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${ou.h}/${ou.n} <span style="font-size:12px">${pct(ou.h, ou.n)}</span></div><div class="lbl">⚽ 总进球命中</div></div>
-      <div class="kpi" style="background:rgba(22,163,74,.08);border-color:#16a34a"><div class="num">${bs.h}/${bs.n} <span style="font-size:12px">${pct(bs.h, bs.n)}</span></div><div class="lbl">🎆 7+ 球预警命中</div></div>
-      <div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${aw.h}/${aw.n} <span style="font-size:12px">${pct(aw.h, aw.n)}</span></div><div class="lbl">🚨 高价值预警命中</div></div>
+      <div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${kpiStat(ou.h, ou.n)}</div><div class="lbl">⚽ 总进球命中${isAll ? "" : "（近7日）"}</div></div>
+      <div class="kpi" style="background:rgba(22,163,74,.08);border-color:#16a34a"><div class="num">${kpiStat(bs.h, bs.n)}</div><div class="lbl">🎆 7+ 球预警命中</div></div>
+      <div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${kpiStat(aw.h, aw.n)}</div><div class="lbl">🚨 高价值预警命中</div></div>
     </div>`;
 }
 
