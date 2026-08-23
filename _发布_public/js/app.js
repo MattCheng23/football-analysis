@@ -188,17 +188,25 @@ function renderPredict(batch) {
   };
   // 全文加粗渲染：**X** → <b>X</b>，展开后重点一目了然
   const logicHtml = (l) => (l || "").replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
-  // 展开=结构化要点（8/23 用户要求：展开内容也精简为重点）——方向/关键变量/判定/天气 4 行短句，从加粗段按关键词提取各截 64 字
+  // 展开=结构化要点（8/23 用户要求：点开后也是精简重点、关键信息要全、不展示天气）
+  // 提取策略：加粗段优先匹配，加粗外全文补位（022 等场次伤停段不在加粗内）——四行=核心/关键/判定/重点
   const logicDetail = (l) => {
     if (!l) return "-";
-    const uniq = (l.match(/\*\*(.+?)\*\*/g) || []).map(s => s.slice(2, -2)).filter((s, i, a) => a.indexOf(s) === i);
-    const mk = kw => uniq.find(s => s.indexOf(kw) === 0 || s.indexOf(kw) >= 0);
-    const dir = uniq.find(s => s.indexOf("方向") === 0);
-    const key = uniq.find(s => s.indexOf("伤停") === 0) || uniq.find(s => s.indexOf("🔴") === 0 || s.indexOf("重大风险") >= 0);
-    const attr = uniq.find(s => s.indexOf("进球属性") >= 0) || uniq.find(s => s.indexOf("阵型") === 0);
-    const wx = uniq.find(s => s.indexOf("天气") === 0);
-    const items = [["📌 核心", dir], ["🔑 关键", key], ["⚽ 判定", attr], ["🌤 天气", wx]].filter(x => x[1]);
-    return (items.length ? items.map(([t, s]) => `<b>${t}</b> ${cut(s, 64)}`).join("<br>") : logicHtml(l));
+    const bold = (l.match(/\*\*(.+?)\*\*/g) || []).map(s => s.slice(2, -2)).filter((s, i, a) => a.indexOf(s) === i);
+    const full = (kw) => {
+      const seg = bold.find(s => s.indexOf(kw) === 0 || s.indexOf(kw) >= 0);
+      if (seg) return seg;
+      const i = l.indexOf(kw);
+      if (i < 0) return null;
+      const m = l.slice(i).replace(/^\*\*/, "").match(/^[^；。]{4,90}/);
+      return m ? m[0].split("**")[0].trim() : null;
+    };
+    const dir = bold.find(s => s.indexOf("方向") === 0);
+    const key = full("伤停") || full("重大风险") || full("🔴") || full("🔴");
+    const attr = full("进球属性") || full("阵型/打法");
+    const ext = full("红黑榜") || full("克星");
+    const items = [["📌 核心", dir], ["🔑 关键", key], ["⚽ 判定", attr], ["🌟 重点", ext]].filter(x => x[1]);
+    return (items.length ? items.map(([t, s]) => `<b>${t}</b> ${s.length > 64 ? s.slice(0, 64) + "…" : s}`).join("<br>") : logicHtml(l));
   };
 
   // 冷门风险（数据全比赛覆盖；展示仅过滤"低"等级——比赛多时全显示太乱，2026-08-22 用户拍板，与 0-0/7+ 预警一致；按等级从高到低排序，逻辑列预览 30 字 + 点击展开）
