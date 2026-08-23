@@ -208,6 +208,7 @@ function renderPredict(batch) {
   </tr>`).join("");
 
   // 高价值预警：只显示中等及以上（2026-08-22 晚用户拍板：低概率不显示——与冷门风险/7+ 一致；评级规则=4 冷门形态：胜平/负平=实力接近场高概率剧本→中等（但按形态成立概率评估：先进球方进球能力弱/追平方追平能力弱→降低），胜负/负胜=冷门低概率→低（德比/避雷/防线残阵等强剧本因素→中等）；逻辑列预览 30 字 + 点击展开
+  // 2026-08-23 用户拍板：按等级排序后只显示最高概率前 8 条，排在后面的隐藏
   // 半全场形态命中标注（2026-08-23 丰富）
   const htOfScore = s => {
     const m = (s || "").match(/^(\d+)-(\d+)（(\d+)-(\d+)）?/);
@@ -226,6 +227,7 @@ function renderPredict(batch) {
     .filter(a => a.lvTxt !== "低")
     .slice()
     .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
+    .slice(0, 8)
     .map(a => `<tr>
     <td data-l="剧本">${a.script}</td><td data-l="场次" data-sf>${a.no} ${a.teams}${alertVerifyOf(a)}</td>
     <td data-l="概率"><span class="tag ${a.lv}">${a.lvTxt}</span></td>
