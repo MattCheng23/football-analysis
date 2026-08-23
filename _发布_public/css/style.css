@@ -1002,3 +1002,19 @@ display: flex; align-items: center; justify-content: center;
 .lm-full[open] summary { color: var(--primary); }
 .lm-full-body { margin-top: 8px; font-size: 13.5px; color: var(--sub); line-height: 1.9; border-top: 1px dashed var(--border); padding-top: 10px; }
 @keyframes lmIn { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
+
+/* ============ 逻辑弹窗/预览按钮手机端适配（2026-08-23 新增 001 后补充） ============ */
+@media (max-width: 760px) {
+.logic-btn { font-size: 13.5px; padding: 8px 10px; }
+}
+@media (max-width: 640px) {
+.lm-head { padding: 12px 14px; font-size: 15px; }
+.lm-body { padding: 14px 14px 18px; font-size: 16px; line-height: 1.9; }
+.lm-close { font-size: 12px; padding: 3px 8px; }
+}
+@media (max-width: 480px) {
+.lm-card { width: 96vw; max-height: 90vh; }
+.lm-body { font-size: 15px; line-height: 1.85; }
+.lm-full-body { font-size: 12.5px; }
+.logic-btn { font-size: 13px; }
+}
