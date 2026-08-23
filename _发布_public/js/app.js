@@ -208,6 +208,41 @@ function renderPredict(batch) {
     const items = [["📌 核心", dir], ["🔑 关键", key], ["⚽ 判定", attr], ["🌟 重点", ext]].filter(x => x[1]);
     return (items.length ? items.map(([t, s]) => `<b>${t}</b> ${s}`).join("<br>") : logicHtml(l));
   };
+  // 逻辑弹窗（8/23 用户拍板：点击弹独立放大悬浮窗，要点+完整逻辑，字号放大等比例展示）
+  window.openLogicModal = function(btn) {
+    const d = btn.dataset;
+    const old = document.getElementById("lm-root");
+    if (old) old.remove();
+    const hl = (x) => (x || "").replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+    const dt = (l) => {
+      if (!l) return "-";
+      const bold = (l.match(/\*\*(.+?)\*\*/g) || []).map(s => s.slice(2, -2)).filter((s, i, a) => a.indexOf(s) === i);
+      const full = (kw) => {
+        const seg = bold.find(s => s.indexOf(kw) === 0 || s.indexOf(kw) >= 0);
+        if (seg) return seg;
+        const i = l.indexOf(kw);
+        if (i < 0) return null;
+        const m = l.slice(i).replace(/^\*\*/, "").match(/^[^；。]{4,90}/);
+        return m ? m[0].split("**")[0].trim() : null;
+      };
+      const dir = bold.find(s => s.indexOf("方向") === 0);
+      const key = full("伤停") || full("重大风险") || full("🔴");
+      const attr = full("进球属性") || full("阵型/打法");
+      const ext = full("红黑榜") || full("克星");
+      const items = [["📌 核心", dir], ["🔑 关键", key], ["⚽ 判定", attr], ["🌟 重点", ext]].filter(x => x[1]);
+      return items.length ? items.map(([t, s]) => `<b>${t}</b> ${s}`).join("<br>") : hl(l);
+    };
+    const root = document.createElement("div");
+    root.id = "lm-root";
+    root.className = "lm-mask";
+    root.innerHTML = `<div class="lm-card" onclick="event.stopPropagation()">
+      <div class="lm-head"><b>📍 ${d.no}　${d.teams}</b><span class="lm-close" onclick="document.getElementById('lm-root').remove()">✕ 关闭</span></div>
+      <div class="lm-body"><div class="lm-keys">${dt(d.lg)}</div>
+      <details class="lm-full"><summary>展开完整逻辑（小字，备查）</summary><div class="lm-full-body">${hl(d.lg)}</div></details></div>
+    </div>`;
+    root.addEventListener("click", () => root.remove());
+    document.body.appendChild(root);
+  };
 
   // 冷门风险（数据全比赛覆盖；展示仅过滤"低"等级——比赛多时全显示太乱，2026-08-22 用户拍板，与 0-0/7+ 预警一致；按等级从高到低排序，逻辑列预览 30 字 + 点击展开）
   const lvW = { "较高": 4, "中等偏高": 3, "中等": 2, "低": 1 };
@@ -287,10 +322,7 @@ function renderPredict(batch) {
   const logicRows = sorted.map(m => `<tr>
     <td data-l="场次"><span class="no-badge">${m.no}</span></td>
     <td data-l="对阵" data-sf><b class="m-team">${m.home} vs ${m.away}</b>${m.time ? `<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time}</span></span>` : ""}</td>
-    <td data-l="核心逻辑" data-sf><details>
-      <summary>${logicKey(m.logic)}</summary>
-      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.9">${logicDetail(m.logic)}</div>
-    </details></td>
+    <td data-l="核心逻辑" data-sf><button class="logic-btn" data-no="${m.no}" data-teams="${m.home} vs ${m.away}" data-lg="${m.logic.replace(/"/g, "&quot;")}" onclick="openLogicModal(this)">${logicKey(m.logic)}</button></td>
   </tr>`).join("");
 
   el.innerHTML = `

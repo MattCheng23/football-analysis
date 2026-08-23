@@ -987,3 +987,18 @@ display: flex; align-items: center; justify-content: center;
 }
 .avoid-search-clear:hover { background: var(--stripe); color: var(--ink); }
 .cal-cell.today .cal-num { box-shadow: 0 0 0 2px var(--primary); border-radius: 50%; color: var(--primary); font-weight: 800; }
+/* ============ 逻辑弹窗（2026-08-23 用户拍板：点击弹独立放大悬浮窗） ============ */
+.logic-btn { width: 100%; text-align: left; background: var(--card-hover); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 12.5px; color: var(--ink); cursor: pointer; transition: .15s; line-height: 1.6; }
+.logic-btn:hover { border-color: var(--primary); background: var(--primary-soft); }
+.lm-mask { position: fixed; inset: 0; background: rgba(15, 23, 42, .5); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px); padding: 20px; }
+.lm-card { max-width: 880px; width: 94vw; max-height: 88vh; overflow-y: auto; background: var(--card); border-radius: 16px; box-shadow: 0 24px 64px rgba(15, 23, 42, .35); animation: lmIn .18s ease; }
+.lm-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 16px; color: var(--ink); position: sticky; top: 0; background: var(--card); z-index: 2; }
+.lm-close { cursor: pointer; font-size: 14px; color: var(--sub); padding: 3px 10px; border-radius: 6px; border: 1px solid var(--border); }
+.lm-close:hover { background: var(--hover); color: var(--ink); }
+.lm-body { padding: 18px 24px 22px; font-size: 17px; line-height: 2; color: var(--ink); }
+.lm-keys { margin-bottom: 12px; }
+.lm-keys b, .lm-full-body b { color: var(--primary-dark); }
+.lm-full summary { cursor: pointer; font-size: 13px; color: var(--sub); padding: 8px 0; }
+.lm-full[open] summary { color: var(--primary); }
+.lm-full-body { margin-top: 8px; font-size: 13.5px; color: var(--sub); line-height: 1.9; border-top: 1px dashed var(--border); padding-top: 10px; }
+@keyframes lmIn { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
