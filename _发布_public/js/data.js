@@ -1557,7 +1557,7 @@ const BATCHES = {
       bigSeven: [
       ]
     },
-    stats: { dir: "15/20", dirPct: "75%", score: "10/20", scorePct: "50%", ht: "14/20", htPct: "70%", ou: "11/20", ouPct: "55%", updated: "05:31" },
+    stats: { dir: "16/20", dirPct: "80%", score: "9/20", scorePct: "45%", ht: "15/20", htPct: "75%", ou: "12/20", ouPct: "60%", updated: "05:31" },
     review: { results: [
         { no: "001", teams: "鹿岛鹿角 vs 福冈黄蜂", league: "日职联", lg: "lg-j1", score: "3-2（1-1）", d: "ok", s: "no", h: "ok", signal: "方向✅（主胜）+半全场✅（平胜TOP3，半场1-1全场3-2）+比分❌（3-2未覆盖）+总进球❌（5球 vs 2·3）；🟡天气误判（open-meteo 94%雨 vs 实际多云0%）致小球局误判+数据-结果割裂（福冈xG/射门占优却输）", sc: "watch" },
         { no: "003", teams: "大阪樱花 vs 清水鼓动", league: "日职联", lg: "lg-j1", score: "1-0（0-0）", d: "ok", s: "ok", h: "ok", signal: "⭐四指标全中（方向✅主胜在双选+比分✅1-0=TOP1+半全场✅平胜TOP2，半场0-0全场1-0+总进球✅1球 in 1·2；小球局判断兑现+天气核验正确（无雨，与001对照））", sc: "ok" },
@@ -2048,9 +2048,9 @@ const TEAM_RATING = [
 
 
 const GLOBAL_STATS = {
-  dir: "182/299", dirPct: "60.9%",
-  score: "108/299", scorePct: "36.1%",
-  ht: "181/299", htPct: "60.5%",
-  ou: "27/47", ouPct: "57.4%", ouNote: "自8/18批起累计",
+  dir: "183/299", dirPct: "61.2%",
+  score: "105/299", scorePct: "35.1%",
+  ht: "182/299", htPct: "60.9%",
+  ou: "39/67", ouPct: "58.2%", ouNote: "自8/18批起累计",
   updated: "2026-08-23"
 };
