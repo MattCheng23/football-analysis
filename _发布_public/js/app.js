@@ -188,6 +188,18 @@ function renderPredict(batch) {
   };
   // 全文加粗渲染：**X** → <b>X</b>，展开后重点一目了然
   const logicHtml = (l) => (l || "").replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+  // 展开=结构化要点（8/23 用户要求：展开内容也精简为重点）——方向/关键变量/判定/天气 4 行短句，从加粗段按关键词提取各截 64 字
+  const logicDetail = (l) => {
+    if (!l) return "-";
+    const uniq = (l.match(/\*\*(.+?)\*\*/g) || []).map(s => s.slice(2, -2)).filter((s, i, a) => a.indexOf(s) === i);
+    const mk = kw => uniq.find(s => s.indexOf(kw) === 0 || s.indexOf(kw) >= 0);
+    const dir = uniq.find(s => s.indexOf("方向") === 0);
+    const key = uniq.find(s => s.indexOf("伤停") === 0) || uniq.find(s => s.indexOf("🔴") === 0 || s.indexOf("重大风险") >= 0);
+    const attr = uniq.find(s => s.indexOf("进球属性") >= 0) || uniq.find(s => s.indexOf("阵型") === 0);
+    const wx = uniq.find(s => s.indexOf("天气") === 0);
+    const items = [["📌 核心", dir], ["🔑 关键", key], ["⚽ 判定", attr], ["🌤 天气", wx]].filter(x => x[1]);
+    return (items.length ? items.map(([t, s]) => `<b>${t}</b> ${cut(s, 64)}`).join("<br>") : logicHtml(l));
+  };
 
   // 冷门风险（数据全比赛覆盖；展示仅过滤"低"等级——比赛多时全显示太乱，2026-08-22 用户拍板，与 0-0/7+ 预警一致；按等级从高到低排序，逻辑列预览 30 字 + 点击展开）
   const lvW = { "较高": 4, "中等偏高": 3, "中等": 2, "低": 1 };
@@ -269,7 +281,7 @@ function renderPredict(batch) {
     <td data-l="对阵" data-sf><b class="m-team">${m.home} vs ${m.away}</b>${m.time ? `<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time}</span></span>` : ""}</td>
     <td data-l="核心逻辑" data-sf><details>
       <summary>${logicKey(m.logic)}</summary>
-      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicHtml(m.logic)}</div>
+      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.9">${logicDetail(m.logic)}</div>
     </details></td>
   </tr>`).join("");
 
