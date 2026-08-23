@@ -957,7 +957,11 @@ background: var(--gold-bg); border-left: 3px solid var(--gold);
 .updlog-no { font-weight: 700; color: var(--primary-dark); white-space: nowrap; }
 html.dark .updlog-no { color: var(--primary); }
 .updlog-teams { font-weight: 600; white-space: nowrap; }
-.updlog-x { flex: 1 1 260px; min-width: 180px; }
+.updlog-x {
+flex: 1 1 260px; min-width: 180px;
+/* 2026-08-23 精简更新日志：默认单行截断 + hover 显示全文（title），不再密密麻麻一长段 */
+display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .kpi { transition: transform .18s, box-shadow .18s, border-color .18s; }
 .kpi:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: color-mix(in srgb, var(--primary) 30%, var(--border)); }
 .tag { transition: transform .12s, box-shadow .12s; }

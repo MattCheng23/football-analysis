@@ -785,7 +785,7 @@ function renderBatchHeader() {
         <span class="updlog-time">${it.t}</span>
         <span class="updlog-no">${it.no}</span>
         <span class="updlog-teams">${it.teams}</span>
-        <span class="updlog-x">${it.x}</span>
+        <span class="updlog-x" title="${it.x.replace(/"/g, "&quot;")}">${it.x}</span>
       </div>`).join("")}</div>`
       : `<div class="note" style="margin:0">暂无更新——开赛前若有首发/伤停调整，更新版将直接覆盖主清单对应行，变更记录在此。</div>`}
     </div>`;
