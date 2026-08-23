@@ -411,32 +411,32 @@ display: inline-block; padding: 2px 10px; border-radius: 5px; font-size: 12.5px;
 color: #fff; letter-spacing: .5px;
 }
 /* 联赛配色=竞彩官方（sporttery backColor 字段，2026-08-21 采集） */
-.lg-j1      { background: #009900; }  /* 日职 官方 */
-.lg-j2      { background: #22C126; }  /* 日乙 官方 */
-.lg-mls     { background: #660033; }  /* 美职 官方 */
-.lg-ucl     { background: #990000; }  /* 欧冠/德超杯 官方（德超杯同色） */
-.lg-uel     { background: #CC9933; }  /* 欧联/欧罗巴 官方 */
-.lg-k1      { background: #15DBAE; }  /* 韩职 官方 */
-.lg-laliga  { background: #006633; }  /* 西甲 官方 */
-.lg-ligue1  { background: #6B2B2B; }  /* 法甲 官方 */
-.lg-bras    { background: #DDDD00; }  /* 巴甲 官方 */
-.lg-fin     { background: #0057B7; }  /* 芬超 官方 */
-.lg-bundes2 { background: #990000; }  /* 德乙 官方（参照德超杯） */
-.lg-spl     { background: #2E7D32; }  /* 沙职 官方 */
-.lg-swe     { background: #004488; }  /* 瑞超 官方 */
-.lg-nor     { background: #008888; }  /* 挪超 官方（参照葡超系） */
-.lg-ered    { background: #FF6699; }  /* 荷甲 官方 */
-.lg-eers    { background: #BE2B8F; }  /* 荷乙 官方 */
-.lg-l2      { background: #5BC992; }  /* 法乙 官方 */
-.lg-champ   { background: #CC3300; }  /* 英冠 官方 */
-.lg-ch      { background: #CC3300; }  /* 英冠 官方（周六批别名，与 lg-champ 同色） */
-.lg-sa      { background: #0044AA; }  /* 意甲 官方（深蓝，白字可见） */
-.lg-bundes  { background: #990000; }  /* 德甲/德超杯 官方（与 lg-ucl 德超杯同色深红） */
-.lg-eng     { background: #FF3333; }  /* 英超 官方 */
-.lg-prime   { background: #008888; }  /* 葡超 官方 */
-.lg-copaLib { background: #00A653; }  /* 解放者杯 官方 */
-.lg-dfb     { background: #A05CA0; }  /* 德国杯 官方 */
-.lg-asean   { background: #00A653; }  /* 东南亚锦标赛 官方（参照解放者杯绿） */
+.lg-j1      { background: #3d7e58; }  /* 日职 官方 */
+.lg-j2      { background: #5d9c62; }  /* 日乙 官方 */
+.lg-mls     { background: #6b4055; }  /* 美职 官方 */
+.lg-ucl     { background: #8c3b3b; }  /* 欧冠/德超杯 官方（德超杯同色） */
+.lg-uel     { background: #b08434; }  /* 欧联/欧罗巴 官方 */
+.lg-k1      { background: #2e8f7e; }  /* 韩职 官方 */
+.lg-laliga  { background: #2f6b4f; }  /* 西甲 官方 */
+.lg-ligue1  { background: #6b3b3b; }  /* 法甲 官方 */
+.lg-bras    { background: #9c8a3a; }  /* 巴甲 官方 */
+.lg-fin     { background: #3d63a8; }  /* 芬超 官方 */
+.lg-bundes2 { background: #8c3b3b; }  /* 德乙 官方（参照德超杯） */
+.lg-spl     { background: #4e7d52; }  /* 沙职 官方 */
+.lg-swe     { background: #355d8c; }  /* 瑞超 官方 */
+.lg-nor     { background: #3a7d7d; }  /* 挪超 官方（参照葡超系） */
+.lg-ered    { background: #b06b85; }  /* 荷甲 官方 */
+.lg-eers    { background: #9c5e8c; }  /* 荷乙 官方 */
+.lg-l2      { background: #5f9d82; }  /* 法乙 官方 */
+.lg-champ   { background: #a8543f; }  /* 英冠 官方 */
+.lg-ch      { background: #a8543f; }  /* 英冠 官方（周六批别名，与 lg-champ 同色） */
+.lg-sa      { background: #3a5aa8; }  /* 意甲 官方（深蓝，白字可见） */
+.lg-bundes  { background: #8c3b3b; }  /* 德甲/德超杯 官方（与 lg-ucl 德超杯同色深红） */
+.lg-eng     { background: #b34d4d; }  /* 英超 官方 */
+.lg-prime   { background: #3a7d7d; }  /* 葡超 官方 */
+.lg-copaLib { background: #4e8f68; }  /* 解放者杯 官方 */
+.lg-dfb     { background: #8a6a92; }  /* 德国杯 官方 */
+.lg-asean   { background: #4e8f68; }  /* 东南亚锦标赛 官方（参照解放者杯绿） */
 .lg-sm { padding: 1px 7px; font-size: 10.5px; border-radius: 4px; letter-spacing: .3px; white-space: nowrap; }
 .lg-other { background: #64748b; }
 .dir-win     { background: var(--risk-ok-bg); color: var(--risk-ok); font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid color-mix(in srgb, var(--risk-ok) 30%, transparent); }
