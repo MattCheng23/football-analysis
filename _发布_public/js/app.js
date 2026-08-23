@@ -167,18 +167,24 @@ function renderPredict(batch) {
   // 通用截断工具：预览 30 字 + 点击展开全文（必须先于所有使用处定义）
   const cut = (s, n) => { s = (s || "").trim(); return s.length > n ? s.slice(0, n) + "…" : s; };
 
-  // 关键信息提取（8/21 用户要求：大段逻辑→简洁关键信息）：取 logic 中 **加粗段**，方向/伤停/天气 优先，前 3 段各截 36 字，｜ 连接；无加粗段退回 30 字截断
+  // 关键信息提取（8/21 用户要求：大段逻辑→简洁关键信息；8/23 再精简：只展示重点核心=方向段+次优先段，各截 30 字，｜ 连接；无加粗段退回 24 字截断）
   const logicKey = (l) => {
     if (!l) return "-";
     const segs = [];
     const re = /\*\*(.+?)\*\*/g;
     let m;
     while ((m = re.exec(l))) segs.push(m[1]);
-    if (!segs.length) return cut(l, 30);
-    const pri = s => s.indexOf("方向") === 0 ? 0 : s.indexOf("伤停") === 0 ? 1 : s.indexOf("天气") === 0 ? 2 : 3;
+    if (!segs.length) return cut(l, 24);
+    const pri = s => s.indexOf("方向") === 0 ? 0 : (s.indexOf("伤停") === 0 || s.indexOf("进球属性") >= 0 || s.indexOf("阵型") === 0) ? 1 : (s.indexOf("天气") === 0) ? 2 : 3;
     const uniq = segs.filter((s, i) => segs.indexOf(s) === i);
     uniq.sort((a, b) => pri(a) - pri(b));
-    return uniq.slice(0, 3).map(s => cut(s, 36)).join(" ｜ ");
+    const picks = [];
+    const dirSeg = uniq.find(s => s.indexOf("方向") === 0);
+    if (dirSeg) picks.push(dirSeg);
+    for (const s of uniq) {
+      if (s !== dirSeg) { picks.push(s); break; }
+    }
+    return picks.slice(0, 2).map(s => cut(s, 30)).join(" ｜ ");
   };
   // 全文加粗渲染：**X** → <b>X</b>，展开后重点一目了然
   const logicHtml = (l) => (l || "").replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
