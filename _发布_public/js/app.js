@@ -206,7 +206,7 @@ function renderPredict(batch) {
     const attr = full("进球属性") || full("阵型/打法");
     const ext = full("红黑榜") || full("克星");
     const items = [["📌 核心", dir], ["🔑 关键", key], ["⚽ 判定", attr], ["🌟 重点", ext]].filter(x => x[1]);
-    return (items.length ? items.map(([t, s]) => `<b>${t}</b> ${s.length > 64 ? s.slice(0, 64) + "…" : s}`).join("<br>") : logicHtml(l));
+    return (items.length ? items.map(([t, s]) => `<b>${t}</b> ${s}`).join("<br>") : logicHtml(l));
   };
 
   // 冷门风险（数据全比赛覆盖；展示仅过滤"低"等级——比赛多时全显示太乱，2026-08-22 用户拍板，与 0-0/7+ 预警一致；按等级从高到低排序，逻辑列预览 30 字 + 点击展开）
