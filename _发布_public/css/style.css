@@ -850,32 +850,70 @@ h2 button { margin-left: 0 !important; }
 /* 手机端表格→卡片化（2026-08-23：赛前分析/赛后复盘 与红黑总榜同款卡片风格）
    表格行变 2 列网格卡片：字段标签=data-l 显示在值上方；data-sf=整行跨列 */
 @media (max-width: 640px) {
-.table-wrap { overflow: visible; border: 0; background: transparent; margin: 6px 0 10px; }
+.table-wrap { overflow: visible; border: 0; background: transparent; margin: 4px 0 8px; }
 .table-wrap table { display: block; min-width: 0; }
 .table-wrap thead { display: none; }
 .table-wrap tbody { display: block; }
 .table-wrap tbody tr {
-display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px;
-padding: 12px 13px; margin: 10px 0;
-background: var(--card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow);
+display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 8px;
+padding: 9px 11px; margin: 7px 0;
+background: var(--card); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow);
 transition: none;
 }
 .table-wrap tbody tr:first-child { margin-top: 0; }
 .table-wrap tbody tr:hover { background: var(--card); }
 .table-wrap tbody tr.ok-row { background: color-mix(in srgb, var(--risk-ok) 6%, transparent); }
-.table-wrap tbody td { display: block; border: 0; padding: 0; font-size: 13.5px; box-shadow: none !important; min-width: 0; }
-.table-wrap tbody td::before { content: attr(data-l); display: block; font-size: 10.5px; font-weight: 600; color: var(--sub); letter-spacing: .5px; margin-bottom: 2px; }
+.table-wrap tbody td { display: block; border: 0; padding: 0; font-size: 12.5px; box-shadow: none !important; min-width: 0; }
+.table-wrap tbody td::before { content: attr(data-l); display: inline-block; font-size: 10px; font-weight: 600; color: var(--sub); margin-right: 4px; letter-spacing: .3px; }
 .table-wrap tbody td[data-sf] { grid-column: 1 / -1; }
-.table-wrap tbody td .m-team { font-size: 15.5px; display: block; }
-.table-wrap tbody td .mt-line { font-size: 11.5px; }
+/* 长值（比分/半全场）单独整行，防重叠（2026-08-25 用户实测字体重叠后回退）——仅限赛前预测表（非 rv-row），已核验表 4 列一排不受影响 */
+.table-wrap tbody tr:not(.rv-row) td[data-l|="比分"]:not([data-sf]),
+.table-wrap tbody tr:not(.rv-row) td[data-l|="半全场"] { grid-column: 1 / -1; font-size: 12.5px; }
+.table-wrap tbody td .m-team { font-size: 14px; display: inline-block; }
+.table-wrap tbody td .mt-line { font-size: 11px; margin-top: 1px; }
 .table-wrap tbody td details { margin-top: 0; }
-.table-wrap tbody td details summary { font-size: 13px; line-height: 1.6; }
+.table-wrap tbody td details summary { font-size: 12.5px; line-height: 1.5; padding: 4px 8px; }
 /* 手机端标签/长文本防溢出（2026-08-23 用户指出：关键场次技术统计信号标签超屏需拖动） */
-.table-wrap tbody td .tag { white-space: normal; overflow-wrap: anywhere; line-height: 1.45; }
+.table-wrap tbody td .tag { white-space: normal; overflow-wrap: anywhere; line-height: 1.4; }
 .table-wrap tbody td details summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 6px; }
-.table-wrap tbody td details div { overflow-wrap: anywhere; word-break: break-word; }
+.table-wrap tbody td details div { overflow-wrap: anywhere; word-break: break-word; font-size: 12px; }
 .table-wrap tbody td .prob-bar { max-width: 100%; }
 .table-wrap tbody tr:last-child td { border-bottom: 0; }
+/* 手机端首屏压缩（2026-08-25 一目了然优化：hero 大按钮/联系人折叠，预测内容尽早可见） */
+header.site { padding: 14px 16px 12px; }
+header.site h1 { font-size: 20px; margin: 6px 0 2px; }
+header.site .sub { font-size: 12px; margin-bottom: 6px; }
+.header-hero-stats { display: none; }
+.header-top .contact-bar { display: none; }
+.hero-glow, .hero-deco, .hero-ring, .hero-sheen { opacity: .35; }
+/* kpi 手机端紧凑 2×2（2026-08-25：4 个命中率卡站位太大+留白多） */
+.kpi-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 10px 0; }
+.kpi { min-width: 0; padding: 9px 8px; margin: 0; }
+.kpi .num { font-size: 18px; }
+.kpi .lbl { font-size: 10px; margin-top: 2px; }
+.g-stats .kpi { padding: 9px 8px; }
+/* 近七日/累计命中率 满宽修复（2026-08-25：容器被压窄导致右半空白；与批次命中统计同款） */
+.global-dash { width: 100%; }
+.global-dash .kpi-row { width: 100%; }
+/* 已核验场次：四判定格内 label 一行+命中标识一行（两行整齐对齐，2026-08-25 用户定） */
+.table-wrap tbody tr.rv-row td:not([data-sf])::before { display: block; margin-bottom: 2px; }
+.table-wrap tbody tr.rv-row td:not([data-sf]) .tag { display: block; white-space: normal; }
+/* 关键场次技术统计 summary 单行截断（8/24 长信号文本换行撑乱排版） */
+.ev-detail > summary { flex-wrap: nowrap; overflow: hidden; white-space: nowrap; }
+.ev-detail > summary .tag { display: inline-block; max-width: calc(100% - 70px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
+.ev-detail > summary > span:last-child { flex-shrink: 0; }
+/* tag/长值格紧凑（已核验表/预警表 2026-08-25） */
+.table-wrap tbody td .tag { font-size: 11.5px; padding: 2px 6px; display: inline-block; }
+.table-wrap tbody td b { font-size: 12.5px; }
+/* 近七日/累计命中率（g-stats g-4）2×2 紧凑（2026-08-25 用户：4 纵列右侧大量空白） */
+.g-stats.g-4 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.g-stats.g-4 .kpi { min-width: 0; padding: 10px 8px; margin: 0; }
+.g-stats.g-4 .kpi .num { font-size: 18px; }
+/* 已核验场次：场次+对阵（含联赛时间）同排 → 赛果 → 四判定并排一行（2026-08-25 用户定：同一排） */
+.table-wrap tbody tr.rv-row { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px 6px; }
+.table-wrap tbody tr.rv-row td[data-l="场次"], .table-wrap tbody tr.rv-row td[data-l="赛果（半场）"] { grid-column: 1 / -1; }
+.table-wrap tbody tr.rv-row td { font-size: 12px; }
+.table-wrap tbody tr.rv-row td .tag { font-size: 11px; padding: 2px 5px; max-width: 100%; }
 }
 @media (max-width: 480px) {
 .card { padding: 12px 10px; }

@@ -12,6 +12,14 @@
 })();
 
 /* ---------- 工具 ---------- */
+// 联赛短名（仅手机端 ≤640px 生效，桌面显示全称——2026-08-25 用户拍板；全局定义，review/赛前共用）
+const shortLeague = s => {
+  if (!s) return s;
+  if (window.innerWidth > 640) return s;
+  return String(s).replace(/资格赛$/, "").replace("欧罗巴", "欧联");
+};
+/* 通用截断工具（全局！赛前/赛后共用——2026-08-25 教训：局部定义跨面板调用 = 复盘页崩溃 */
+const cut = (s, n) => { s = (s || "").trim(); return s.length > n ? s.slice(0, n) + "…" : s; };
 function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 function h(tag, cls, html) { return `<${tag} class="${cls}">${html}</${tag}>`; }
 function fmtDate(key) {
@@ -131,10 +139,12 @@ function renderPredict(batch) {
   // 方向文本精简：保留方向+等级，冷门联动只显示"（冷门第N）"，去掉长描述
   const shortDir = d => {
     const s = (d || "").trim();
-    return s.replace(/（冷门第(\d+)）?联动[^）]*）|（冷门第(\d+)联动[^）]*）|（冷门第(\d+)）?联动[^）]*）/, (m, a, b, c) => {
+    let r = s.replace(/（冷门第(\d+)）?联动[^）]*）|（冷门第(\d+)联动[^）]*）|（冷门第(\d+)）?联动[^）]*）/, (m, a, b, c) => {
       const n = a || b || c;
       return n ? "（冷门第" + n + "）" : m;
     });
+    // 2026-08-25 用户拍板：方向统一胜平负（胜=主胜/负=客胜，与竞彩口径一致）
+    return r.replace(/主胜/g, "胜").replace(/客胜/g, "负");
   };
   // 已复盘的赛果回填（供预警命中标注使用；预测表本身不再展示赛果——2026-08-23 用户拍板：赛果只在复盘页）
   const reviewOf = {};
@@ -146,8 +156,7 @@ function renderPredict(batch) {
     const revHt = m.ht.replace(/([胜负平]{2})\*/g, '<span class="rev-score">$1*</span>');
     const lv = (m.dir.match(/([ABC])级/) || [])[1] || "";
     return `<tr data-lvl="${lv.toLowerCase()}">
-    <td data-l="场次"><span class="no-badge">${m.no}</span></td>
-    <td data-l="对阵（北京时间）" data-sf><b class="m-team">${m.home} vs ${m.away}</b><br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time || "-"}</span></span></td>
+    <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${m.home} vs ${m.away}</b><span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span><span class="match-time" style="font-size:11px;flex-shrink:0">🕐 ${m.time || "-"}</span></span></td>
     <td class="${lvlClass(m.dir)}" data-l="方向">${shortDir(m.dir)}</td>
     <td class="score-nums" data-l="比分 TOP3">${revHtml}</td>
     <td data-l="半全场 TOP3">${revHt}</td>
@@ -161,11 +170,10 @@ function renderPredict(batch) {
   sorted.forEach(m => { lgMap[m.league] = (lgMap[m.league] || 0) + 1; });
   const leagueStat = Object.entries(lgMap)
     .sort((a, b) => b[1] - a[1])
-    .map(([lg, n]) => `<span class="bo-item bo-lg"><span class="lg lg-sm ${sorted.find(m => m.league === lg).lg}">${lg}</span> <b>×${n}</b></span>`)
+    .map(([lg, n]) => `<span class="bo-item bo-lg"><span class="lg lg-sm ${sorted.find(m => m.league === lg).lg}">${shortLeague(lg)}</span> <b>×${n}</b></span>`)
     .join("");
 
-  // 通用截断工具：预览 30 字 + 点击展开全文（必须先于所有使用处定义）
-  const cut = (s, n) => { s = (s || "").trim(); return s.length > n ? s.slice(0, n) + "…" : s; };
+  // 通用截断工具已在顶层全局定义（cut）
 
   // 关键信息提取（8/21 用户要求：大段逻辑→简洁关键信息；8/23 再精简：只展示重点核心=方向段+次优先段，各截 30 字，｜ 连接；无加粗段退回 24 字截断）
   const logicKey = (l) => {
@@ -320,8 +328,7 @@ function renderPredict(batch) {
 
   // 核心逻辑速览：自动提取关键信息（方向/伤停/天气）预览 + 点击展开全文（加粗渲染）
   const logicRows = sorted.map(m => `<tr>
-    <td data-l="场次"><span class="no-badge">${m.no}</span></td>
-    <td data-l="对阵" data-sf><b class="m-team">${m.home} vs ${m.away}</b>${m.time ? `<br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span><span class="match-time">🕐 ${m.time}</span></span>` : ""}</td>
+    <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${m.home} vs ${m.away}</b>${m.time ? `<span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span><span class="match-time" style="font-size:11px;flex-shrink:0">🕐 ${m.time}</span>` : ""}</span></td>
     <td data-l="核心逻辑" data-sf><button class="logic-btn" data-no="${m.no}" data-teams="${m.home} vs ${m.away}" data-lg="${m.logic.replace(/"/g, "&quot;")}" onclick="openLogicModal(this)">${logicKey(m.logic)}</button></td>
   </tr>`).join("");
 
@@ -339,7 +346,7 @@ function renderPredict(batch) {
         <button class="lvl-pill lvl-c" data-f="c" onclick="filterLvl(this,'c')"><b>C 低</b><i>1 正 2 反 · ${sorted.filter(m => /C级/.test(m.dir)).length} 场</i></button>
       </div>
       <div class="table-wrap"><table class="batch-table">
-        <thead><tr><th>场次</th><th>对阵（北京时间）</th><th>方向</th><th>比分 TOP3</th><th>半全场 TOP3</th><th>总进球</th><th>假赛分</th></tr></thead>
+        <thead><tr><th>场次（对阵）</th><th>方向</th><th>比分 TOP3</th><th>半全场 TOP3</th><th>总进球</th><th>假赛分</th></tr></thead>
         <tbody>${rows}</tbody>
       </table></div>
     </div>
@@ -503,10 +510,9 @@ function renderReview(batch) {
     // 对阵列：与赛前一致的两行排版
     const nms = (m.teams || "").split(" vs ");
     const homeNm = nms[0] || "", awayNm = nms[1] || "";
-    return `<tr class="${m.d === "ok" ? "ok-row" : ""}">
-      <td data-l="场次"><span class="no-badge">${m.no}</span></td>
-      <td data-l="对阵" data-sf><b class="m-team">${homeNm} vs ${awayNm}</b><br><span class="mt-line"><span class="lg ${m.lg}">${m.league}</span>${pm && pm.time ? `<span class="match-time">🕐 ${pm.time}</span>` : ""}</span></td>
-      <td data-l="赛果（半场）"><b>${m.score}</b></td>
+    return `<tr class="rv-row${m.d === "ok" ? " ok-row" : ""}">
+      <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${homeNm} vs ${awayNm}</b><span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span>${pm && pm.time ? `<span class="match-time" style="font-size:11px;flex-shrink:0">🕐 ${pm.time}</span>` : ""}</span></td>
+      <td data-l="赛果（半场）" data-sf><b>${m.score}</b></td>
       <td data-l="方向">${dTag(m.d)}</td>
       <td data-l="比分">${hitTag(sTop)}</td>
       <td data-l="半全场">${hCell}</td>
@@ -514,18 +520,37 @@ function renderReview(batch) {
     </tr>`;
   }).join("");
 
-  // 关键场次技术统计：默认只显示信号徽章，点击展开完整统计与解读（游客友好）
+  // 关键场次技术统计：信号徽章预览，点击弹窗看完整统计与解读（2026-08-25 用户拍板：与"各场核心逻辑"同款弹窗）
+  // 弹窗函数（全局，仿 openLogicModal）
+  window.openEvModal = function(btn) {
+    const d = btn.dataset;
+    const old = document.getElementById("lm-root");
+    if (old) old.remove();
+    const hl = x => (x || "").replace(/[\r\n]+/g, "<br>").replace(/\*(.+?)\*/g, "<b>$1</b>");
+    const root = document.createElement("div");
+    root.id = "lm-root";
+    root.className = "lm-mask";
+    root.innerHTML = `<div class="lm-card" onclick="event.stopPropagation()">
+      <div class="lm-head"><b>🔬 ${d.no}　${d.teams}</b><span class="lm-close" onclick="document.getElementById('lm-root').remove()">✕ 关闭</span></div>
+      <div class="lm-body">
+        <div class="lm-keys"><span class="tag ${d.sigcls}">演出信号</span> <span style="font-size:13px;font-weight:700;color:var(--ink)">${d.sig}</span></div>
+        <div style="margin-top:10px;font-size:13px;line-height:1.9;color:var(--ink)">${d.stats || "—"}<br><br>${hl(d.txt || "")}</div>
+      </div>
+    </div>`;
+    root.addEventListener("click", () => root.remove());
+    document.body.appendChild(root);
+  };
   const evRows = r.evidence.map(e => {
     // evidence.teams 形如 "阿拉维斯 3-0 赫塔费" → 拆分对阵（与赛前统一排版）
     const em = (e.teams || "").match(/^(.*?)\s+\d+-\d+\s+(.*)$/);
     const evHome = em ? em[1] : (e.teams || "");
     const evAway = em ? em[2] : "";
+    const sigCls = e.sc === "danger" ? "tag-red" : e.sc === "watch" ? "tag-yellow" : "tag-green";
+    const sigFull = e.signal || "";
+    const at = s => String(s || "").replace(/"/g, "&quot;").replace(/\n/g, "&#10;");
     return `<tr>
     <td data-l="场次" data-sf><b>${e.no}</b> ${evHome} vs ${evAway}<br><span class="mt-line"><span class="lg ${e.lg}">${e.league}</span></span></td>
-    <td data-l="演戏信号（点击展开）" data-sf><details class="ev-detail">
-      <summary><span class="tag ${e.sc === "danger" ? "tag-red" : e.sc === "watch" ? "tag-yellow" : "tag-green"}">${e.signal}</span> <span style="font-size:12px;color:var(--sub)">点击展开</span></summary>
-      <div style="margin-top:8px;font-size:12.5px;color:var(--sub);line-height:1.8">${e.stats || "—"}<br><br>${cleanTxt(e.txt) || ""}</div>
-    </details></td>
+    <td data-l="演戏信号（点击弹窗）" data-sf><button class="logic-btn" style="width:100%;justify-content:flex-start;text-align:left" data-no="${e.no}" data-teams="${at(evHome)} vs ${at(evAway)}" data-sigcls="${sigCls}" data-sig="${at(sigFull)}" data-stats="${at(e.stats)}" data-txt="${at(e.txt)}" onclick="openEvModal(this)"><span class="tag ${sigCls}">${cut(sigFull, 42) || "—"}</span> <span style="font-size:12px;color:var(--sub)">🔍 点击查看</span></button></td>
   </tr>`;
   }).join("");
 
@@ -541,7 +566,7 @@ function renderReview(batch) {
       <h2><span class="icon">✅</span> 已核验场次 <span class="hint">点击表头可排序</span></h2>
       <div class="table-wrap"><table data-sort>
         <thead><tr>
-          <th data-sortable>场次</th><th>对阵</th><th data-sortable>赛果（半场）</th>
+          <th data-sortable>场次（对阵）</th><th data-sortable>赛果（半场）</th>
           <th data-sortable>方向</th><th data-sortable>比分</th><th data-sortable>半全场</th><th data-sortable>总进球</th>
         </tr></thead>
         <tbody>${rows}</tbody>
@@ -814,7 +839,7 @@ function renderGlobal(mode) {
           <button class="${isAll ? "active" : ""}" onclick="renderGlobal('all')">累计全量</button>
         </div>
       </div>
-      <div class="g-stats g-4">
+      <div class="kpi-row">
         <div class="kpi"><div class="num">${kpiTag(week.d, week.n)}</div><div class="lbl">🧭 方向命中${isAll ? "" : "（近7日）"}</div></div>
         <div class="kpi"><div class="num">${kpiTag(week.s, week.n)}</div><div class="lbl">🎯 比分 TOP3${isAll ? "" : "（近7日）"}</div></div>
         <div class="kpi"><div class="num">${kpiTag(week.h, week.n)}</div><div class="lbl">⏱️ 半全场 TOP3${isAll ? "" : "（近7日）"}</div></div>
