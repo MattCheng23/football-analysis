@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>足球分析预测站 · 推荐方案</title>
+<link rel="stylesheet" href="css/style.css?v202608261631">
+<style>
+  .grp { margin: 12px 0; border:1px solid var(--border); border-radius:14px; background:var(--card,#fff); box-shadow:var(--shadow); overflow:hidden; }
+  .grp > summary {
+    list-style:none; cursor:pointer; display:flex; align-items:center; gap:12px;
+    padding:16px 18px; font-size:19px; font-weight:800; line-height:1.3; flex-wrap:wrap;
+  }
+  .grp > summary::-webkit-details-marker{display:none}
+  .grp > summary::after{ content:"▾"; margin-left:auto; color:var(--sub); font-size:16px; transition:transform .2s; }
+  .grp[open] > summary::after{ transform:rotate(180deg); }
+  .grp-ico{ width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:23px; flex-shrink:0; }
+  .grp-desc{ font-size:13px; color:var(--sub); font-weight:400; width:100%; margin-top:2px; }
+  .grp-body{ padding: 0 16px 16px; display:flex; flex-direction:column; gap:12px; }
+  .bm-card{ background:var(--stripe); border:1px solid var(--border); border-radius:12px; padding:12px 14px; position:relative; overflow:hidden; }
+  .bm-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--bm-c,#888)}
+  .bm-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .bm-name{font-size:16.5px;font-weight:800}
+  .bm-tags{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+  .bm-tag{font-size:11.5px;padding:2px 10px;border-radius:10px;font-weight:600;background:color-mix(in srgb,var(--bm-c,#888) 13%,transparent);color:var(--primary-dark)}
+  .bm-st{font-size:12px;font-weight:800;padding:3px 10px;border-radius:9px;white-space:nowrap}
+  .bm-st.dead{background:#e05a5a;color:#fff}
+  .bm-st.partial{background:#e0a048;color:#fff}
+  .bm-st.alive{background:#4a966e;color:#fff}
+  .bm-st.wait{background:#8a99b0;color:#fff}
+  .bm-note{font-size:12px;color:#c05a3a;background:color-mix(in srgb,#e0a048 12%,transparent);border-radius:8px;padding:5px 10px;margin:6px 0 2px}
+  .bm-games{display:flex;flex-direction:column;gap:7px}
+  .bm-game{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;background:var(--card,#fff);border-radius:9px;padding:7px 10px}
+  .bm-no{font-size:11.5px;font-weight:700;color:#fff;background:var(--lg-c,#6f7f95);padding:2px 8px;border-radius:7px;flex-shrink:0}
+  .bm-teams{font-weight:700;font-size:14.5px}
+  .bm-choice{font-size:15px;font-weight:800;color:var(--primary-dark);background:color-mix(in srgb,var(--bm-c,#888) 12%,transparent);padding:2px 10px;border-radius:8px}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 2px}
+  .tool-btn{font-size:13px;padding:5px 14px;border-radius:9px;border:1px solid var(--border);background:var(--card,#fff);cursor:pointer;font-weight:600}
+  .tool-btn:hover{border-color:var(--primary);color:var(--primary)}
+  .legend{font-size:13px;color:var(--sub);line-height:1.9}
+  .kpi{text-align:center;padding:12px 10px;border-radius:12px;background:linear-gradient(180deg,var(--card-hover),var(--card) 55%),var(--card);border:1px solid var(--border);box-shadow:var(--shadow)}
+  .kpi .num{font-size:22px;font-weight:800}
+  .kpi .lbl{font-size:12.5px;color:var(--sub);margin-top:2px}
+  .linebox{background:var(--stripe);border:1px dashed var(--border);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--sub);line-height:1.9}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="hero-glow"></div><div class="hero-deco"></div><div class="hero-ring"></div><div class="hero-sheen"></div>
+  <div class="inner">
+    <div class="header-top"><button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button></div>
+    <h1>⚽ 足球分析预测站 · 推荐方案</h1>
+    <div class="sub">规则驱动预测模型 V11.10 ｜ 分组总览·点击展开 ｜ 数据双源核验
+  </div>
+</header>
+<nav>
+  <div class="inner">
+    <a href="index.html">📋 赛前预测</a>
+    <a href="review.html">🔍 赛后复盘</a>
+    <a href="avoid.html">🏆 红黑总榜</a>
+    <a href="bill.html" class="active">📒 方案</a>
+  </div>
+</nav>
+<div class="container">
+  <div class="card">
+    <h2><span class="icon">📒</span> 推荐方案（8月26 周三批次）</h2>
+    <div class="kpi-row" style="display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 12px" id="bill-summary"></div>
+    <div class="toolbar">
+      <button class="tool-btn" onclick="toggleAll(true)">🔽 全部展开</button>
+      <button class="tool-btn" onclick="toggleAll(false)">🔼 全部收起</button>
+    </div>
+    <div class="legend" style="margin:8px 0 14px">策略标签：<b>净1系</b>=1球球差高赔化 ｜ <b>正反双线</b>=主胜/平系+偷分/反弹系 ｜ <b>客军不败系</b>=强客让球不输 ｜ <b>半场闷后定</b>=半场0-0下半场定 ｜ <b>先进被反</b>=领先被逆转 ｜ <b>容错</b>=组合过关错1-2场仍活 ｜ <b>主档∪极端</b>=主比分+大比分双选</div>
+    <div id="bill-groups"></div>
+    <div class="linebox" style="margin-top:14px"><b>📈 策略命中榜（赛后自动更新）</b><br>⏳ 待结算——每单标 ✅/❌、线型命中率排行 → 下批推荐自动参照</div>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer-author"><div class="author-name">✍️ 作者：Matt</div></div>
+  <div class="footer-disclaimer">⚠️ 免责声明：本站为个人足球数据分析研究用途，方案仅供参考，不构成任何投注建议。请理性参考，切勿沉迷。</div>
+</div>
+<script src="js/bill_data.js?v202608261631"></script>
+<script src="js/app.js?v202608261631"></script>
+<script>
+(function(){
+  const B = BILL;
+  const GROUPS = [
+    { play:["方向推荐"], title:"🧭 方向推荐", icon:"🧭", color:"#b06b85", desc:"胜平负×让球混合·容错结构（方向单 6 项 5/6 关 + 四场双选 2/3/4 关 + 8 关大满贯）" },
+    { play:["比分推荐"], title:"⚽ 比分推荐", icon:"⚽", color:"#3d7d5b", desc:"韩职双场全形态 + AEK×采列×皇马五路覆盖（比分二串一 + 三串一）" },
+    { play:["半全场推荐"], title:"🕐 半全场推荐", icon:"🕐", color:"#8e6fa8", desc:"6 场组合过关·半场闷后定+先进被反（3 关结构）" },
+    { play:["总进球推荐"], title:"🎯 总进球推荐", icon:"🎯", color:"#5d9c62", desc:"6 场总进球双选·六关（1·2 研磨系 + 2·3 中位系）" }
+  ];
+  const d = B.cards;
+  // 实时状态（半场 001 0-0/002 1-1 快筛：dead=结构已死/partial=仅剩部分注/alive=全活/wait=未开赛）
+  const LIVE = {
+    "K1-1":{st:"dead", note:"001-2-1✓ 但 002-2-1 未列（0-0/1-1/0-1）——二串一 0 中"},
+    "K1-2":{st:"dead", note:"001 2-1 未中+002 未中"},
+    "K1-3":{st:"dead", note:"001 非 3-1+002 非 1-2"},
+    "K1-4":{st:"dead", note:"002-2-1✓ 但 001 0-1/1-2 未中"},
+    "K1-5":{st:"dead", note:"001-2-1✓ 但 002-0-1 未中"},
+    "K1-6":{st:"dead", note:"001-1-0✗+002-0-2✗"},
+    "K1-7":{st:"dead", note:"001 零封系未中+002-2-0 未中"},
+    "T3-1":{st:"dead", note:"005 实际 4-0（选项 1-0/1-1 未列）"},
+    "T3-2":{st:"dead", note:"005 4-0 未列（1-0/0-1）"},
+    "T3-3":{st:"dead", note:"005 4-0 非 1-0"},
+    "T3-4":{st:"dead", note:"005 4-0 非 0-0/0-1"},
+    "T3-5":{st:"dead", note:"005 4-0 非 2-0"},
+    "OU-6":{st:"dead", note:"002 实际 3 球（选 1/2）→六关断；005-4球/009-4球/010-5球 全低估"},
+    "DR-1":{st:"partial", note:"001 让平✓/004 让平✓/010 让胜✓=3 中；005 让平✗（4-0 净4）——5 关唯一活注=001/004/010/011/012（待 011+012 全中）"},
+    "DR-2":{st:"dead", note:"008-1-2✓ 但 006 竞彩 1-1（选项 1-2/1-3 未列）+009 0-4+010 4-1 差1球→2 关组合 0 中"},
+    "DR-3":{st:"dead", note:"007 让负✗（维京 3-1）——5/7 中但 8 关单注断"},
+    "DR-4":{st:"wait", note:"未生效"},
+    "HT-6":{st:"partial", note:"009 负负✓/010 平胜✓=2 中；005✗（胜胜）/006✗（平平漏选项）/008✗（负负漏）——唯一活注=009+010+011（011 需胜平）"}
+  };
+  cardOf = c => {
+    const L = LIVE[c.id] || {st:"wait"};
+    const stMap = {dead:["❌ 已死","dead"], partial:["⚠️ 半存活","partial"], alive:["✅ 存活","alive"], wait:["⏳ 待赛","wait"]};
+    const st = stMap[L.st] || stMap.wait;
+    return `<div class="bm-card" style="--bm-c:${c.color}">
+      <div class="bm-head"><span class="bm-st ${st[1]}">${st[0]}</span><span style="font-size:20px">${c.icon}</span><span class="bm-name">${c.name}</span></div>
+      ${L.note?`<div class="bm-note">${L.note}</div>`:""}
+      <div class="bm-tags">${(c.strategy||[]).map(s=>`<span class="bm-tag">${s}</span>`).join("")}</div>
+      <div class="bm-games">${c.games.map(g=>`<div class="bm-game"><span class="bm-no" style="--lg-c:${LGC[g[0]]||'#6f7f95'}">${g[0]}</span><span class="bm-teams">${g[1]}</span><span class="bm-choice">${g[2]}</span></div>`).join("")}</div>
+    </div>`;
+  };
+  // 联赛徽章映射（与预测/复盘页 .lg-* 色系一致：韩职绿/欧冠红/英联杯橙/西甲蓝/巴西杯金）
+  const LG = {
+    "周三001":["韩职","lg-k1"], "周三002":["韩职","lg-k1"],
+    "周三003":["英联杯","lg-champ"], "周三004":["英联杯","lg-champ"], "周三009":["英联杯","lg-champ"],
+    "周三005":["欧冠","lg-ucl"], "周三006":["欧冠","lg-ucl"], "周三007":["欧冠","lg-ucl"], "周三008":["欧冠","lg-ucl"],
+    "周三010":["西甲","lg-laliga"], "周三011":["巴西杯","lg-bras"], "周三012":["巴西杯","lg-bras"]
+  };
+  const LGC = {
+    "周三001":"#3ba38f","周三002":"#3ba38f","周三003":"#bd6247","周三004":"#bd6247","周三009":"#bd6247",
+    "周三005":"#a04a4a","周三006":"#a04a4a","周三007":"#a04a4a","周三008":"#a04a4a",
+    "周三010":"#3d7d5b","周三011":"#b39c48","周三012":"#b39c48"
+  };
+  // 玩法→组映射：合并"比分二串一/比分三串一/比分组合过关"→比分推荐
+  const playGroup = {"比分二串一":"比分推荐","比分三串一":"比分推荐","比分组合过关":"比分推荐","总进球六串一":"总进球推荐","方向混合过关":"方向推荐","半全场组合过关":"半全场推荐"};
+  const COLOR = {"方向推荐":"#b06b85","比分推荐":"#3d7d5b","半全场推荐":"#8e6fa8","总进球推荐":"#5d9c62"};
+  const ICON  = {"方向推荐":"🧭","比分推荐":"⚽","半全场推荐":"🕐","总进球推荐":"🎯"};
+  document.getElementById("bill-groups").innerHTML = GROUPS.map(g=>{
+    const cards = d.map(c=>({...c, color:COLOR[g.play[0]], icon:ICON[g.play[0]]})).filter(c=>playGroup[c.play]===g.play[0]);
+    if(!cards.length) return "";
+    return `<details class="grp"><summary><span class="grp-ico" style="background:color-mix(in srgb,${g.color} 15%,transparent)">${g.icon}</span>${g.title}<span class="grp-desc">${g.desc}</span></summary>
+      <div class="grp-body">${cards.map(cardOf).join("")}</div></details>`;
+  }).join("");
+  // 概览卡（无金额）
+  const n = d.length;
+  document.getElementById("bill-summary").innerHTML =
+    `<div class="kpi"><div class="num">${n}</div><div class="lbl">📋 方案</div></div>`+
+    `<div class="kpi"><div class="num">${Object.keys(playGroup).length>0?new Set(Object.values(playGroup)).size:4}</div><div class="lbl">🗂️ 组别</div></div>`+
+    `<div class="kpi"><div class="num">10</div><div class="lbl">⚽ 覆盖场次</div></div>`+
+    `<div class="kpi"><div class="num">⏳</div><div class="lbl">待结算</div></div>`;
+})();
+function toggleAll(open){ document.querySelectorAll(".grp").forEach(g=>g.open=open); }
+</script>
+</body>
+<script src="js/gate.js?v202608261649"></script>
+</html>
