@@ -1105,7 +1105,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const bar = document.querySelector(".contact-bar");
   if (bar) {
     const donateBtn = document.createElement("span");
-    donateBtn.className = "contact-item";
+    donateBtn.className = "contact-item donate-btn";
     donateBtn.textContent = "❤️ 打赏支持";
     donateBtn.style.cssText = "cursor:pointer;user-select:none;";
     const modal = document.createElement("div");

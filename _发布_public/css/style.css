@@ -886,6 +886,11 @@ header.site h1 { font-size: 20px; margin: 6px 0 2px; }
 header.site .sub { font-size: 12px; margin-bottom: 6px; }
 .header-hero-stats { display: none; }
 .header-top .contact-bar { display: none; }
+/* 手机端 contact-bar 恢复：与主题按钮同行，只显示 微信+打赏（隐藏 Matt/QQ；2026-08-28 用户：手机端要打赏和微信即可、与切换主题同行） */
+.header-top .contact-bar { display: flex; flex-wrap: nowrap; gap: 4px; }
+.header-top .contact-item:first-child { display: none; }          /* Matt */
+.header-top .contact-item:nth-child(3) { display: none; }          /* QQ */
+.header-top .contact-item { font-size: 10.5px; padding: 4px 8px; white-space: nowrap; }
 .hero-glow, .hero-deco, .hero-ring, .hero-sheen { opacity: .35; }
 /* kpi 手机端紧凑 2×2（2026-08-25：4 个命中率卡站位太大+留白多） */
 .kpi-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 10px 0; }
