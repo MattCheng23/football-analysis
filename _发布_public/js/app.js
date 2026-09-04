@@ -441,8 +441,10 @@ function renderReview(batch) {
   const alertOf = m => {
     const actualHt = htFromScore(m.score);
     const scoreMain = m.score.split("（")[0];
-    if (batch.alerts) {
-      const a = batch.alerts.find(x => x.no === m.no);
+    // 2026-09-05：alerts 兼容 predict 内（新批）与顶级（旧批）两种结构
+    const al = (batch.predict && batch.predict.alerts) || batch.alerts || [];
+    if (al.length) {
+      const a = al.find(x => x.no === m.no);
       if (a && a.script === actualHt) return `🎯 ${a.script}（${a.lvTxt}）`;
     }
     return "";
@@ -809,14 +811,15 @@ function renderGlobal(mode) {
       if (!sc) return;
       // 0-0 预警
       const scoreMain = m.score.split("（")[0];
-      const z = (b.zeroZero || []).find(x => x.no === m.no);
+      const z = ((b.predict && b.predict.zeroZero) || b.zeroZero || []).find(x => x.no === m.no);
       if (z) { zz.n++; if (scoreMain === "0-0") zz.h++; }
       // 7+ 预警
-      const b7 = (b.bigSeven || []).find(x => x.no === m.no);
+      const b7 = ((b.predict && b.predict.bigSeven) || b.bigSeven || []).find(x => x.no === m.no);
       if (b7) { bs.n++; if (+sc[1] + +sc[2] >= 7) bs.h++; }
       // 高价值预警（半全场剧本）
-      if (b.alerts) {
-        const a = b.alerts.find(x => x.no === m.no);
+      const bal = (b.predict && b.predict.alerts) || b.alerts || [];
+      if (bal.length) {
+        const a = bal.find(x => x.no === m.no);
         if (a) {
           aw.n++;
           const f = sc[1] > sc[2] ? "胜" : sc[1] < sc[2] ? "负" : "平";
