@@ -3,9 +3,14 @@ __pycache__/
 *.pyc
 *.pyo
 
-# 系统
+# 绯荤粺
 .DS_Store
 Thumbs.db
 
-# 临时
+# 涓存椂
 *.tmp
+
+_backup/
+.wrangler/
+*.log
+__pycache__/
