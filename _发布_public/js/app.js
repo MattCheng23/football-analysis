@@ -2,6 +2,9 @@
    足球分析预测站 · 应用逻辑（日历 + 动态渲染）
    ============================================================ */
 
+/* HT4 高价值预警 4 形态（2026-09-06 用户拍板：胜负/负胜/负平/胜平；全局=赛前渲染+review 统计共用） */
+const HT4 = ["胜负", "负胜", "负平", "胜平"];
+
 /* 复盘数据合并（2026-08-20 拆分：data-review.js 由复盘页加载后并入 BATCHES；首页不加载则 review 为空壳） */
 (function(){
   if (typeof REVIEW_EXTRA !== "undefined" && typeof BATCHES !== "undefined") {
@@ -253,7 +256,7 @@ function renderPredict(batch) {
   };
 
   // 冷门风险（数据全比赛覆盖；展示仅过滤"低"等级——比赛多时全显示太乱，2026-08-22 用户拍板，与 0-0/7+ 预警一致；按等级从高到低排序，逻辑列预览 30 字 + 点击展开）
-  const lvW = { "较高": 4, "中等偏高": 3, "中等": 2, "低": 1 };
+  const lvW = { "较高": 5, "中等偏高": 4, "中等": 3, "中等偏低": 2, "低": 1 };
   // 已复盘的预警 → 命中标注（2026-08-23 丰富：预测页预警行直接看验证结果）
   const resDir = s => { const m = (s || "").match(/(\d+)-(\d+)/); if (!m) return ""; const h = +m[1], a = +m[2]; return h > a ? "主胜" : h < a ? "客胜" : "平局"; };
   const coldVerifyOf = c => {
@@ -268,7 +271,7 @@ function renderPredict(batch) {
     .slice()
     .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
     .map(c => `<tr>
-    <td data-l="排名">${c.rank}</td><td data-l="场次" data-sf>${c.no} ${c.teams}${coldVerifyOf(c)}</td><td data-l="冷门方向">${shortDir(c.dir)}</td>
+    <td data-l="概率" data-sf>${(() => { const m = (c.logic || "").match(/[（(]约?\s*(\d+(?:\.\d+)?)%/); return m ? m[1] + "%" : "-"; })()}</td><td data-l="场次" data-sf>${c.no} ${c.teams}${coldVerifyOf(c)}</td><td data-l="冷门方向">${shortDir(c.dir)}</td>
     <td data-l="风险等级"><span class="tag ${c.lv}">${c.lvTxt}</span></td>
     <td data-l="核心逻辑" data-sf><details>
       <summary>${cut(c.logic || "-", 30)}</summary>
@@ -278,6 +281,7 @@ function renderPredict(batch) {
 
   // 高价值预警：只显示中等及以上（2026-08-22 晚用户拍板：低概率不显示——与冷门风险/7+ 一致；评级规则=4 冷门形态：胜平/负平=实力接近场高概率剧本→中等（但按形态成立概率评估：先进球方进球能力弱/追平方追平能力弱→降低），胜负/负胜=冷门低概率→低（德比/避雷/防线残阵等强剧本因素→中等）；逻辑列预览 30 字 + 点击展开
   // 2026-08-23 用户拍板：按等级排序后只显示最高概率前 8 条，排在后面的隐藏
+  // 2026-09-06 用户拍板：高价值预警只看 4 形态（胜负/负胜/负平/胜平——先进球方被逆转/追平），平负/平平/平胜 等非 4 形态不展示
   // 半全场形态命中标注（2026-08-23 丰富）
   const htOfScore = s => {
     const m = (s || "").match(/^(\d+)-(\d+)（(\d+)-(\d+)）?/);
@@ -293,7 +297,7 @@ function renderPredict(batch) {
     return `<span class="rv-flag ${hit ? "rv-hit" : "rv-miss"}" style="margin-left:8px">${hit ? "✅ 命中" : "未触发"}</span>`;
   };
   const alertRows = (p.alerts || [])
-    .filter(a => a.lvTxt !== "低")
+    .filter(a => a.lvTxt !== "低" && HT4.includes(a.script))
     .slice()
     .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
     .slice(0, 8)
@@ -323,7 +327,7 @@ function renderPredict(batch) {
     .map(z => `<tr>
     <td data-l="场次" data-sf>${z.no} ${z.teams}${bigVerifyOf(z)}</td>
     <td data-l="7+ 球概率"><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${z.p}%"></div></div><span class="prob-txt num">${z.p}%</span></div></td>
-    <td data-l="等级"><span class="tag ${z.lv}">${z.lvTxt}</span></td>
+    <td data-l="等级"><span class="tag ${(z.lv || "").replace(/^tag-tag-/, "tag-")}">${z.lvTxt}</span></td>
   </tr>`).join("");
 
   // 核心逻辑速览：自动提取关键信息（方向/伤停/天气）预览 + 点击展开全文（加粗渲染）
@@ -354,7 +358,7 @@ function renderPredict(batch) {
     <div class="card">
       <h2><span class="icon">🌡️</span> 冷门风险（${(p.coldRisk || []).length} 场全量）</h2>
       <div class="table-wrap"><table>
-        <thead><tr><th>排名</th><th>场次</th><th>冷门方向</th><th>风险等级</th><th>核心逻辑</th></tr></thead>
+        <thead><tr><th>概率</th><th>场次</th><th>冷门方向</th><th>风险等级</th><th>核心逻辑</th></tr></thead>
         <tbody>${coldRows}</tbody>
       </table></div>
       <div class="note">仅显示中等及以上等级（数据覆盖全部比赛），按等级从高到低排序。</div>
@@ -366,7 +370,7 @@ function renderPredict(batch) {
         <thead><tr><th>剧本</th><th>场次</th><th>概率</th><th>核心逻辑</th></tr></thead>
         <tbody>${alertRows}</tbody>
       </table></div>
-      <div class="note">全量展示按概率排序（2026-08-22 用户拍板：平胜/平负=强队半场 0-0 后破门高概率→中等+；胜负/负胜=弱队先进被逆转/爆冷冷门→低，保留展示）。</div>
+      <div class="note">仅展示 4 形态（胜负/负胜/负平/胜平=先进球方被逆转/追平剧本，2026-09-06 用户拍板；平负/平平/平胜 等平开局形态不进高价值预警），按概率排序取前 8 条。</div>
     </div>
 
     <div class="card">
@@ -412,6 +416,7 @@ function toggleAllLogic(btn) {
 
 /* ---------- 渲染：复盘 ---------- */
 function renderReview(batch) {
+  try {
   const el = document.getElementById("review-view");
   if (!el) return; // 预测页无复盘视图，跳过
   const r = batch.review;
@@ -445,7 +450,7 @@ function renderReview(batch) {
     const al = (batch.predict && batch.predict.alerts) || batch.alerts || [];
     if (al.length) {
       const a = al.find(x => x.no === m.no);
-      if (a && a.script === actualHt) return `🎯 ${a.script}（${a.lvTxt}）`;
+      if (a && HT4.includes(a.script) && a.script === actualHt) return `🎯 ${a.script}（${a.lvTxt}）`;
     }
     return "";
   };
@@ -475,10 +480,12 @@ function renderReview(batch) {
   const statusTag = batch.reviewed
     ? `<span class="tag tag-green">完整复盘</span>`
     : `<span class="tag tag-yellow">部分复盘（已确认 ${confirmedN}/${totalN} 场）</span>`;
-  const kpiHtml = batch.reviewed ? `
-        <div class="kpi"><div class="num">${batch.stats.dir}</div><div class="lbl">方向命中率 ${batch.stats.dirPct}</div></div>
-        <div class="kpi"><div class="num">${batch.stats.score}</div><div class="lbl">比分 TOP3 ${batch.stats.scorePct}</div></div>
-        <div class="kpi"><div class="num">${batch.stats.ht}</div><div class="lbl">半全场 TOP3 ${batch.stats.htPct}</div></div>
+  // 2026-09-06 修复：batch.stats 缺失（近期 7 批遗漏）曾致 kpi 渲染 TypeError=整段被吞——无 stats 时走部分式 KPI 兜底
+  const bs = batch.stats;
+  const kpiHtml = bs ? `
+        <div class="kpi"><div class="num">${bs.dir}</div><div class="lbl">方向命中率 ${bs.dirPct}</div></div>
+        <div class="kpi"><div class="num">${bs.score}</div><div class="lbl">比分 TOP3 ${bs.scorePct}</div></div>
+        <div class="kpi"><div class="num">${bs.ht}</div><div class="lbl">半全场 TOP3 ${bs.htPct}</div></div>
         ${ouKpi}` : `
         <div class="kpi"><div class="num">${confirmedN}/${totalN}</div><div class="lbl">已确认场次</div></div>
         <div class="kpi"><div class="num">${statCell(r.results.filter(m => m.d === "ok").length, confirmedN)}</div><div class="lbl">方向已命中</div></div>
@@ -550,8 +557,10 @@ function renderReview(batch) {
     const sigCls = e.sc === "danger" ? "tag-red" : e.sc === "watch" ? "tag-yellow" : "tag-green";
     const sigFull = e.signal || "";
     const at = s => String(s || "").replace(/"/g, "&quot;").replace(/\n/g, "&#10;");
+    const cardCells = String(e.stats || "").split("、").filter(function(pp){return pp.indexOf("红牌") > -1 || pp.indexOf("黄牌") > -1;}).join("、");
     return `<tr>
     <td data-l="场次" data-sf><b>${e.no}</b> ${evHome} vs ${evAway}<br><span class="mt-line"><span class="lg ${e.lg}">${e.league}</span></span></td>
+    <td data-l="红黄牌" data-sf><span class="mt-line" style="font-size:11.5px">${cardCells || "—"}</span></td>
     <td data-l="演戏信号（点击弹窗）" data-sf><button class="logic-btn" style="width:100%;justify-content:flex-start;text-align:left" data-no="${e.no}" data-teams="${at(evHome)} vs ${at(evAway)}" data-sigcls="${sigCls}" data-sig="${at(sigFull)}" data-stats="${at(e.stats)}" data-txt="${at(e.txt)}" onclick="openEvModal(this)"><span class="tag ${sigCls}">${cut(sigFull, 42) || "—"}</span> <span style="font-size:12px;color:var(--sub)">🔍 点击查看</span></button></td>
   </tr>`;
   }).join("");
@@ -581,10 +590,13 @@ function renderReview(batch) {
         <span>关键场次技术统计（演戏信号实证）</span><span class="hint">点击信号标签展开完整数据</span>
       </h2>
       <div class="table-wrap"><table>
-        <thead><tr><th>场次</th><th>演戏信号（点击展开）</th></tr></thead>
+        <thead><tr><th>场次</th><th>红黄牌（逐张）</th><th>演戏信号（点击展开）</th></tr></thead>
         <tbody>${evRows}</tbody>
       </table></div>
     </div>`;
+  } catch (err) {
+    el.innerHTML = `<div class="card" style="border-color:#dc2626"><h2><span class="icon">🚫</span> 渲染错误（诊断）</h2><div class="note" style="color:#dc2626">${String(err && err.message || err).replace(/</g, "&lt;")}<br><br>堆栈顶部：${String(err && err.stack || "").split("\n").slice(0, 3).join(" ⏎ ").replace(/</g, "&lt;")}</div></div>`;
+  }
 }
 
 /* ---------- 站点总览统计条 + 批次趋势图 ---------- */
@@ -717,7 +729,7 @@ function renderColdVerify() {
     if (!m) return;
     const actual = resultDir(m.score);
     const ok = actual === c.dir;
-    (ok ? hit : miss).push({ rank: c.rank, no: c.no, teams: c.teams, pred: c.dir, actual, lv: c.lv, lvTxt: c.lvTxt, ok });
+    (ok ? hit : miss).push({ rank: (() => { const m = (c.logic || "").match(/[（(]约?\s*(\d+(?:\.\d+)?)%/); return m ? m[1] + "%" : "-"; })(), no: c.no, teams: c.teams, pred: c.dir, actual, lv: c.lv, lvTxt: c.lvTxt, ok });
   });
   const row = c => `<tr>
     <td>${c.rank}</td><td>${c.no} ${c.teams}</td>
@@ -727,7 +739,7 @@ function renderColdVerify() {
   el.innerHTML = `
     <div class="lead">冷门预警验证：预测方向与实际赛果一致 = 爆冷命中。${hit.length}/${b.predict.coldRisk.length} 场预警命中。</div>
     <div class="table-wrap"><table>
-      <thead><tr><th>排名</th><th>场次</th><th>预警方向</th><th>实际</th><th>验证</th></tr></thead>
+      <thead><tr><th>概率</th><th>场次</th><th>预警方向</th><th>实际</th><th>验证</th></tr></thead>
       <tbody>${hit.map(row).join("")}${miss.map(row).join("")}</tbody>
     </table></div>`;
 }
@@ -820,7 +832,7 @@ function renderGlobal(mode) {
       const bal = (b.predict && b.predict.alerts) || b.alerts || [];
       if (bal.length) {
         const a = bal.find(x => x.no === m.no);
-        if (a) {
+        if (a && HT4.includes(a.script)) {
           aw.n++;
           const f = sc[1] > sc[2] ? "胜" : sc[1] < sc[2] ? "负" : "平";
           const hm = m.score.match(/（(\d+)-(\d+)）/);
@@ -1068,6 +1080,7 @@ function renderAvoidSearch(q) {
 
 /* ---------- 入口 ---------- */
 function renderAll() {
+  try {
   const b = BATCHES[currentKey];
   renderBatchHeader();
   renderGlobal();
@@ -1080,6 +1093,12 @@ function renderAll() {
     renderLeagueStats();
     renderColdVerify();
     initSortable();
+  }
+  } catch (e) {
+    const el2 = document.getElementById("review-view") || document.body;
+    el2.innerHTML = '<div class="card" style="border-color:#dc2626"><h2>🚫 页面渲染异常</h2><div style="color:#dc2626">' +
+      String(e && e.message || e).replace(/</g, "&lt;") + '<br><br>请截图反馈（含此信息）' + '</div></div>';
+    if (window.console) console.error("renderAll:", e);
   }
 }
 
