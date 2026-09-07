@@ -23,6 +23,17 @@ const shortLeague = s => {
 };
 /* 通用截断工具（全局！赛前/赛后共用——2026-08-25 教训：局部定义跨面板调用 = 复盘页崩溃 */
 const cut = (s, n) => { s = (s || "").trim(); return s.length > n ? s.slice(0, n) + "…" : s; };
+/* ou 工具（全局！赛前预测表+复盘表+近7日统计共用——2026-09-07 教训：局部定义跨面板调用=页面崩溃；
+   多档解析+合并显示：3·4+4·5 → [3,4,5] "3·4·5"） */
+const ouNums = ou => {
+  const n = [];
+  for (const rng of (ou || "").replace("总进球 ", "").split("+")) {
+    const mm = rng.match(/(\d+)[·.x×](\d+)/);
+    if (mm) n.push(+mm[1], +mm[2]);
+  }
+  return [...new Set(n)].sort((a, b) => a - b);
+};
+const ouDisp = ou => { const n = ouNums(ou); return n.length ? n.join("·") : ou || ""; };
 function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 function h(tag, cls, html) { return `<${tag} class="${cls}">${html}</${tag}>`; }
 function fmtDate(key) {
@@ -163,7 +174,7 @@ function renderPredict(batch) {
     <td class="${lvlClass(m.dir)}" data-l="方向">${shortDir(m.dir)}</td>
     <td class="score-nums" data-l="比分 TOP3">${revHtml}</td>
     <td data-l="半全场 TOP3">${revHt}</td>
-    <td data-l="总进球">${m.ou}</td>
+    <td data-l="总进球">${ouDisp(m.ou)}</td>
     <td data-l="假赛分">${riskTag(m.risk || 0)}</td>
   </tr>`;
   }).join("");
@@ -459,6 +470,7 @@ function renderReview(batch) {
   const confirmedN = r.results.length;
   // 控分排查结论仅本地保留（合规），网页只展示演戏排查部分
   const cleanTxt = t => (t || "").split("控分排查：")[0].trim();
+  // ou 工具已提升至全局（9/7：多档解析+合并显示——见顶部 ouNums/ouDisp）
   // 本批次总进球（ou）命中：预测总进球区间 vs 实际进球数
   let ouN = 0, ouH = 0;
   r.results.forEach(m => {
@@ -466,12 +478,11 @@ function renderReview(batch) {
     if (!pm || !pm.ou) return;
     const sc = m.score.match(/(\d+)-(\d+)/);
     if (!sc) return;
-    const mm = pm.ou.match(/(\d+)[·.x×](\d+)/);
-    if (!mm) return;
+    const ns = ouNums(pm.ou);
+    if (!ns.length) return;
     ouN++;
     const tg = +sc[1] + +sc[2];
-    // 总进球 = 两个离散选项（如 1·2 = 1球或2球），命中 = 实际总进球等于任一选项
-    if (tg === +mm[1] || tg === +mm[2]) ouH++;
+    if (ns.includes(tg)) ouH++;
   });
   const ouPct = ouN ? Math.round(100 * ouH / ouN) + "%" : "—";
   const ouKpi = `<div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${ouH}/${ouN} <span style="font-size:12px">${ouPct}</span></div><div class="lbl">⚽ 总进球命中</div></div>`;
@@ -500,18 +511,22 @@ function renderReview(batch) {
     const hTop = pm ? topOf(htFromScore(m.score), pm.ht) : null;
     const hCell = hTop ? hitTag(hTop) : (m.h === "ok" ? okT : noT); // 无半场数据时按 h 判定
     const aw = alertOf(m);
-    // 总进球命中：预测 ou 区间 vs 实际进球数
+    // 总进球命中：预测 ou 区间 vs 实际进球数（支持多档 3·4+4·5——2026-09-07 修复：原只判第一档误❌）
+    // 显示=合并去重为离散球数集合（3·4+4·5 → 3·4·5），数据层仍为档位记法（检查器/统计不变）
     const ouCell = () => {
       const pm = batch.predict.matches.find(x => x.no === m.no);
       if (!pm || !pm.ou) return `<span class="tag tag-gray">—</span>`;
       const sc = m.score.match(/(\d+)-(\d+)/);
       if (!sc) return `<span class="tag tag-gray">—</span>`;
-      const mm = pm.ou.match(/(\d+)[·.x×](\d+)/);
-      if (!mm) return `<span class="tag tag-gray">—</span>`;
       const tg = +sc[1] + +sc[2];
-      // 总进球 = 两个离散选项（如 1·2 = 1球或2球），命中 = 实际总进球等于任一选项
-      const hit = tg === +mm[1] || tg === +mm[2];
-      const range = pm.ou.replace("总进球 ", "");
+      const rangeRaw = pm.ou.replace("总进球 ", "");
+      const nums = [];
+      for (const rng of rangeRaw.split("+")) {
+        const mm = rng.match(/(\d+)[·.x×](\d+)/);
+        if (mm) nums.push(+mm[1], +mm[2]);
+      }
+      const hit = nums.includes(tg);
+      const range = nums.length ? [...new Set(nums)].sort((a, b) => a - b).join("·") : rangeRaw;
       return hit
         ? `<span class="tag tag-green">${range} ✅</span>`
         : `<span class="tag tag-red">${range} ❌ <span style="opacity:.8">实${tg}球</span></span>`;
@@ -815,10 +830,10 @@ function renderGlobal(mode) {
       week.n++; if (m.d === "ok") week.d++; if (m.s === "ok") week.s++; if (m.h === "ok") week.h++;
       const pm = b.predict && b.predict.matches.find(x => x.no === m.no);
       const sc = m.score.match(/(\d+)-(\d+)/);
-      // 总进球
+      // 总进球（9/7 多档统一：ouNums）
       if (pm && pm.ou && sc) {
-        const mm = pm.ou.match(/(\d+)[·.x×](\d+)/);
-        if (mm) { ou.n++; const tg = +sc[1] + +sc[2]; if (tg === +mm[1] || tg === +mm[2]) ou.h++; }
+        const ns = ouNums(pm.ou);
+        if (ns.length) { ou.n++; const tg = +sc[1] + +sc[2]; if (ns.includes(tg)) ou.h++; }
       }
       if (!sc) return;
       // 0-0 预警
