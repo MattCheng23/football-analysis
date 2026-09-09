@@ -409,6 +409,8 @@ html.dark .no-badge { box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .3), 0 0 10px rgb
 .lg {
 display: inline-block; padding: 2px 10px; border-radius: 5px; font-size: 12.5px; font-weight: 700;
 color: #fff; letter-spacing: .5px;
+/* 兜底默认背景（2026-09-09：lg-eflcup 缺失导致白底白字——未定义类不再透明） */
+background: #6f7f95;
 }
 /* 联赛配色=竞彩官方（sporttery backColor 字段，2026-08-21 采集） */
 .lg-j1      { background: #3d7e58; }  /* 日职 官方 */
@@ -431,6 +433,7 @@ color: #fff; letter-spacing: .5px;
 .lg-l2      { background: #74b096; }  /* 法乙 官方 */
 .lg-champ   { background: #bd6247; }  /* 英冠 官方 */
 .lg-ch      { background: #bd6247; }  /* 英冠 官方（周六批别名，与 lg-champ 同色） */
+.lg-eflcup  { background: #4a7ba5; }  /* 英联赛杯 官方（2026-09-09 补：此前缺失=白底白字） */
 .lg-sa      { background: #466bb5; }  /* 意甲 官方（深蓝，白字可见） */
 .lg-bundes  { background: #a04a4a; }  /* 德甲/德超杯 官方（与 lg-ucl 德超杯同色深红） */
 .lg-eng     { background: #c25959; }  /* 英超 官方 */

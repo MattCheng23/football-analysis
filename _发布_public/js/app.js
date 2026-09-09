@@ -274,8 +274,8 @@ function renderPredict(batch) {
     document.body.appendChild(root);
   };
 
-  // 冷门风险（数据全比赛覆盖；展示仅过滤"低"等级——比赛多时全显示太乱，2026-08-22 用户拍板，与 0-0/7+ 预警一致；按等级从高到低排序，逻辑列预览 30 字 + 点击展开）
-  const lvW = { "较高": 5, "中等偏高": 4, "中等": 3, "中等偏低": 2, "低": 1 };
+  // 冷门风险（数据全比赛覆盖；按概率从高到低排序（2026-09-09 用户拍板：概率为主信息+等级并入逻辑文本，风险等级列删除）；逻辑列预览 30 字 + 点击展开）
+  const coldProbOf = c => { const m = (c.logic || "").match(/[（(]约?\s*(\d+(?:\.\d+)?)%/); return m ? parseFloat(m[1]) : null; };
   // 已复盘的预警 → 命中标注（2026-08-23 丰富：预测页预警行直接看验证结果）
   const resDir = s => { const m = (s || "").match(/(\d+)-(\d+)/); if (!m) return ""; const h = +m[1], a = +m[2]; return h > a ? "主胜" : h < a ? "客胜" : "平局"; };
   const coldVerifyOf = c => {
@@ -288,10 +288,9 @@ function renderPredict(batch) {
   const coldRows = (p.coldRisk || [])
     .filter(c => c.lvTxt !== "低")
     .slice()
-    .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
+    .sort((a, b) => (coldProbOf(b) ?? -1) - (coldProbOf(a) ?? -1))
     .map(c => `<tr>
-    <td data-l="概率" data-sf>${(() => { const m = (c.logic || "").match(/[（(]约?\s*(\d+(?:\.\d+)?)%/); return m ? m[1] + "%" : "-"; })()}</td><td data-l="场次" data-sf>${c.no} ${c.teams}${coldVerifyOf(c)}</td><td data-l="冷门方向">${shortDir(c.dir)}</td>
-    <td data-l="风险等级"><span class="tag ${c.lv}">${c.lvTxt}</span></td>
+    <td data-l="概率" data-sf>${(() => { const v = coldProbOf(c); return v === null ? "-" : v + "%"; })()}</td><td data-l="场次" data-sf>${c.no} ${c.teams}${coldVerifyOf(c)}</td><td data-l="冷门方向">${shortDir(c.dir)}</td>
     <td data-l="核心逻辑" data-sf><details>
       <summary>${cut(c.logic || "-", 30)}</summary>
       <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicHtml(c.logic)}</div>
@@ -315,14 +314,15 @@ function renderPredict(batch) {
     const hit = htOfScore(rv.score) === a.script;
     return `<span class="rv-flag ${hit ? "rv-hit" : "rv-miss"}" style="margin-left:8px">${hit ? "✅ 命中" : "未触发"}</span>`;
   };
+  const alertProbOf = a => { const m = (a.logic || "").match(/[（(]约?\s*(\d+(?:\.\d+)?)%/); return m ? parseFloat(m[1]) : null; };
   const alertRows = (p.alerts || [])
     .filter(a => a.lvTxt !== "低" && HT4.includes(a.script))
     .slice()
-    .sort((a, b) => (lvW[b.lvTxt] || 0) - (lvW[a.lvTxt] || 0))
+    .sort((a, b) => (alertProbOf(b) ?? -1) - (alertProbOf(a) ?? -1))
     .slice(0, 8)
     .map(a => `<tr>
     <td data-l="剧本">${a.script}</td><td data-l="场次" data-sf>${a.no} ${a.teams}${alertVerifyOf(a)}</td>
-    <td data-l="概率"><span class="tag ${a.lv}">${a.lvTxt}</span></td>
+    <td data-l="概率"><span class="num">${(() => { const v = alertProbOf(a); return v === null ? "-" : v + "%"; })()}</span></td>
     <td data-l="核心逻辑" data-sf><details>
       <summary>${cut(a.logic, 30) || "-"}</summary>
       <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicHtml(a.logic)}</div>
@@ -342,10 +342,10 @@ function renderPredict(batch) {
   const bigRows = (p.bigSeven || [])
     .filter(z => z.lvTxt !== "低")
     .slice()
-    .sort((a, z) => z.p - a.p)
+    .sort((a, z) => (z.p ?? -1) - (a.p ?? -1))
     .map(z => `<tr>
     <td data-l="场次" data-sf>${z.no} ${z.teams}${bigVerifyOf(z)}</td>
-    <td data-l="7+ 球概率"><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${z.p}%"></div></div><span class="prob-txt num">${z.p}%</span></div></td>
+    <td data-l="7+ 球概率"><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${z.p ?? 0}%"></div></div><span class="prob-txt num">${z.p != null ? z.p + "%" : "-"}</span></div></td>
     <td data-l="等级"><span class="tag ${(z.lv || "").replace(/^tag-tag-/, "tag-")}">${z.lvTxt}</span></td>
   </tr>`).join("");
 
@@ -377,10 +377,10 @@ function renderPredict(batch) {
     <div class="card">
       <h2><span class="icon">🌡️</span> 冷门风险（${(p.coldRisk || []).length} 场全量）</h2>
       <div class="table-wrap"><table>
-        <thead><tr><th>概率</th><th>场次</th><th>冷门方向</th><th>风险等级</th><th>核心逻辑</th></tr></thead>
+        <thead><tr><th>概率</th><th>场次</th><th>冷门方向</th><th>核心逻辑</th></tr></thead>
         <tbody>${coldRows}</tbody>
       </table></div>
-      <div class="note">仅显示中等及以上等级（数据覆盖全部比赛），按等级从高到低排序。</div>
+      <div class="note">数据覆盖全部比赛，按概率从高到低排序（等级并入逻辑文本开头）。</div>
     </div>
 
     <div class="card">
@@ -435,15 +435,18 @@ function toggleAllLogic(btn) {
 
 /* ---------- 渲染：复盘 ---------- */
 function renderReview(batch) {
-  try {
   const el = document.getElementById("review-view");
   if (!el) return; // 预测页无复盘视图，跳过
+  try {
   const r = batch.review;
-  if (!r || (!batch.reviewed && (!r.results || r.results.length === 0))) {
+  // 根治（2026-09-09）：reviewed=true 但 results 缺失/非数组 → 视为未复盘，防 r.results.length 炸
+  const hasResults = r && Array.isArray(r.results) && r.results.length > 0;
+  if (!hasResults || (!batch.reviewed && !hasResults)) {
     el.innerHTML = `<div class="card"><h2><span class="icon">⏳</span> 复盘未开始</h2>
       <div class="note">该批次预测已发布，比赛结束后复盘数据将在此显示。</div></div>`;
     return;
   }
+  if (!Array.isArray(r.evidence)) r.evidence = []; // 根治：evidence 缺失兜底（2026-09-09 001 报错）
   const okT = `<span class="tag tag-green">✅</span>`, noT = `<span class="tag tag-red">❌</span>`;
   const dTag = d => d === "ok" ? okT : noT;
 
@@ -474,7 +477,8 @@ function renderReview(batch) {
     return "";
   };
 
-  const totalN = batch.predict.matches.length;
+  const pMatches = (batch.predict && Array.isArray(batch.predict.matches)) ? batch.predict.matches : [];
+  const totalN = pMatches.length;
   const confirmedN = r.results.length;
   // 控分排查结论仅本地保留（合规），网页只展示演戏排查部分
   const cleanTxt = t => (t || "").split("控分排查：")[0].trim();
@@ -482,7 +486,7 @@ function renderReview(batch) {
   // 本批次总进球（ou）命中：预测总进球区间 vs 实际进球数
   let ouN = 0, ouH = 0;
   r.results.forEach(m => {
-    const pm = batch.predict.matches.find(x => x.no === m.no);
+    const pm = pMatches.find(x => x.no === m.no);
     if (!pm || !pm.ou) return;
     const sc = m.score.match(/(\d+)-(\d+)/);
     if (!sc) return;
@@ -513,7 +517,7 @@ function renderReview(batch) {
         ${ouKpi}`;
 
   const rows = r.results.slice().sort((a, b) => parseInt(a.no) - parseInt(b.no)).map(m => {
-    const pm = batch.predict.matches.find(x => x.no === m.no);
+    const pm = pMatches.find(x => x.no === m.no);
     const scoreMain = m.score.split("（")[0];
     const sTop = pm ? topOf(scoreMain, pm.scores) : null;
     const hTop = pm ? topOf(htFromScore(m.score), pm.ht) : null;
@@ -522,7 +526,7 @@ function renderReview(batch) {
     // 总进球命中：预测 ou 区间 vs 实际进球数（支持多档 3·4+4·5——2026-09-07 修复：原只判第一档误❌）
     // 显示=合并去重为离散球数集合（3·4+4·5 → 3·4·5），数据层仍为档位记法（检查器/统计不变）
     const ouCell = () => {
-      const pm = batch.predict.matches.find(x => x.no === m.no);
+      const pm = pMatches.find(x => x.no === m.no);
       if (!pm || !pm.ou) return `<span class="tag tag-gray">—</span>`;
       const sc = m.score.match(/(\d+)-(\d+)/);
       if (!sc) return `<span class="tag tag-gray">—</span>`;
@@ -572,7 +576,7 @@ function renderReview(batch) {
     root.addEventListener("click", () => root.remove());
     document.body.appendChild(root);
   };
-  const evRows = r.evidence.map(e => {
+  const evRows = (r.evidence || []).map(e => {
     // evidence.teams 形如 "阿拉维斯 3-0 赫塔费" → 拆分对阵（与赛前统一排版）
     const em = (e.teams || "").match(/^(.*?)\s+\d+-\d+\s+(.*)$/);
     const evHome = em ? em[1] : (e.teams || "");
@@ -618,7 +622,9 @@ function renderReview(batch) {
       </table></div>
     </div>`;
   } catch (err) {
-    el.innerHTML = `<div class="card" style="border-color:#dc2626"><h2><span class="icon">🚫</span> 渲染错误（诊断）</h2><div class="note" style="color:#dc2626">${String(err && err.message || err).replace(/</g, "&lt;")}<br><br>堆栈顶部：${String(err && err.stack || "").split("\n").slice(0, 3).join(" ⏎ ").replace(/</g, "&lt;")}</div></div>`;
+    const elSafe = document.getElementById("review-view");
+    if (elSafe) elSafe.innerHTML = `<div class="card" style="border-color:#dc2626"><h2><span class="icon">🚫</span> 渲染错误（诊断）</h2><div class="note" style="color:#dc2626">${String(err && err.message || err).replace(/</g, "&lt;")}<br><br>堆栈顶部：${String(err && err.stack || "").split("\n").slice(0, 3).join(" ⏎ ").replace(/</g, "&lt;")}</div></div>`;
+    else if (window.console) console.error("renderReview:", err);
   }
 }
 
@@ -656,7 +662,7 @@ function renderSiteStats() {
       <div class="site-stat"><span class="ss-num">${GLOBAL_STATS.dirPct}</span><span class="ss-lbl">累计方向命中</span></div>
       <div class="site-stat"><span class="ss-num">${GLOBAL_STATS.ouPct || "-"}</span><span class="ss-lbl">累计总进球命中${GLOBAL_STATS.ouNote ? "（" + GLOBAL_STATS.ouNote + "）" : ""}</span></div>
       <div class="site-stat"><span class="ss-num">${reviewed}/${totalBatches}</span><span class="ss-lbl">已复盘批次</span></div>
-      <div class="site-stat"><span class="ss-num">${GLOBAL_STATS.updated.slice(5)}</span><span class="ss-lbl">最后更新</span></div>
+      <div class="site-stat"><span class="ss-num">${(GLOBAL_STATS.updated || "").slice(5) || "-"}</span><span class="ss-lbl">最后更新</span></div>
     </div>`;
 }
 
@@ -836,7 +842,7 @@ function renderGlobal(mode) {
     if (!isAll && k < weekStart) return; // 近 7 日口径；累计全量不过滤
     b.review.results.forEach(m => {
       week.n++; if (m.d === "ok") week.d++; if (m.s === "ok") week.s++; if (m.h === "ok") week.h++;
-      const pm = b.predict && b.predict.matches.find(x => x.no === m.no);
+      const pm = b.predict && b.predict.matches && b.predict.matches.find(x => x.no === m.no);
       const sc = m.score.match(/(\d+)-(\d+)/);
       // 总进球（9/7 多档统一：ouNums）
       if (pm && pm.ou && sc) {
@@ -1127,8 +1133,9 @@ function renderAll() {
   }
   } catch (e) {
     const el2 = document.getElementById("review-view") || document.body;
+    const stackTop = String(e && e.stack || "").split("\n").filter(x => x.trim()).slice(0, 3).join(" ⏎ ");
     el2.innerHTML = '<div class="card" style="border-color:#dc2626"><h2>🚫 页面渲染异常</h2><div style="color:#dc2626">' +
-      String(e && e.message || e).replace(/</g, "&lt;") + '<br><br>请截图反馈（含此信息）' + '</div></div>';
+      String(e && e.message || e).replace(/</g, "&lt;") + (stackTop ? '<br><br><span style="opacity:.75;font-size:12px">' + stackTop.replace(/</g, "&lt;") + '</span>' : "") + '<br><br>请截图反馈（含此信息）' + '</div></div>';
     if (window.console) console.error("renderAll:", e);
   }
 }
