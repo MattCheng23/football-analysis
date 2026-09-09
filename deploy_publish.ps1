@@ -27,8 +27,12 @@ Write-Host "  共替换 $cnt 处版本号"
 if ($cnt -eq 0) { throw "无 HTML 含版本号 ?v\d{12}——正则已过期或文件异常，禁止部署" }
 
 Write-Host "[3/4] 部署到 Cloudflare Pages..." -ForegroundColor Cyan
-wrangler pages deploy $root --project-name football-analysis-report
-if ($LASTEXITCODE -ne 0) { throw "部署失败" }
+# wrangler 会把警告写到 stderr，Stop 模式会误判为致命错误（2026-09-09 修复）
+$ErrorActionPreference = 'Continue'
+wrangler pages deploy $root --project-name football-analysis-report --commit-dirty=true
+$deployExit = $LASTEXITCODE
+$ErrorActionPreference = 'Stop'
+if ($deployExit -ne 0) { throw "部署失败" }
 
 Write-Host "[4/4] 线上验证（等缓存 60s）..." -ForegroundColor Cyan
 Start-Sleep -Seconds 60

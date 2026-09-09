@@ -1,0 +1,20 @@
+# Cloudflare Pages 缓存策略（2026-09-09 新增）
+# 静态资源带 ?v= 版本号 → 可长缓存；HTML 短缓存保证批次更新及时可见
+
+/js/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/css/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/*
+  Cache-Control: public, max-age=604800
+
+/*.html
+  Cache-Control: public, max-age=300, must-revalidate
+
+/
+  Cache-Control: public, max-age=300, must-revalidate

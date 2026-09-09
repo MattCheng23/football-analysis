@@ -677,7 +677,12 @@ color: #fff; border-radius: 10px; padding: 12px 18px; cursor: pointer;
 font-size: 14px; font-weight: 700; letter-spacing: 1px; font-family: var(--font-body);
 transition: all .15s; box-shadow: var(--shadow);
 }
-html.dark .cal-toggle { box-shadow: inset 0 0 0 1px rgba(76, 195, 221, .22), 0 0 16px rgba(76, 195, 221, .08); }
+html.dark .cal-toggle {
+  background: linear-gradient(135deg, #0c1626 0%, #12233d 100%) !important;
+  color: #bff2ff !important;
+  box-shadow: inset 0 0 0 1px rgba(0,229,255,.30), 0 0 20px rgba(0,229,255,.10) !important;
+}
+html.dark .cal-toggle .cal-count { background: rgba(255,45,120,.22); color: #ff9dbd; }
 .cal-toggle:hover { transform: translateY(-1px); box-shadow: var(--shadow-hover); }
 .cal-toggle .cal-arrow { margin-left: auto; font-size: 12px; transition: transform .2s; }
 #calendar.open .cal-toggle .cal-arrow { transform: rotate(180deg); }
@@ -1044,7 +1049,10 @@ display: flex; align-items: center; justify-content: center;
 .lm-keys b, .lm-full-body b { color: var(--primary-dark); }
 .lm-full summary { cursor: pointer; font-size: 13px; color: var(--sub); padding: 8px 0; }
 .lm-full[open] summary { color: var(--primary); }
-.lm-full-body { margin-top: 8px; font-size: 13.5px; color: var(--sub); line-height: 1.9; border-top: 1px dashed var(--border); padding-top: 10px; }
+.lm-full-body { margin-top: 8px; font-size: 13.5px; color: var(--ink); line-height: 2; border-top: 1px dashed var(--border); padding-top: 10px; }
+/* 原文可读性优化（2026-09-09：深色正文 + 主色加粗 + 段间距） */
+.lm-full-body b { color: var(--primary-dark); font-weight: 700; }
+.lm-full-body { letter-spacing: .1px; }
 @keyframes lmIn { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
 
 /* ============ 逻辑弹窗/预览按钮手机端适配（2026-08-23 新增 001 后补充） ============ */
@@ -1062,3 +1070,1678 @@ display: flex; align-items: center; justify-content: center;
 .lm-full-body { font-size: 12.5px; }
 .logic-btn { font-size: 13px; }
 }
+
+/* ============================================================
+   高级视觉升级层 · 2026-09-09（用户："有点朴素，要更高级"）
+   思路：不改变信息结构，只提升质感——①头部多层次光晕+纹理
+   ②卡片玻璃态+边缘高光 ③表格行微交互+表头渐变 ④徽章质感
+   ⑤数字等宽对齐 ⑥克制的过渡动画（性能优先）
+   全部走既有 CSS 变量，深色模式自动适配
+   ============================================================ */
+
+/* ---------- ① 头部：多层次光晕 + 细纹理 + 渐变标题 ---------- */
+header.site {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+header.site::before {
+  /* 顶部高光带 */
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 80% at 50% -20%, rgba(255,255,255,.18), transparent 55%),
+    radial-gradient(60% 60% at 12% 110%, var(--header-glow), transparent 70%),
+    radial-gradient(50% 50% at 88% 0%, rgba(255,255,255,.10), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+header.site::after {
+  /* 极细噪点纹理（1px 网格感，避免塑料感） */
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 44px 44px, 44px 44px;
+  mask-image: radial-gradient(90% 70% at 50% 30%, #000 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(90% 70% at 50% 30%, #000 30%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+header.site .inner { position: relative; z-index: 2; }
+header.site h1 {
+  letter-spacing: .5px;
+  text-shadow: 0 2px 18px rgba(0,0,0,.28);
+  background: linear-gradient(180deg, #ffffff 0%, #eaf3ff 55%, #cfe0f5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.10));
+}
+html.dark header.site h1 {
+  background: linear-gradient(180deg, #ffffff 0%, var(--primary) 160%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* 头部统计徽章 → 玻璃胶囊 */
+.header-hero-stat {
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.20);
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 4px 14px rgba(0,0,0,.10);
+  transition: transform .22s ease, background .22s ease, box-shadow .22s ease;
+}
+.header-hero-stat:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,.16);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.30), 0 8px 22px rgba(0,0,0,.16);
+}
+
+/* ---------- ② 卡片：玻璃态 + 边缘高光 + 悬浮抬升 ---------- */
+.card {
+  background: linear-gradient(180deg, var(--card) 0%, var(--card) 100%);
+  border: 1px solid var(--border);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.65), var(--shadow);
+  transition: box-shadow .28s ease, transform .28s ease, border-color .28s ease;
+}
+html.dark .card {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), var(--shadow);
+}
+.card:hover {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.75), var(--shadow-hover);
+  border-color: color-mix(in srgb, var(--primary) 26%, var(--border));
+}
+html.dark .card:hover {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), var(--shadow-hover);
+}
+@supports (backdrop-filter: blur(1px)) {
+  .card {
+    background: color-mix(in srgb, var(--card) 88%, transparent);
+    backdrop-filter: blur(14px) saturate(1.15);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  }
+}
+
+/* 卡片标题：左侧渐变色条 + 字重对比 */
+.card h2, .card-title, .section-title {
+  position: relative;
+  padding-left: 14px;
+}
+.card h2::before, .card-title::before, .section-title::before {
+  content: "";
+  position: absolute; left: 0; top: .18em; bottom: .18em;
+  width: 4px; border-radius: 3px;
+  background: linear-gradient(180deg, var(--primary), var(--gold-bright));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--primary) 45%, transparent);
+}
+
+/* ---------- ③ 表格：渐变表头 + 行微交互 + 左侧状态色条 ---------- */
+table thead th {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--thead-bg) 70%, #fff) 0%,
+    var(--thead-bg) 100%);
+  letter-spacing: .3px;
+  border-bottom: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
+}
+html.dark table thead th {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--thead-bg) 120%, #000) 0%,
+    var(--thead-bg) 100%);
+}
+.table-wrap tbody tr {
+  position: relative;
+  transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.table-wrap tbody tr:hover {
+  background: var(--hover);
+  box-shadow: inset 3px 0 0 0 var(--primary), 0 2px 12px rgba(74,123,181,.08);
+}
+html.dark .table-wrap tbody tr:hover {
+  box-shadow: inset 3px 0 0 0 var(--primary), 0 0 18px rgba(0,229,255,.10);
+}
+.table-wrap tbody tr:nth-child(even) { background: var(--stripe); }
+.table-wrap tbody tr:nth-child(even):hover { background: var(--hover); }
+
+/* 比分/总进球等数字：等宽 + 字重 + 轻微字距 */
+.score-nums, td[data-l="比分 TOP3"], td[data-l="总进球"], td[data-l="半全场 TOP3"] {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .2px;
+}
+
+/* ---------- ④ 徽章质感统一 ---------- */
+.badge {
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 1px 3px rgba(0,0,0,.06);
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+}
+.badge:hover { transform: translateY(-1px); filter: brightness(1.03); }
+.badge-solid {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.30), 0 3px 10px color-mix(in srgb, currentColor 26%, transparent);
+}
+.no-badge {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 2px 6px rgba(0,0,0,.08);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- ⑤ 导航：胶囊高亮 + 底部光条 ---------- */
+nav .inner a {
+  position: relative;
+  transition: color .2s ease, background .2s ease, transform .2s ease;
+}
+nav .inner a::after {
+  content: "";
+  position: absolute; left: 50%; bottom: -2px;
+  width: 0; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--gold-bright));
+  transform: translateX(-50%);
+  transition: width .26s cubic-bezier(.4,0,.2,1);
+}
+nav .inner a:hover::after, nav .inner a.active::after { width: 62%; }
+nav .inner a:hover { transform: translateY(-1px); }
+
+/* ---------- ⑥ 按钮/交互元素：统一过渡与按压反馈 ---------- */
+button, .btn, .batch-nav, .logic-btn, .updlog-btn, .theme-toggle {
+  transition: transform .18s ease, box-shadow .22s ease, background .22s ease, color .18s ease, filter .18s ease;
+}
+button:active, .btn:active, .batch-nav:active, .logic-btn:active { transform: scale(.97); }
+.batch-nav:not(:disabled):hover, .logic-btn:hover, .updlog-btn:hover {
+  box-shadow: 0 6px 18px rgba(74,123,181,.18);
+  filter: brightness(1.04);
+}
+html.dark .batch-nav:not(:disabled):hover, html.dark .logic-btn:hover {
+  box-shadow: 0 0 22px rgba(0,229,255,.18);
+}
+
+/* ---------- ⑦ 滚动条精致化 ---------- */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--primary) 28%, transparent);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--primary) 48%, transparent); background-clip: content-box; }
+
+/* ---------- ⑧ 尊重「减少动态效果」偏好 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+/* ============================================================
+   第二轮升级 · 2026-09-09（更实质的视觉层次）
+   ①表格行方向色条（胜/平/负语义色，扫一眼就懂）
+   ②滚动粘性表头（长表格体验）
+   ③行高与间距节奏 ④卡片圆角/阴影分层 ⑤KPI 数字放大
+   ============================================================ */
+
+/* ① 表格行左侧语义色条：按方向类名着色 */
+.table-wrap tbody tr { position: relative; }
+.table-wrap tbody tr td:first-child { position: relative; }
+.table-wrap tbody tr td:first-child::before {
+  content: "";
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 62%; border-radius: 0 3px 3px 0;
+  background: color-mix(in srgb, var(--primary) 55%, transparent);
+  opacity: .55;
+  transition: height .2s ease, opacity .2s ease;
+}
+.table-wrap tbody tr:hover td:first-child::before { height: 86%; opacity: 1; }
+/* 方向/评级语义色条（A=高信心青绿·B=中性蓝·C=低信心暖橙）
+   注：方向列 class 为 lvl-a/b/c（评级），非胜负语义——按评级着色更实用 */
+.table-wrap tbody tr:has(td[data-l="方向"].lvl-a) td:first-child::before,
+.table-wrap tbody tr:has(td[data-l="方向"].lvl-aplus) td:first-child::before,
+.table-wrap tbody tr:has(td[data-l="方向"].lvl-aminus) td:first-child::before { background: #3f9d7c; }
+.table-wrap tbody tr:has(td[data-l="方向"].lvl-b) td:first-child::before,
+.table-wrap tbody tr:has(td[data-l="方向"].lvl-bplus) td:first-child::before { background: #4a7bb5; }
+.table-wrap tbody tr:has(td[data-l="方向"].lvl-bminus) td:first-child::before { background: #8a6fbd; }
+.table-wrap tbody tr:has(td[data-l="方向"].lvl-c) td:first-child::before { background: #c4784f; }
+
+/* ② 粘性表头（表格滚动时保持可见） */
+.table-wrap { position: relative; }
+.table-wrap table thead th {
+  position: sticky; top: 0; z-index: 3;
+  backdrop-filter: blur(8px) saturate(1.1);
+  -webkit-backdrop-filter: blur(8px) saturate(1.1);
+}
+
+/* ③ 行高与呼吸感 */
+.table-wrap tbody td { padding-top: 11px; padding-bottom: 11px; }
+.table-wrap table { border-collapse: separate; border-spacing: 0; }
+
+/* ④ 卡片圆角与阴影分层（外层更柔、内层更贴） */
+.card {
+  border-radius: 20px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.70),
+    0 1px 2px rgba(38,52,74,.04),
+    0 6px 18px rgba(74,123,181,.07),
+    0 18px 44px rgba(74,123,181,.09);
+}
+html.dark .card {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    0 1px 2px rgba(0,0,0,.4),
+    0 0 26px rgba(0,229,255,.06);
+}
+
+/* ⑤ KPI / 统计数字：放大 + 字重对比（更"看板"感） */
+.kpi .kpi-num, .site-stat .ss-num, .stat-num {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.5px;
+  background: linear-gradient(180deg, var(--ink) 0%, color-mix(in srgb, var(--ink) 62%, var(--primary)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+html.dark .kpi .kpi-num, html.dark .site-stat .ss-num {
+  background: linear-gradient(180deg, #fff 0%, var(--primary) 130%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* ⑥ 分区标题字重与字距（视觉层级） */
+.card h2, .section-title {
+  font-weight: 800;
+  letter-spacing: .3px;
+}
+/* 副标题/说明文字降低对比，形成层次 */
+.sub, .hint, .card .desc { color: color-mix(in srgb, var(--sub) 92%, transparent); }
+
+/* ⑦ 深色模式下表格粘性表头背景不透明化（防穿透） */
+html.dark .table-wrap table thead th { background: #0e1628; }
+
+/* ============================================================
+   第三轮 · 深度视觉改造（2026-09-09）
+   目标：从「朴素数据表」→「专业数据看板」
+   语言：深色渐变表头 / 胶囊化语义 / 大留白 / 玻璃卡片 / 精致动效
+   ============================================================ */
+
+/* ---------- A. 背景：多光斑渐变（提升空间感） ---------- */
+body {
+  background-color: #dde6f4;
+  background-image:
+    /* 左上主光斑 */
+    radial-gradient(1500px 780px at 8% -12%, rgba(74,123,181,.30), transparent 58%),
+    /* 右上暖青点缀 */
+    radial-gradient(1100px 620px at 96% 2%, rgba(90,163,168,.22), transparent 56%),
+    /* 底部主色回光 */
+    radial-gradient(1000px 800px at 50% 112%, rgba(74,123,181,.20), transparent 62%),
+    /* 中部提亮（避免大面积沉闷） */
+    radial-gradient(900px 500px at 62% 42%, rgba(255,255,255,.55), transparent 70%),
+    /* 底色纵向渐变 */
+    linear-gradient(180deg, #e6eef9 0%, #eef3fa 42%, #e2eaf6 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+html.dark body {
+  background-color: #05080f;
+  background-image:
+    radial-gradient(1400px 700px at 10% -10%, rgba(0,229,255,.10), transparent 58%),
+    radial-gradient(1000px 600px at 95% 6%, rgba(255,45,120,.08), transparent 56%),
+    radial-gradient(900px 800px at 50% 110%, rgba(0,229,255,.07), transparent 62%),
+    linear-gradient(180deg, #070b14 0%, #050810 100%);
+}
+
+/* ---------- B. 头部品牌区：加大重心 + 装饰 ---------- */
+header.site { padding-top: 30px; padding-bottom: 34px; }
+header.site h1 {
+  font-size: clamp(26px, 3.4vw, 40px) !important;
+  font-weight: 800 !important;
+  line-height: 1.15;
+  margin-bottom: 12px;
+  /* 纯白 + 柔和外发光（渐变文字在小字号/深色底上易发灰，改为实色更清晰） */
+  background: none !important;
+  -webkit-text-fill-color: #ffffff !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.22), 0 6px 28px rgba(120,180,255,.30);
+}
+header.site .sub {
+  font-size: 13.5px;
+  letter-spacing: .4px;
+  opacity: .92;
+  max-width: 900px;
+  line-height: 1.7;
+}
+/* 头部统计：玻璃卡片化（更大、更醒目） */
+.header-hero-stats { gap: 10px !important; margin-top: 18px !important; }
+.header-hero-stat {
+  padding: 9px 18px !important;
+  border-radius: 999px !important;
+  font-size: 13.5px !important;
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+.header-hero-stat b { font-family: var(--font-num); font-size: 14.5px; letter-spacing: .5px; }
+/* 顶部联系条：低调玻璃 */
+.contact-bar { opacity: .92; }
+.contact-item {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 999px;
+  padding: 4px 12px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* ---------- C. 导航：更精致的胶囊条 ---------- */
+nav .inner { gap: 6px; }
+nav .inner a {
+  padding: 9px 18px !important;
+  border-radius: 999px !important;
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+nav .inner a.active {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff !important;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 40%, transparent), inset 0 1px 0 rgba(255,255,255,.25);
+}
+nav .inner a.active::after { display: none; }
+
+/* ---------- D. 卡片：大圆角 + 分层阴影 + 内高光 ---------- */
+.card {
+  border-radius: 22px !important;
+  padding: 24px 26px !important;
+  margin-bottom: 20px !important;
+}
+.card + .card { margin-top: 0; }
+.card h2, .card-title, .section-title {
+  font-size: 17px !important;
+  font-weight: 800 !important;
+  letter-spacing: .4px;
+  margin-bottom: 16px !important;
+}
+.card h2::before, .card-title::before, .section-title::before { width: 5px; border-radius: 4px; }
+
+/* ---------- E. 表格：深色渐变表头 + 大行高 + 语义胶囊 ---------- */
+.table-wrap { border-radius: 16px; overflow: hidden; border: 1px solid var(--border); background: var(--card); }
+table { font-size: 14px !important; }
+table thead th {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--primary) 82%, #16304d) 0%,
+    color-mix(in srgb, var(--primary) 62%, #16304d) 100%) !important;
+  color: #fff !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.1px !important;
+  text-transform: none;
+  padding: 15px 16px !important;
+  border-bottom: none !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.18);
+}
+html.dark table thead th {
+  background: linear-gradient(135deg, rgba(0,229,255,.16), rgba(0,229,255,.06)) !important;
+  color: #bff2ff !important;
+}
+table thead th:first-child, table thead th:last-child { border-radius: 0 !important; }
+
+.table-wrap tbody tr { background: transparent; }
+.table-wrap tbody tr:nth-child(even) { background: color-mix(in srgb, var(--stripe) 55%, transparent); }
+.table-wrap tbody tr:hover {
+  background: color-mix(in srgb, var(--primary) 7%, var(--card)) !important;
+}
+.table-wrap tbody td {
+  padding: 15px 16px !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent) !important;
+  vertical-align: middle;
+}
+.table-wrap tbody tr:last-child td { border-bottom: none !important; }
+
+/* 方向列 → 语义胶囊（颜色跟随评级原色，2026-09-09 修正：
+   原 CSS 定义 A=绿#5e9e83 / B=橙金#c1904a / B+=蓝#4a7bb5 / B-=紫#816c98 / C=红#c96a6a，
+   此前误覆盖为统一蓝色 → 现用 currentColor 继承 td 的评级色） */
+.table-wrap tbody td[data-l="方向"] {
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* 比分 / 总进球：等宽数字（纯数字+符号，适合）；半全场是中文，用正文字体 */
+.table-wrap tbody td.score-nums,
+.table-wrap tbody td[data-l="比分 TOP3"],
+.table-wrap tbody td[data-l="总进球"] {
+  font-family: var(--font-num) !important;
+  font-size: 14.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: .6px;
+  color: var(--ink);
+}
+/* 半全场：中文形态（胜胜/平平…）→ 正文字体 + 稍重 + 字距（2026-09-09 修正：误用数字字体导致字形怪异） */
+.table-wrap tbody td[data-l="半全场 TOP3"] {
+  font-family: var(--font-body) !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: .2px;
+  color: var(--ink);
+}
+/* 总进球胶囊化 */
+.table-wrap tbody td[data-l="总进球"] { color: var(--gold-deep); }
+
+/* 场次号：更大更立体 */
+.no-badge {
+  min-width: 46px !important;
+  height: 30px !important;
+  border-radius: 9px !important;
+  font-size: 14px !important;
+  letter-spacing: 1.4px !important;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--primary) 35%, transparent), inset 0 1px 0 rgba(255,255,255,.28) !important;
+}
+/* 联赛徽章：更精致 */
+.lg {
+  border-radius: 6px !important;
+  padding: 3px 10px !important;
+  font-size: 11.5px !important;
+  letter-spacing: .6px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 1px 3px rgba(0,0,0,.10);
+}
+/* 时间：低调但清晰 */
+.match-time { font-family: var(--font-num); opacity: .78; }
+
+/* ---------- F. 徽章 / 标签：统一质感 ---------- */
+.badge, .tag {
+  border-radius: 999px !important;
+  font-weight: 700;
+  letter-spacing: .3px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 2px 6px rgba(0,0,0,.06);
+}
+.badge-solid {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.30), 0 4px 12px color-mix(in srgb, currentColor 24%, transparent) !important;
+}
+
+/* 等级筛选胶囊：加大、加质感 */
+.lvl-pill {
+  border-radius: 14px !important;
+  padding: 9px 18px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 1px 4px rgba(0,0,0,.05);
+  transition: transform .2s cubic-bezier(.4,0,.2,1), box-shadow .2s ease, border-color .2s ease;
+}
+.lvl-pill:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(74,123,181,.16); }
+.lvl-pill.active { box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 30%, transparent); }
+
+/* ---------- G. 批次头：导航按钮更醒目 ---------- */
+.batch-nav {
+  border-radius: 10px !important;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+.batch-nav:not(:disabled):hover { background: var(--primary) !important; color: #fff !important; }
+
+/* ---------- H. 入场动画（克制的渐入） ---------- */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.card, .batch-header { animation: fadeUp .42s cubic-bezier(.22,.8,.3,1) both; }
+.card:nth-of-type(2) { animation-delay: .05s; }
+.card:nth-of-type(3) { animation-delay: .1s; }
+.table-wrap tbody tr { animation: fadeUp .3s ease both; }
+
+/* ---------- H2. 方向列胶囊（颜色=评级原色，2026-09-09 修正为 currentColor 继承） ---------- */
+.dir-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  white-space: nowrap;
+  color: inherit;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 32%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 1px 4px color-mix(in srgb, currentColor 16%, transparent);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.dir-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.65), 0 3px 10px color-mix(in srgb, currentColor 26%, transparent);
+}
+html.dark .dir-pill {
+  background: color-mix(in srgb, currentColor 18%, transparent);
+  box-shadow: none;
+}
+
+/* ---------- I. 移动端微调（保持可用性） ---------- */
+@media (max-width: 640px) {
+  header.site { padding-top: 22px; padding-bottom: 26px; }
+  header.site h1 { font-size: 24px !important; }
+  .card { padding: 18px 16px !important; border-radius: 18px !important; }
+  .header-hero-stat { padding: 7px 13px !important; font-size: 12.5px !important; }
+  nav .inner a { padding: 8px 14px !important; font-size: 13px; }
+  .table-wrap tbody td { padding: 12px 12px !important; }
+  .no-badge { min-width: 40px !important; height: 27px !important; font-size: 13px !important; }
+  .dir-pill { padding: 3px 10px; font-size: 12px; }
+}
+
+/* ============================================================
+   第四轮 · 移动端专属优化（2026-09-09）
+   用户："手机端也得优化，两个是不一样的"
+   移动端原则：①一屏多信息（压缩纵向占用）②横向滑动代替换行
+   ③卡片化+触控友好（≥40px 触区）④字号不缩水（可读性优先）
+   ============================================================ */
+@media (max-width: 640px) {
+
+  /* ---- 1. 头部：压缩到 ~200px 内 ---- */
+  header.site { padding: 14px 0 18px !important; }
+  header.site .inner { padding: 0 14px; }
+  header.site h1 {
+    font-size: 20px !important;
+    line-height: 1.25;
+    margin-bottom: 6px !important;
+    letter-spacing: .3px;
+  }
+  header.site .sub {
+    font-size: 11.5px;
+    line-height: 1.5;
+    margin: 0 0 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  /* 统计徽章：单行横滑，不换行 */
+  .header-hero-stats {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-top: 10px !important;
+    padding-bottom: 2px;
+    mask-image: linear-gradient(90deg, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, #000 92%, transparent);
+  }
+  .header-hero-stats::-webkit-scrollbar { display: none; }
+  .header-hero-stat { flex: 0 0 auto; padding: 6px 12px !important; font-size: 11.5px !important; }
+  .header-hero-stat b { font-size: 12.5px; }
+
+  /* 顶部联系条：横向滚动，避免挤压 */
+  .contact-bar {
+    display: flex; flex-wrap: nowrap; gap: 6px;
+    overflow-x: auto; scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .contact-bar::-webkit-scrollbar { display: none; }
+  .contact-item { flex: 0 0 auto; font-size: 11px; padding: 3px 9px; }
+
+  /* ---- 2. 导航：横滑 + 触区足够 ---- */
+  nav .inner {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 14px;
+  }
+  nav .inner::-webkit-scrollbar { display: none; }
+  nav .inner a { flex: 0 0 auto; padding: 8px 14px !important; font-size: 13px !important; min-height: 38px; display: inline-flex; align-items: center; }
+
+  /* ---- 3. 卡片：紧凑但保留呼吸 ---- */
+  .card {
+    padding: 14px 13px !important;
+    border-radius: 16px !important;
+    margin-bottom: 12px !important;
+  }
+  .card h2, .card-title, .section-title {
+    font-size: 14.5px !important;
+    line-height: 1.5;
+    margin-bottom: 10px !important;
+    padding-left: 11px;
+    font-weight: 800;
+  }
+  .card h2::before, .card-title::before, .section-title::before { width: 3.5px; }
+
+  /* ---- 4. 批次头：紧凑徽章 + 横滑 ---- */
+  .batch-header { margin-bottom: 10px; }
+  .batch-header > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .batch-header .badge { font-size: 11px !important; padding: 4px 10px !important; }
+  .batch-nav { padding: 6px 12px !important; font-size: 12.5px !important; min-height: 34px; }
+
+  /* ---- 5. 等级筛选：横滑单行 ---- */
+  .lvl-filter {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 7px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 2px 0 6px;
+    margin: 2px 0 8px !important;
+  }
+  .lvl-filter::-webkit-scrollbar { display: none; }
+  .lvl-pill {
+    flex: 0 0 auto;
+    padding: 7px 13px !important;
+    border-radius: 12px !important;
+    min-height: 40px;
+  }
+  .lvl-pill b { font-size: 12.5px !important; }
+  .lvl-pill i { font-size: 10.5px !important; }
+
+  /* ---- 6. 表格 → 卡片流（每个场次一张卡） ---- */
+  .table-wrap {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    overflow: visible !important;
+  }
+  .table-wrap table { display: block; min-width: 0; }
+  .table-wrap thead { display: none; }
+  .table-wrap tbody { display: block; }
+  .table-wrap tbody tr {
+    display: block;
+    margin: 0 0 10px;
+    padding: 12px 13px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--card) 92%, transparent) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 2px 10px rgba(74,123,181,.07);
+    animation: none;
+  }
+  html.dark .table-wrap tbody tr { box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 2px 10px rgba(0,0,0,.4); }
+  .table-wrap tbody tr:nth-child(even) { background: color-mix(in srgb, var(--card) 92%, transparent) !important; }
+  .table-wrap tbody td {
+    display: block;
+    padding: 3px 0 !important;
+    border: 0 !important;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  /* 标签前缀：把列名做成小标签，保持信息可读 */
+  .table-wrap tbody td::before {
+    content: attr(data-l);
+    display: inline-block;
+    min-width: 66px;
+    margin-right: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    color: var(--sub);
+    opacity: .9;
+    vertical-align: middle;
+  }
+  /* 第一行（场次）突出显示，取消前缀 */
+  .table-wrap tbody td:first-child {
+    padding: 0 0 8px !important;
+    margin-bottom: 6px;
+    border-bottom: 1px dashed color-mix(in srgb, var(--border) 80%, transparent) !important;
+    font-size: 14px;
+  }
+  .table-wrap tbody td:first-child::before { display: none; }
+  .table-wrap tbody td:first-child::after { display: none; }
+  /* 方向胶囊在卡片流里更醒目 */
+  .dir-pill { font-size: 12.5px; padding: 3px 11px; }
+  /* 数字列保持等宽 */
+  .table-wrap tbody td.score-nums, .table-wrap tbody td[data-l="总进球"] { font-size: 14px !important; }
+  .table-wrap tbody td[data-l="半全场 TOP3"] { font-size: 13px !important; }
+
+  /* ---- 7. 底部按钮：避开 iOS 安全区 ---- */
+  .back-top { bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important; right: 16px !important; }
+  .footer { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* 超窄屏（≤380px）进一步压缩 */
+@media (max-width: 380px) {
+  header.site h1 { font-size: 18px !important; }
+  .table-wrap tbody td::before { min-width: 58px; font-size: 10.5px; }
+  .lvl-pill { padding: 6px 11px !important; }
+}
+
+/* ============================================================
+   第十轮 · 手机端深度优化（2026-09-09）
+   用户："手机端的你也深入优化一下"
+   ①降 backdrop-filter 强度（低端机性能）②压缩头部/卡片空间
+   ③环形图与卡片流适配 ④触控与安全区
+   ============================================================ */
+@media (max-width: 640px) {
+
+  /* ① 性能：玻璃模糊降级（移动 GPU 负担重） */
+  .card, .table-wrap, .viz-panel, .perf-card, .kpi, .site-stat {
+    backdrop-filter: blur(10px) saturate(1.2) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(1.2) !important;
+  }
+  nav { backdrop-filter: blur(14px) saturate(1.3) !important; -webkit-backdrop-filter: blur(14px) saturate(1.3) !important; }
+
+  /* ② 头部：再压缩（标题+副标题+徽章一行搞定） */
+  header.site { padding: 12px 0 14px !important; }
+  header.site h1 { font-size: 19px !important; margin-bottom: 4px !important; }
+  header.site .sub { font-size: 11px; -webkit-line-clamp: 1; margin-bottom: 8px !important; }
+  .header-top { margin-bottom: 6px; }
+  .header-hero-stats { margin-top: 8px !important; gap: 6px !important; }
+  .header-hero-stat { padding: 5px 11px !important; font-size: 11px !important; }
+  .header-hero-stat b { font-size: 12px; }
+
+  /* ③ 卡片：更紧凑 */
+  .card { padding: 13px 12px !important; border-radius: 15px !important; margin-bottom: 10px !important; }
+  .card h2, .card-title, .section-title { font-size: 14px !important; padding-bottom: 9px; margin-bottom: 11px !important; }
+
+  /* ④ 环形 KPI：手机端 2×2，尺寸适配 */
+  .kpi-row { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .kpi.ring-kpi { padding: 12px 8px !important; }
+  .ring-wrap svg { width: 82px !important; height: 82px !important; }
+  .ring-num b { font-size: 19px !important; }
+  .ring-num span { font-size: 10.5px !important; }
+  .kpi .lbl, .ring-kpi .lbl { font-size: 11.5px !important; }
+
+  /* ⑤ 口径切换：触控友好 */
+  .kpi-tabs button { padding: 7px 15px !important; font-size: 12.5px !important; min-height: 36px; }
+  .g-tabs { gap: 8px; margin-bottom: 12px !important; }
+
+  /* ⑥ 表格卡片流：标签更醒目、间距更紧 */
+  .table-wrap tbody tr { padding: 11px 12px !important; margin-bottom: 9px !important; border-radius: 13px !important; }
+  .table-wrap tbody td { padding: 2.5px 0 !important; font-size: 12.5px; line-height: 1.6; }
+  .table-wrap tbody td::before { min-width: 62px; font-size: 10.5px; }
+  .table-wrap tbody td:first-child { font-size: 13.5px; padding-bottom: 7px !important; }
+  .no-badge { min-width: 38px !important; height: 25px !important; font-size: 12.5px !important; }
+  .lg { font-size: 10.5px !important; padding: 2px 8px !important; }
+  .dir-pill { padding: 3px 9px !important; font-size: 11.5px !important; }
+  .risk-ring { width: 34px !important; height: 34px !important; }
+  .risk-ring b { font-size: 12px !important; }
+
+  /* ⑦ 批次头/筛选：紧凑 */
+  .batch-header { margin-bottom: 9px; }
+  .batch-nav { padding: 6px 11px !important; font-size: 12px !important; min-height: 32px; }
+  .lvl-pill { padding: 6px 12px !important; min-height: 38px; }
+  .lvl-pill b { font-size: 12px !important; }
+  .lvl-pill i { font-size: 10px !important; }
+
+  /* ⑧ 逻辑弹窗：全屏化（手机阅读体验） */
+  .lm-mask { padding: 0 !important; }
+  .lm-card { width: 100vw !important; max-width: 100vw !important; height: 100vh !important; max-height: 100vh !important; border-radius: 0 !important; }
+  .lm-head { padding: 14px 16px !important; font-size: 15px !important; }
+  .lm-body { padding: 16px 16px 28px !important; font-size: 15.5px !important; line-height: 1.95 !important; }
+
+  /* ⑨ 底部安全区 + 回到顶部按钮 */
+  .footer { padding: 22px 16px calc(30px + env(safe-area-inset-bottom, 0px)) !important; font-size: 11.5px; }
+  .back-top { bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important; right: 14px !important; width: 44px !important; height: 44px !important; }
+
+  /* ⑩ 触摸反馈（移动端无 hover） */
+  .card:active { transform: scale(.995); }
+  .table-wrap tbody tr:active { background: rgba(255,255,255,.5) !important; }
+  button:active, .lvl-pill:active, .batch-nav:active { transform: scale(.96); }
+}
+
+/* ============================================================
+   第十一轮 · 手机端排版精修（2026-09-09）
+   用户："手机端也深入美化排版" → "这个排版占位置太大"
+   最终方案：卡片流 = 2 列网格（标签在上、值在下），场次行跨列
+   ============================================================ */
+@media (max-width: 640px) {
+
+  /* ---- 表格卡片流 → 2 列紧凑网格 ---- */
+  .table-wrap tbody tr {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 12px;
+    padding: 11px 12px !important;
+    align-items: start;
+  }
+  .table-wrap tbody td {
+    display: block !important;
+    padding: 0 !important;
+    border: 0 !important;
+    font-size: 12.5px;
+    line-height: 1.5;
+    min-width: 0;
+  }
+  /* 字段标签：值上方的小字 */
+  .table-wrap tbody td::before {
+    content: attr(data-l);
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .3px;
+    color: var(--sub);
+    margin-bottom: 3px;
+    opacity: .9;
+  }
+  /* 场次行：跨两列 + 分隔线 */
+  .table-wrap tbody td:first-child {
+    grid-column: 1 / -1;
+    padding-bottom: 8px !important;
+    margin-bottom: 1px;
+    border-bottom: 1px dashed rgba(74,123,181,.22) !important;
+    padding-right: 48px !important;  /* 给右侧浮动的假赛分留位 */
+  }
+  .table-wrap tbody td:first-child::before { display: none; }
+  .table-wrap tbody td:first-child .m-team { font-size: 13px !important; font-weight: 700; }
+  .table-wrap tbody td:first-child .no-badge { min-width: 34px !important; height: 23px !important; font-size: 11.5px !important; }
+  /* 假赛分：浮动到场次行右侧（2026-09-09 用户建议） */
+  .table-wrap tbody tr { position: relative; }
+  .table-wrap tbody td[data-l="假赛分"] {
+    position: absolute !important;
+    top: 9px;
+    right: 12px;
+    width: auto !important;
+  }
+  .table-wrap tbody td[data-l="假赛分"]::before { display: none; }
+  /* 值：数字等宽、关键值加重 */
+  .table-wrap tbody td.score-nums,
+  .table-wrap tbody td[data-l="总进球"] { font-size: 13px !important; font-weight: 700 !important; letter-spacing: .3px; }
+  .table-wrap tbody td[data-l="半全场 TOP3"] { font-size: 12.5px !important; font-weight: 600 !important; }
+  .table-wrap tbody td[data-l="方向"] .dir-pill { font-size: 11px !important; padding: 2px 8px !important; }
+  /* 假赛分环形：紧凑（浮动位置见上方绝对定位） */
+  .table-wrap tbody td[data-l="假赛分"] .risk-ring { width: 32px !important; height: 32px !important; }
+  .table-wrap tbody td[data-l="假赛分"] .risk-ring b { font-size: 11.5px !important; }
+  /* 宽标签（核心逻辑等）：跨两列 */
+  .table-wrap tbody td[data-l="核心逻辑"],
+  .table-wrap tbody td[data-l="说明"],
+  .table-wrap tbody td[data-l="信号"] { grid-column: 1 / -1; }
+  /* 复盘表里的判定胶囊：紧凑 inline */
+  .table-wrap tbody td .tag, .table-wrap tbody td .hit-tag {
+    font-size: 11px !important;
+    padding: 1px 7px !important;
+    border-radius: 6px !important;
+  }
+  /* 复盘表：证据/长文本跨列 */
+  .table-wrap tbody td[data-l="证据"], .table-wrap tbody td[data-l="复盘"] { grid-column: 1 / -1; }
+
+  /* ---- 环形 KPI：标签与数字层次 ---- */
+  .kpi.ring-kpi .lbl { font-size: 11.5px !important; font-weight: 700; letter-spacing: .2px; }
+  .ring-num b { letter-spacing: -.5px; }
+  .ring-num span { opacity: .8; }
+
+  /* ---- 卡片标题：图标与文字对齐 ---- */
+  .card h2 { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .card h2 .icon { font-size: 15px; }
+
+  /* ---- 副标题/说明文字：更紧凑 ---- */
+  .note { font-size: 11.5px !important; line-height: 1.7; }
+  .batch-overview { font-size: 12px; gap: 10px; }
+
+  /* ---- 页脚：两行紧凑 ---- */
+  .footer-author .author-contact { gap: 10px; }
+  .footer-author .author-contact span { font-size: 11px; padding: 4px 10px; }
+  .footer-note, .footer-disclaimer { font-size: 10.5px; line-height: 1.7; }
+}
+
+/* ============================================================
+   第五轮 · 桌面端背景深度升级（2026-09-09 v2）
+   用户："网格不好看，要更现代、科技感、高级"
+   方案：mesh gradient（柔和多色光斑，无网格）+ 细噪点质感 + 玻璃卡片
+   只在 ≥641px 生效
+   ============================================================ */
+@media (min-width: 641px) {
+  body {
+    background-color: #d5e2f3;
+    background-image:
+      /* ---- Mesh gradient：大色斑柔和交融（加深，让玻璃卡片能透出色彩） ---- */
+      radial-gradient(at 8% 4%,   rgba(72,118,204,.72) 0px, transparent 48%),
+      radial-gradient(at 92% 2%,  rgba(88,168,206,.62) 0px, transparent 46%),
+      radial-gradient(at 96% 62%, rgba(122,108,208,.52) 0px, transparent 48%),
+      radial-gradient(at 6% 74%,  rgba(62,148,162,.58) 0px, transparent 50%),
+      radial-gradient(at 44% 38%, rgba(255,255,255,.62) 0px, transparent 54%),
+      radial-gradient(at 58% 98%, rgba(132,170,226,.48) 0px, transparent 46%),
+      /* ---- 细噪点（消除渐变塑料感，提升质感） ---- */
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"),
+      /* ---- 底色 ---- */
+      linear-gradient(160deg, #e4eefb 0%, #d9e5f6 36%, #d3e0f2 70%, #e0eaf8 100%);
+    background-size: auto, auto, auto, auto, auto, auto, 140px 140px, auto;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat, no-repeat;
+    background-attachment: fixed;
+    background-blend-mode: normal, normal, normal, normal, normal, normal, soft-light, normal;
+  }
+  html.dark body {
+    background-color: #05080f;
+    background-image:
+      radial-gradient(at 10% 6%,  rgba(0,190,255,.20) 0px, transparent 48%),
+      radial-gradient(at 90% 4%,  rgba(255,45,120,.14) 0px, transparent 46%),
+      radial-gradient(at 78% 82%, rgba(120,60,255,.16) 0px, transparent 48%),
+      radial-gradient(at 50% 40%, rgba(20,40,80,.30) 0px, transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"),
+      linear-gradient(165deg, #0a1020 0%, #05080f 55%, #070b14 100%);
+    background-size: auto, auto, auto, auto, 140px 140px, auto;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat, no-repeat;
+    background-attachment: fixed;
+    background-blend-mode: normal, normal, normal, normal, soft-light, normal;
+  }
+
+  .container { position: relative; z-index: 1; }
+
+  /* 顶部光带：一条横向柔光（现代 SaaS 常见的氛围光） */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 420px;
+    background:
+      radial-gradient(60% 100% at 50% 0%, rgba(255,255,255,.55), transparent 70%),
+      linear-gradient(180deg, rgba(255,255,255,.28), transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+  html.dark body::before {
+    background:
+      radial-gradient(60% 100% at 50% 0%, rgba(0,229,255,.10), transparent 70%),
+      linear-gradient(180deg, rgba(0,229,255,.05), transparent);
+  }
+  /* 微妙呼吸光晕（20s 缓慢循环，几乎察觉不到但提升"活"感） */
+  @keyframes auraShift {
+    0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: .85; }
+    50%      { transform: translate3d(2%, -1.5%, 0) scale(1.04); opacity: 1; }
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    top: -20%; left: -10%;
+    width: 70vw; height: 70vh;
+    background: radial-gradient(circle at 40% 40%, rgba(96,150,220,.22), transparent 62%);
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: 0;
+    animation: auraShift 22s ease-in-out infinite;
+  }
+  html.dark body::after {
+    background: radial-gradient(circle at 40% 40%, rgba(0,229,255,.14), transparent 62%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    body::after { animation: none; }
+  }
+
+  /* 卡片：白玻璃 + 分层阴影（在彩色背景上更浮起） */
+  .card {
+    background: linear-gradient(180deg, rgba(255,255,255,.97) 0%, rgba(253,254,255,.95) 100%) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.95),
+      0 1px 2px rgba(38,52,74,.04),
+      0 10px 26px rgba(74,123,181,.10),
+      0 26px 60px rgba(74,123,181,.13) !important;
+    backdrop-filter: blur(10px) saturate(1.1);
+    -webkit-backdrop-filter: blur(10px) saturate(1.1);
+  }
+  html.dark .card {
+    background: linear-gradient(180deg, rgba(13,20,36,.92) 0%, rgba(11,17,32,.90) 100%) !important;
+  }
+
+  /* 头部：深蓝科技渐变 + 底部光晕衔接 */
+  header.site {
+    background: linear-gradient(135deg, #1b3252 0%, #2a4769 32%, #3a6595 66%, #4b7dac 100%) !important;
+    box-shadow: 0 16px 48px rgba(26,52,84,.28), inset 0 -1px 0 rgba(255,255,255,.10);
+  }
+  /* 卡片：渐变描边（现代精致感） */
+  .card { position: relative; }
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(150deg,
+      rgba(255,255,255,.95) 0%,
+      rgba(74,123,181,.18) 38%,
+      rgba(255,255,255,.55) 62%,
+      rgba(90,163,168,.16) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+  }
+  html.dark .card::after {
+    background: linear-gradient(150deg,
+      rgba(0,229,255,.28) 0%,
+      rgba(255,255,255,.06) 40%,
+      rgba(255,45,120,.20) 100%);
+  }
+  /* 表格容器：纯白 + 强阴影，与彩色背景形成层次 */
+  .table-wrap {
+    background: #ffffff;
+    box-shadow: 0 6px 24px rgba(74,123,181,.10), 0 1px 2px rgba(38,52,74,.05);
+  }
+  html.dark .table-wrap { background: #0b1120; }
+}
+
+/* ============================================================
+   第七轮 · 全面玻璃化（2026-09-09）
+   用户："每部分底色还是白色的，显得很扎眼" + "可以更大胆"
+   核心：取消纯白块 → 卡片/表格/表头全部半透明玻璃，背景色彩贯穿全页
+   ============================================================ */
+@media (min-width: 641px) {
+
+  /* ---- 卡片：真玻璃（更透，让背景色彩明显透上来） ---- */
+  .card {
+    background: linear-gradient(135deg,
+      rgba(255,255,255,.50) 0%,
+      rgba(255,255,255,.36) 55%,
+      rgba(255,255,255,.46) 100%) !important;
+    backdrop-filter: blur(30px) saturate(1.7);
+    -webkit-backdrop-filter: blur(30px) saturate(1.7);
+    border: 1px solid rgba(255,255,255,.58);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.88),
+      0 2px 6px rgba(31,64,104,.06),
+      0 14px 38px rgba(31,64,104,.12),
+      0 32px 74px rgba(31,64,104,.10) !important;
+  }
+  html.dark .card {
+    background: linear-gradient(135deg,
+      rgba(14,22,40,.72) 0%,
+      rgba(10,16,30,.62) 55%,
+      rgba(12,19,34,.68) 100%) !important;
+    border-color: rgba(0,229,255,.14);
+  }
+
+  /* 卡片内角光斑（微妙氛围）——改用 .card > * 提升层级，避免与既有 .card::before 冲突 */
+  .card > * { position: relative; z-index: 1; }
+
+  /* ---- 表格容器：更透的玻璃 ---- */
+  .table-wrap {
+    background: rgba(255,255,255,.26) !important;
+    backdrop-filter: blur(22px) saturate(1.5);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    border: 1px solid rgba(255,255,255,.48);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 8px 28px rgba(31,64,104,.08);
+  }
+  html.dark .table-wrap {
+    background: rgba(11,17,32,.55) !important;
+    border-color: rgba(0,229,255,.12);
+  }
+
+  /* ---- 表头：深色玻璃（保留对比度） ---- */
+  table thead th {
+    background: linear-gradient(135deg,
+      rgba(34,64,104,.90) 0%,
+      rgba(52,92,140,.84) 100%) !important;
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    border-bottom: 1px solid rgba(255,255,255,.14) !important;
+  }
+  html.dark table thead th {
+    background: linear-gradient(135deg, rgba(0,229,255,.18), rgba(0,229,255,.08)) !important;
+  }
+
+  /* ---- 表格行：透明，让卡片玻璃透上来 ---- */
+  .table-wrap tbody tr { background: transparent !important; }
+  .table-wrap tbody tr:nth-child(even) { background: rgba(255,255,255,.16) !important; }
+  .table-wrap tbody tr:hover { background: rgba(255,255,255,.42) !important; }
+  html.dark .table-wrap tbody tr:nth-child(even) { background: rgba(255,255,255,.03) !important; }
+  html.dark .table-wrap tbody tr:hover { background: rgba(0,229,255,.07) !important; }
+
+  /* 分隔线更轻（玻璃质感） */
+  .table-wrap tbody td { border-bottom: 1px solid rgba(255,255,255,.42) !important; }
+  html.dark .table-wrap tbody td { border-bottom-color: rgba(255,255,255,.05) !important; }
+
+  /* ---- 批次头徽章：玻璃化 ---- */
+  .batch-header .badge {
+    backdrop-filter: blur(10px) saturate(1.2);
+    -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  }
+  /* ---- 等级筛选胶囊：玻璃（仅未激活态，避免覆盖 active 主色） ---- */
+  .lvl-pill:not(.active) {
+    background: rgba(255,255,255,.55) !important;
+    backdrop-filter: blur(12px) saturate(1.3);
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+    border-color: rgba(255,255,255,.6);
+  }
+  html.dark .lvl-pill:not(.active) { background: rgba(14,22,40,.6) !important; }
+  /* active 态恢复主色（防玻璃化覆盖） */
+  .lvl-pill.active.lvl-all { background: var(--primary) !important; color: #fff !important; }
+  .lvl-pill.active.lvl-a { background: rgba(94,158,131,.20) !important; }
+  .lvl-pill.active.lvl-b { background: rgba(193,144,74,.20) !important; }
+  .lvl-pill.active.lvl-c { background: rgba(201,106,106,.20) !important; }
+
+  /* ---- 逻辑弹窗：玻璃化 + 深色标题栏（2026-09-09 用户："显示文本的页面底色还是白色"） ---- */
+  .lm-mask {
+    background: rgba(18, 32, 54, .48) !important;
+    backdrop-filter: blur(8px) saturate(1.2);
+    -webkit-backdrop-filter: blur(8px) saturate(1.2);
+  }
+  .lm-card {
+    background: linear-gradient(152deg,
+      rgba(253,254,255,.94) 0%,
+      rgba(246,250,255,.92) 50%,
+      rgba(241,247,255,.94) 100%) !important;
+    backdrop-filter: blur(28px) saturate(1.5);
+    -webkit-backdrop-filter: blur(28px) saturate(1.5);
+    border: 1px solid rgba(255,255,255,.75);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.9),
+      0 30px 80px rgba(15,35,64,.30),
+      0 8px 24px rgba(15,35,64,.16) !important;
+  }
+  .lm-head {
+    background: linear-gradient(135deg, rgba(34,64,104,.95) 0%, rgba(54,94,142,.90) 100%) !important;
+    color: #ffffff !important;
+    border-bottom: none !important;
+    box-shadow: 0 6px 20px rgba(26,52,84,.18);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .lm-head .lm-close {
+    color: rgba(255,255,255,.88) !important;
+    border-color: rgba(255,255,255,.32) !important;
+    background: rgba(255,255,255,.10);
+  }
+  .lm-head .lm-close:hover { background: rgba(255,255,255,.22); color: #fff !important; }
+  .lm-body { color: var(--ink); }
+  .lm-full summary { color: var(--primary-dark); font-weight: 600; }
+  .lm-full-body { border-top-color: rgba(74,123,181,.22); }
+  html.dark .lm-card {
+    background: linear-gradient(152deg, rgba(12,19,34,.95), rgba(9,14,26,.93)) !important;
+    border-color: rgba(0,229,255,.18);
+  }
+  html.dark .lm-head {
+    background: linear-gradient(135deg, rgba(0,229,255,.20), rgba(0,229,255,.08)) !important;
+    color: #bff2ff !important;
+  }
+
+  /* ---- 导航栏：更透的玻璃（原 94% 白看起来像白条） ---- */
+  nav {
+    background: rgba(255,255,255,.58) !important;
+    backdrop-filter: blur(24px) saturate(1.7);
+    -webkit-backdrop-filter: blur(24px) saturate(1.7);
+    border-bottom: 1px solid rgba(255,255,255,.55) !important;
+    box-shadow: 0 8px 30px rgba(31,64,104,.09) !important;
+  }
+  html.dark nav { background: rgba(8,12,22,.72) !important; border-bottom-color: rgba(0,229,255,.14) !important; }
+
+  /* ---- 页脚 / 联系方式胶囊：玻璃化 ---- */
+  .footer { border-top-color: rgba(255,255,255,.45) !important; }
+  .footer-author .author-contact span,
+  .contact-item {
+    background: rgba(255,255,255,.46) !important;
+    backdrop-filter: blur(12px) saturate(1.3);
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+    border: 1px solid rgba(255,255,255,.55) !important;
+  }
+  html.dark .footer-author .author-contact span { background: rgba(14,22,40,.6) !important; }
+
+  /* ---- 站内统计卡（红黑榜/复盘页 KPI）玻璃化 ---- */
+  .site-stat, .kpi {
+    background: rgba(255,255,255,.48) !important;
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    border: 1px solid rgba(255,255,255,.55) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 6px 20px rgba(31,64,104,.08) !important;
+  }
+  html.dark .site-stat, html.dark .kpi { background: rgba(14,22,40,.62) !important; }
+
+  /* ---- 批次头/日历卡：玻璃 ---- */
+  .cal-card, .batch-header .badge, .batch-overview .bo-done {
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  }
+}
+
+/* ============================================================
+   第六轮 · 数据看板化（2026-09-09）
+   用户："你来判断最优的就好了" → 方向=浅色 mesh gradient + 数据可视化元素
+   ①假赛分环形指示器 ②卡片标题渐变分隔线 ③数值列视觉分组
+   ============================================================ */
+
+/* ① 假赛分：环形进度指示器（一眼看出风险量级） */
+.risk-ring {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--ring-c, #5e9e83) calc(var(--pct, 0) * 1%),
+    color-mix(in srgb, var(--ink) 13%, transparent) 0
+  );
+  transition: transform .2s ease;
+  filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--ring-c) 30%, transparent));
+}
+.risk-ring::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: var(--card);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.06);
+}
+.risk-ring b {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-num);
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--ring-c, #5e9e83);
+  line-height: 1;
+}
+.risk-ring.risk-ok   { --ring-c: #5e9e83; }
+.risk-ring.risk-mid  { --ring-c: #c1904a; }
+.risk-ring.risk-high { --ring-c: #c96a6a; }
+.risk-ring:hover { transform: scale(1.08); }
+html.dark .risk-ring::before { background: #0b1120; }
+
+/* ② 卡片标题：下方渐变分隔线（数据看板质感） */
+.card h2, .card-title, .section-title {
+  padding-bottom: 12px;
+  position: relative;
+}
+.card h2::after, .card-title::after, .section-title::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--primary) 34%, transparent) 0%,
+    color-mix(in srgb, var(--primary) 10%, transparent) 42%,
+    transparent 100%);
+}
+
+/* ③ 数值列视觉分组 */
+.table-wrap tbody td.score-nums { font-feature-settings: "tnum"; }
+.table-wrap tbody td[data-l="假赛分"] { text-align: center; }
+.batch-overview .bo-item b { font-weight: 800; }
+
+/* ============================================================
+   第八轮 · 数据可视化仪表盘（2026-09-09）
+   用户："还能怎么样优化丰富和可视化，大胆一点"
+   ①等级分布环形图 ②图例 ③KPI 数据块
+   ============================================================ */
+.viz-panel {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  flex-wrap: wrap;
+  padding: 18px 20px;
+  margin: 4px 0 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg,
+    rgba(255,255,255,.52) 0%,
+    rgba(255,255,255,.38) 100%);
+  border: 1px solid rgba(255,255,255,.6);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.75), 0 8px 26px rgba(31,64,104,.07);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+}
+html.dark .viz-panel {
+  background: linear-gradient(135deg, rgba(14,22,40,.6), rgba(10,16,30,.5));
+  border-color: rgba(0,229,255,.12);
+}
+
+/* 环形图：A/B/C 三段占比 */
+.viz-donut {
+  position: relative;
+  width: 104px; height: 104px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    #4f9d7d 0 calc(var(--pA, 0) * 1%),
+    #c1904a 0 calc((var(--pA, 0) + var(--pB, 0)) * 1%),
+    #c96a6a 0 100%
+  );
+  box-shadow: 0 6px 20px rgba(31,64,104,.14), inset 0 0 0 1px rgba(255,255,255,.35);
+}
+.viz-donut::after {
+  content: "";
+  position: absolute;
+  inset: 13px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.86);
+  box-shadow: inset 0 1px 3px rgba(31,64,104,.08);
+}
+html.dark .viz-donut::after { background: rgba(11,17,32,.92); }
+.viz-donut-inner {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+.viz-donut-inner b {
+  font-family: var(--font-num);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(180deg, var(--ink) 0%, color-mix(in srgb, var(--ink) 55%, var(--primary)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.viz-donut-inner span { font-size: 10.5px; color: var(--sub); letter-spacing: .5px; }
+
+/* 图例 */
+.viz-legend { display: flex; flex-direction: column; gap: 9px; min-width: 190px; }
+.viz-item {
+  display: grid;
+  grid-template-columns: 10px 1fr auto auto;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--ink);
+}
+.viz-item i {
+  width: 9px; height: 9px; border-radius: 3px;
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 14%, transparent);
+}
+.viz-item.viz-a i { background: #4f9d7d; }
+.viz-item.viz-b i { background: #c1904a; }
+.viz-item.viz-c i { background: #c96a6a; }
+.viz-item span { color: var(--sub); font-size: 12.5px; }
+.viz-item b {
+  font-family: var(--font-num);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.viz-item em {
+  font-style: normal;
+  font-family: var(--font-num);
+  font-size: 12px;
+  color: var(--sub);
+  min-width: 44px;
+  text-align: right;
+}
+
+/* KPI 数据块 */
+.viz-kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(84px, 1fr));
+  gap: 10px;
+  margin-left: auto;
+}
+.viz-kpi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 10px 14px;
+  border-radius: 13px;
+  background: rgba(255,255,255,.55);
+  border: 1px solid rgba(255,255,255,.62);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+html.dark .viz-kpi { background: rgba(14,22,40,.6); border-color: rgba(0,229,255,.12); }
+.viz-kpi:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(31,64,104,.12); }
+.viz-kpi b {
+  font-family: var(--font-num);
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.1;
+  background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.viz-kpi span { font-size: 11px; color: var(--sub); letter-spacing: .3px; white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .viz-panel { gap: 16px; }
+  .viz-kpis { margin-left: 0; width: 100%; grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 640px) {
+  .viz-panel { padding: 14px; gap: 14px; }
+  .viz-donut { width: 84px; height: 84px; }
+  .viz-donut-inner b { font-size: 21px; }
+  .viz-legend { min-width: 150px; }
+  .viz-kpis { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ============================================================
+   第九轮 · 模型战绩可视化（2026-09-09）
+   首页顶部 4 维命中率环形图（真实数据，替代纯文字统计）
+   ============================================================ */
+.perf-panel { padding: 20px 24px 18px !important; }
+.perf-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 6px 0 14px;
+}
+.perf-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 12px 16px;
+  border-radius: 16px;
+  background: linear-gradient(150deg, rgba(255,255,255,.62), rgba(255,255,255,.44));
+  border: 1px solid rgba(255,255,255,.65);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 6px 20px rgba(31,64,104,.07);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  transition: transform .24s cubic-bezier(.4,0,.2,1), box-shadow .24s ease;
+}
+html.dark .perf-card { background: linear-gradient(150deg, rgba(14,22,40,.66), rgba(10,16,30,.54)); border-color: rgba(0,229,255,.12); }
+.perf-card:hover { transform: translateY(-4px); box-shadow: inset 0 1px 0 rgba(255,255,255,.85), 0 16px 38px rgba(31,64,104,.14); }
+
+/* 环形进度 */
+.perf-ring {
+  position: relative;
+  width: 92px; height: 92px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--ring-c) calc(var(--pct, 0) * 1%),
+    color-mix(in srgb, var(--ink) 9%, transparent) 0
+  );
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--ring-c) 26%, transparent);
+}
+.perf-ring::after {
+  content: "";
+  position: absolute; inset: 9px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.9);
+  box-shadow: inset 0 1px 3px rgba(31,64,104,.07);
+}
+html.dark .perf-ring::after { background: rgba(11,17,32,.9); }
+.perf-ring-in { position: relative; z-index: 1; }
+.perf-ring-in b {
+  font-family: var(--font-num);
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -.5px;
+  color: var(--ring-c);
+}
+.perf-meta { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.perf-label { font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: .3px; }
+.perf-raw { font-family: var(--font-num); font-size: 11.5px; color: var(--sub); }
+.perf-note { font-size: 11.5px; color: var(--sub); line-height: 1.7; }
+
+/* 四色（方向=主蓝·比分=金·半全场=青·总进球=紫） */
+.perf-dir   .perf-ring { --ring-c: #4a7bb5; }
+.perf-score .perf-ring { --ring-c: #c1904a; }
+.perf-ht    .perf-ring { --ring-c: #4f9d8d; }
+.perf-ou    .perf-ring { --ring-c: #8a6fbd; }
+html.dark .perf-dir   .perf-ring { --ring-c: #00e5ff; }
+html.dark .perf-score .perf-ring { --ring-c: #ffc400; }
+html.dark .perf-ht    .perf-ring { --ring-c: #00e676; }
+html.dark .perf-ou    .perf-ring { --ring-c: #b388ff; }
+
+@media (max-width: 900px) { .perf-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) {
+  .perf-panel { padding: 16px !important; }
+  .perf-grid { gap: 10px; }
+  .perf-card { padding: 14px 8px 12px; }
+  .perf-ring { width: 76px; height: 76px; }
+  .perf-ring-in b { font-size: 17px; }
+  .perf-label { font-size: 12px; }
+}
+
+/* ============================================================
+   第十二轮 · 桌面端专属增强（2026-09-09）
+   用户："电脑网页端还能怎么样优化丰富内容、美化"（手机端锁定不动）
+   全部 ≥641px 限定：①容器加宽 ②表头图标 ③行光效 ④卡片装饰 ⑤列宽优化
+   ============================================================ */
+@media (min-width: 641px) {
+
+  /* ① 容器加宽：更充分利用大屏（1100 → 1240px） */
+  .container { max-width: 1240px !important; }
+  header.site .inner { max-width: 1240px !important; }
+  nav .inner { max-width: 1240px !important; }
+
+  /* ② 表头图标（仅预测表，按列序） */
+  .batch-table thead th:nth-child(1)::before { content: "⚽ "; opacity: .85; }
+  .batch-table thead th:nth-child(2)::before { content: "🧭 "; opacity: .85; }
+  .batch-table thead th:nth-child(3)::before { content: "🎯 "; opacity: .85; }
+  .batch-table thead th:nth-child(4)::before { content: "⏱️ "; opacity: .85; }
+  .batch-table thead th:nth-child(5)::before { content: "⚽ "; opacity: .85; }
+  .batch-table thead th:nth-child(6)::before { content: "🌡️ "; opacity: .85; }
+
+  /* ③ 行光效：hover 时左侧光条滑入 + 微弱上浮 */
+  .table-wrap tbody tr { position: relative; }
+  .table-wrap tbody tr::after {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--primary), var(--gold-bright));
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform .24s cubic-bezier(.4,0,.2,1);
+    border-radius: 0 3px 3px 0;
+  }
+  .table-wrap tbody tr:hover::after { transform: scaleY(1); }
+  .table-wrap tbody tr:hover { transform: translateX(1px); }
+
+  /* ④ 卡片：顶部渐变装饰线 + 更立体阴影 */
+  .card { position: relative; overflow: hidden; }
+  .card::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--primary) 55%, transparent) 22%,
+      color-mix(in srgb, var(--gold-bright) 60%, transparent) 50%,
+      color-mix(in srgb, var(--primary) 55%, transparent) 78%,
+      transparent 100%);
+    opacity: .75;
+  }
+
+  /* ⑤ 表格列宽优化（比分/半全场更宽，避免换行） */
+  .batch-table th:nth-child(3), .batch-table td:nth-child(3),
+  .batch-table th:nth-child(4), .batch-table td:nth-child(4) { min-width: 150px; }
+  .batch-table th:nth-child(1), .batch-table td:nth-child(1) { min-width: 240px; }
+
+  /* ⑥ 批次头徽章：桌面端加大呼吸感 */
+  .batch-header .badge { padding: 7px 14px; font-size: 12.5px; }
+
+  /* ⑦ 导航：桌面端更宽间距 */
+  nav .inner { gap: 10px; padding: 12px 24px; }
+  nav .inner a { padding: 10px 22px !important; }
+
+  /* ⑧ 卡片标题：图标与文字基线对齐 */
+  .card h2 .icon { display: inline-block; transform: translateY(-1px); }
+
+  /* ⑨ 表格数字：等宽 + 稍大 */
+  .table-wrap tbody td.score-nums { font-size: 15px !important; letter-spacing: .7px; }
+
+  /* ⑩ 滚动到顶按钮：桌面端更精致 */
+  .back-top {
+    width: 46px; height: 46px;
+    box-shadow: 0 8px 24px rgba(31,64,104,.22);
+    transition: transform .22s ease, box-shadow .22s ease;
+  }
+  .back-top:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(31,64,104,.30); }
+
+  /* ⑪ 本批看点（仅桌面端） */
+  .batch-highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 4px 0 14px;
+  }
+  .hl-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 15px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink);
+    background: linear-gradient(140deg, rgba(255,255,255,.62), rgba(255,255,255,.44));
+    border: 1px solid rgba(255,255,255,.66);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 4px 14px rgba(31,64,104,.07);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .hl-item:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255,255,255,.85), 0 10px 24px rgba(31,64,104,.12); }
+  .hl-item b { font-family: var(--font-num); font-weight: 800; }
+  .hl-focus { border-color: rgba(193,144,74,.42); background: linear-gradient(140deg, rgba(255,247,235,.72), rgba(255,240,220,.52)); }
+  .hl-focus b { color: #a8762f; }
+  .hl-safe { border-color: rgba(79,157,125,.40); background: linear-gradient(140deg, rgba(240,250,245,.72), rgba(228,246,238,.52)); }
+  .hl-safe b { color: #2f7a5e; }
+  .hl-risk { border-color: rgba(201,106,106,.40); background: linear-gradient(140deg, rgba(255,242,242,.72), rgba(253,232,232,.52)); }
+  .hl-risk b { color: #a8543f; }
+  html.dark .hl-item { background: linear-gradient(140deg, rgba(14,22,40,.68), rgba(10,16,30,.56)); border-color: rgba(0,229,255,.14); }
+
+  /* ⑫ 联赛分布条形图（桌面端） */
+  .lg-chart {
+    margin: 0 0 16px;
+    padding: 14px 18px;
+    border-radius: 16px;
+    background: linear-gradient(140deg, rgba(255,255,255,.56), rgba(255,255,255,.40));
+    border: 1px solid rgba(255,255,255,.6);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.75), 0 6px 20px rgba(31,64,104,.06);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 8px 22px;
+  }
+  html.dark .lg-chart { background: linear-gradient(140deg, rgba(14,22,40,.62), rgba(10,16,30,.5)); border-color: rgba(0,229,255,.12); }
+  .lg-chart-title {
+    grid-column: 1 / -1;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--sub);
+    letter-spacing: .3px;
+    margin-bottom: 2px;
+  }
+  .lg-bar {
+    display: grid;
+    grid-template-columns: 58px 1fr 22px;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+  }
+  .lg-bar-name { color: var(--ink); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lg-bar-track {
+    height: 8px;
+    border-radius: 99px;
+    background: color-mix(in srgb, var(--ink) 8%, transparent);
+    overflow: hidden;
+  }
+  .lg-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--primary), var(--gold-bright));
+    transition: width .5s cubic-bezier(.4,0,.2,1);
+  }
+  /* 用联赛官方色填充 */
+  .lg-bar-fill.lg-ucl { background: linear-gradient(90deg, #a04a4a, #c96a6a); }
+  .lg-bar-fill.lg-k1 { background: linear-gradient(90deg, #3ba38f, #6fc7b5); }
+  .lg-bar-fill.lg-champ { background: linear-gradient(90deg, #bd6247, #d68a6f); }
+  .lg-bar-fill.lg-ered { background: linear-gradient(90deg, #c47e94, #dda5b7); }
+  .lg-bar-fill.lg-spl { background: linear-gradient(90deg, #5e9062, #8dbb90); }
+  .lg-bar-fill.lg-prime { background: linear-gradient(90deg, #4a9292, #7cbcbc); }
+  .lg-bar-fill.lg-bras { background: linear-gradient(90deg, #b39c48, #d0bd7c); }
+  .lg-bar-fill.lg-copaLib { background: linear-gradient(90deg, #5fa37c, #8ec9a8); }
+  .lg-bar b { font-family: var(--font-num); font-size: 13px; font-weight: 800; color: var(--ink); text-align: right; }
+}
+
+/* 手机端隐藏本批看点（用户要求手机端不动） */
+@media (max-width: 640px) {
+  .batch-highlights { display: none !important; }
+  .lg-chart { display: none !important; }
+}
+
+
+
+

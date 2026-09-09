@@ -136,10 +136,18 @@ function renderPredict(batch) {
 
   // 预测清单（含假赛评分列）；严格按场次号 001-00n 排序（2026-08-18 用户要求，不再按开赛时间）
   const byNo = (a, b) => parseInt(a.no) - parseInt(b.no);
-  const sorted = p.matches.slice().sort(byNo);
-  const riskTag = r => r >= 7 ? `<span class="tag tag-red">🔴 ${r}</span>`
-    : r >= 5 ? `<span class="tag tag-orange">🟠 ${r}</span>`
-    : `<span class="tag tag-green">🟢 ${r}</span>`;
+  // 🔒 老批次字段兜底（2026-09-09 修复：8/13 及更早批次无 logic/ou/time/risk 字段，
+  //    曾导致「日历切到 8/13 报 Cannot read properties of undefined (reading 'replace')」整页崩）
+  const sorted = (p.matches || []).map(m => ({
+    logic: "", ou: "", time: "", risk: 0, dc: "", ...m
+  })).sort(byNo);
+  // 假赛分 → 环形进度指示器（2026-09-09 视觉升级：数字+环形，一眼看出风险量级）
+  const riskTag = r => {
+    const val = Number(r) || 0;
+    const cls = val >= 7 ? "risk-high" : val >= 5 ? "risk-mid" : "risk-ok";
+    const pct = Math.max(0, Math.min(100, val * 10));
+    return `<span class="risk-ring ${cls}" style="--pct:${pct}" title="假赛风险分 ${val}/10"><b>${val}</b></span>`;
+  };
   // 预测等级 → 颜色类（R337 v2：A+ A A- 绿系 / B+ 蓝 / B 黄 / B- 紫（1正2反·反向比分标*）/ C 红（1正2反·反向比分标*））
   const lvlClass = d => {
     if (d.includes("A+")) return "lvl-aplus";
@@ -171,7 +179,7 @@ function renderPredict(batch) {
     const lv = (m.dir.match(/([ABC])级/) || [])[1] || "";
     return `<tr data-lvl="${lv.toLowerCase()}">
     <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${m.home} vs ${m.away}</b><span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span><span class="match-time" style="font-size:11px;flex-shrink:0">🕐 ${m.time || "-"}</span></span></td>
-    <td class="${lvlClass(m.dir)}" data-l="方向">${shortDir(m.dir)}</td>
+    <td class="${lvlClass(m.dir)}" data-l="方向"><span class="dir-pill">${shortDir(m.dir)}</span></td>
     <td class="score-nums" data-l="比分 TOP3">${revHtml}</td>
     <td data-l="半全场 TOP3">${revHt}</td>
     <td data-l="总进球">${ouDisp(m.ou)}</td>
@@ -344,7 +352,7 @@ function renderPredict(batch) {
   // 核心逻辑速览：自动提取关键信息（方向/伤停/天气）预览 + 点击展开全文（加粗渲染）
   const logicRows = sorted.map(m => `<tr>
     <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${m.home} vs ${m.away}</b>${m.time ? `<span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span><span class="match-time" style="font-size:11px;flex-shrink:0">🕐 ${m.time}</span>` : ""}</span></td>
-    <td data-l="核心逻辑" data-sf><button class="logic-btn" data-no="${m.no}" data-teams="${m.home} vs ${m.away}" data-lg="${m.logic.replace(/"/g, "&quot;")}" onclick="openLogicModal(this)">${logicKey(m.logic)}</button></td>
+    <td data-l="核心逻辑" data-sf><button class="logic-btn" data-no="${m.no}" data-teams="${m.home} vs ${m.away}" data-lg="${(m.logic || "").replace(/"/g, "&quot;")}" onclick="openLogicModal(this)">${logicKey(m.logic)}</button></td>
   </tr>`).join("");
 
   el.innerHTML = `
@@ -858,8 +866,10 @@ function renderGlobal(mode) {
     });
   });
 
-  // KPI 数值：无评估数据时显示「—」（0/0 无信息量，2026-08-23 优化）
-  const kpiTag = (h, n) => n ? `${h}/${n} <span style="font-size:12px">${pct(h, n)}</span>` : `<span style="font-size:20px;opacity:.55">—</span>`;
+  // KPI：无数据=「—」，有数据=SVG 环形（复用上方 kpiRing，2026-09-09 统一可视化）
+  const kpiOrEmpty = (id, h, n, label) => n
+    ? kpiRing(id, pctN(h, n), h, n, label)
+    : `<div class="kpi ring-kpi"><div class="ring-wrap"><div class="ring-num"><b>—</b><span>暂无数据</span></div></div><div class="lbl">${label}</div></div>`;
   el.innerHTML = `
     <div class="global-dash">
       <div class="g-tabs">
@@ -870,10 +880,10 @@ function renderGlobal(mode) {
         </div>
       </div>
       <div class="kpi-row">
-        <div class="kpi"><div class="num">${kpiTag(week.d, week.n)}</div><div class="lbl">🧭 方向命中${isAll ? "" : "（近7日）"}</div></div>
-        <div class="kpi"><div class="num">${kpiTag(week.s, week.n)}</div><div class="lbl">🎯 比分 TOP3${isAll ? "" : "（近7日）"}</div></div>
-        <div class="kpi"><div class="num">${kpiTag(week.h, week.n)}</div><div class="lbl">⏱️ 半全场 TOP3${isAll ? "" : "（近7日）"}</div></div>
-        <div class="kpi"><div class="num">${kpiTag(ou.h, ou.n)}</div><div class="lbl">⚽ 总进球命中${isAll ? "" : "（近7日）"}</div></div>
+        ${kpiOrEmpty("gd1", week.d, week.n, "🧭 方向命中")}
+        ${kpiOrEmpty("gd2", week.s, week.n, "🎯 比分 TOP3")}
+        ${kpiOrEmpty("gd3", week.h, week.n, "⏱️ 半全场 TOP3")}
+        ${kpiOrEmpty("gd4", ou.h, ou.n, "⚽ 总进球命中")}
       </div>
     </div>`;
 }
@@ -900,7 +910,7 @@ function renderBatchHeader() {
         <span class="updlog-time">${it.t}</span>
         <span class="updlog-no">${it.no}</span>
         <span class="updlog-teams">${it.teams}</span>
-        <span class="updlog-x" title="${it.x.replace(/"/g, "&quot;")}">${it.x}</span>
+        <span class="updlog-x" title="${String(it.x || "").replace(/"/g, "&quot;")}">${it.x || ""}</span>
       </div>`).join("")}</div>`
       : `<div class="note" style="margin:0">暂无更新——开赛前若有首发/伤停调整，更新版将直接覆盖主清单对应行，变更记录在此。</div>`}
     </div>`;
@@ -912,8 +922,14 @@ function renderBatchHeader() {
         ${b.updated ? `<span class="badge badge-soft">🕐 更新 ${b.updated}</span>` : ""}
         ${updBtn}
         <span class="badge badge-soft" style="margin-left:auto">模型 <b style="color:var(--primary)">${b.model}</b></span>
-        ${b.reviewed ? `<span class="badge badge-solid" style="background:linear-gradient(135deg,#15803d,#22a55a)">✅ 已复盘</span>`
-                     : `<span class="badge badge-gold">📋 待复盘</span>`}
+        ${(() => {
+          // 复盘进度（2026-09-09 优化：批级 reviewed=true 但只复了部分场次时，显示真实进度避免"已复盘"误导）
+          const total = ms.length;
+          const done = Number.isFinite(b.reviewedCount) ? b.reviewedCount : (b.reviewed ? total : 0);
+          if (!b.reviewed) return `<span class="badge badge-gold">📋 待复盘</span>`;
+          if (total && done < total) return `<span class="badge badge-solid" style="background:linear-gradient(135deg,#b45309,#d97706)">🔍 复盘中 ${done}/${total}</span>`;
+          return `<span class="badge badge-solid" style="background:linear-gradient(135deg,#15803d,#22a55a)">✅ 已复盘${total ? ` ${done}/${total}` : ""}</span>`;
+        })()}
         <button class="batch-nav" onclick="selectDate('${nextK}')" ${nextK ? "" : "disabled"} title="${nextK ? fmtDate(nextK) : ""}">下批 ›</button>
         ${updDrop}
       </div>`;
