@@ -626,6 +626,7 @@ display: flex; align-items: center; gap: 8px; padding: 10px 14px;
 .avoid-item.watch .avoid-item-ic { background: var(--risk-mid-bg); }
 .avoid-item.red .avoid-item-ic { background: var(--risk-ok-bg); }
 .avoid-item.blue .avoid-item-ic { background: rgba(58,123,213,.12); }
+.avoid-item.neutral .avoid-item-ic { background: var(--thead-bg); }
 .tag-blue { background: rgba(58,123,213,.12); color: #3a7bd5; border-color: rgba(58,123,213,.35); }
 html.dark .tag-blue { background: rgba(88,160,255,.14); color: #7db1ff; border-color: rgba(88,160,255,.4); }
 .avoid-sec.sec-green > summary { color: var(--risk-ok); border-left: 4px solid var(--risk-ok); }

@@ -5,14 +5,17 @@
 /* HT4 高价值预警 4 形态（2026-09-06 用户拍板：胜负/负胜/负平/胜平；全局=赛前渲染+review 统计共用） */
 const HT4 = ["胜负", "负胜", "负平", "胜平"];
 
-/* 复盘数据合并（2026-08-20 拆分：data-review.js 由复盘页加载后并入 BATCHES；首页不加载则 review 为空壳） */
-(function(){
+/* 复盘数据合并（2026-08-20 拆分：data-review.js 由复盘页加载后并入 BATCHES；首页不加载则 review 为空壳）
+   2026-09-12：改为可重入全局函数——复盘历史异步到达后需再次合并（mergeReviewExtra） */
+function mergeReviewExtra() {
   if (typeof REVIEW_EXTRA !== "undefined" && typeof BATCHES !== "undefined") {
-    Object.keys(REVIEW_EXTRA).forEach(function(k){
+    Object.keys(REVIEW_EXTRA).forEach(function (k) {
       if (BATCHES[k]) BATCHES[k].review = REVIEW_EXTRA[k];
     });
   }
-})();
+}
+window.mergeReviewExtra = mergeReviewExtra;
+mergeReviewExtra();
 
 /* ---------- 工具 ---------- */
 // 联赛短名（仅手机端 ≤640px 生效，桌面显示全称——2026-08-25 用户拍板；全局定义，review/赛前共用）
@@ -45,12 +48,18 @@ function fmtKey(d) {
 }
 
 /* ---------- 日历状态 ---------- */
-let calYear = 2026, calMonth = 7; // 2026-08
+/* 默认月份＝最新批所在月（原硬编码 2026-08 → 2026-09-12 修复：拆分后首屏只含最新批，
+   固定 8 月会显示「0 个批次」；改用 BATCH_META（核心文件自带）后首屏即正确） */
+const _metaSrc = (typeof BATCH_META !== "undefined") ? BATCH_META : BATCHES;
+const _newestKey = Object.keys(_metaSrc).sort().pop() || "2026-08";
+let calYear = parseInt(_newestKey.slice(0, 4), 10);
+let calMonth = parseInt(_newestKey.slice(5, 7), 10) - 1;
 let calOpen = false;
 
 /* ---------- 日历渲染 ---------- */
 function renderCalendar() {
-  const keys = Object.keys(BATCHES).sort();
+  const metaSrc = (typeof BATCH_META !== "undefined") ? BATCH_META : BATCHES;
+  const keys = Object.keys(metaSrc).sort();
   const el = document.getElementById("calendar");
   if (!el) return; // 非日历页面（如避雷名单页）跳过
   const first = new Date(calYear, calMonth, 1);
@@ -81,9 +90,9 @@ function renderCalendar() {
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   for (let d = 1; d <= daysInMonth; d++) {
     const key = fmtKey(new Date(calYear, calMonth, d));
-    const batch = BATCHES[key];
+    const batch = metaSrc[key];
     const has = !!batch;
-    const reviewed = batch && batch.reviewed;
+    const reviewed = !!(batch && batch.reviewed);
     const isCur = key === currentKey;
     const isToday = key === todayKey;
     html += `<div class="cal-cell ${has ? "has-data" : ""} ${isCur ? "current" : ""} ${isToday ? "today" : ""}" ${has ? `onclick="selectDate('${key}')" title="${fmtDate(key)}"` : ""}>
@@ -644,12 +653,14 @@ function toggleEvDetails(btn) {
 function renderSiteStats() {
   const el = document.getElementById("site-stats");
   if (!el) return;
-  const keys = Object.keys(BATCHES).sort();
+  const _ms2 = (typeof BATCH_META !== "undefined") ? BATCH_META : BATCHES;
+  const keys = Object.keys(_ms2).sort();
   const totalBatches = keys.length;
-  const reviewed = keys.filter(k => BATCHES[k].reviewed).length;
+  const reviewed = keys.filter(k => (_ms2[k] || {}).reviewed).length;
   let totalMatches = 0, dirHit = 0;
   keys.forEach(k => {
     const b = BATCHES[k];
+    if (!b) return;   // 历史批次尚未异步到达时跳过（2026-09-12）
     // 已复盘判定：review.results 非空（2026-08-23 修复：部分复盘批次 reviewed=false 仍计入）
     if (b.review && b.review.results && b.review.results.length) {
       b.review.results.forEach(m => { totalMatches++; if (m.d === "ok") dirHit++; });
@@ -900,8 +911,8 @@ function renderBatchHeader() {
   const b = BATCHES[currentKey];
   const el = document.getElementById("batch-header");
   if (el && b) {
-    // 上一批/下一批快速导航
-    const keys = Object.keys(BATCHES).sort();
+    // 上一批/下一批快速导航（键集合走 BATCH_META：首屏只含最新批时也能导航·2026-09-12）
+    const keys = Object.keys((typeof BATCH_META !== "undefined") ? BATCH_META : BATCHES).sort();
     const idx = keys.indexOf(currentKey);
     const prevK = idx > 0 ? keys[idx - 1] : null;
     const nextK = idx < keys.length - 1 ? keys[idx + 1] : null;
@@ -1093,19 +1104,20 @@ function renderAvoidSearch(q) {
   }
   // 命中匹配（队名/联赛）
   const hits = R.filter(a => (a.t || "").toLowerCase().includes(kw) || (a.lg || "").toLowerCase().includes(kw));
-  const ITEM_DEF = { R2: ["⭐ 红榜", "tag-green", "red"], R1: ["🟢 偏红", "tag-blue", "blue"], B1: ["🟡 偏黑", "tag-yellow", "watch"], B2: ["🔴 黑榜", "tag-red", "high"] };
+  const ITEM_DEF = { R2: ["⭐ 红榜", "tag-green", "red"], R1: ["🟢 偏红", "tag-blue", "blue"], N: ["⚪ 中性", "tag-gray", "neutral"], B1: ["🟡 偏黑", "tag-yellow", "watch"], B2: ["🔴 黑榜", "tag-red", "high"] };
   const itemHtml = (a, g) => {
-    const d = ITEM_DEF[g];
+    const d = ITEM_DEF[g] || ITEM_DEF.N;   // 中性/未知档兜底（2026-09-12 修复：N 档 220 队搜索命中即 TypeError 崩）
     return `<details class="avoid-item ${d[2]}"><summary>
-      <span class="avoid-item-ic">${d[0][0]}</span>
+      <span class="avoid-item-ic">${d[0].split(" ")[0]}</span>
       <span class="avoid-item-name">${a.t}</span>
       <span class="avoid-item-lg">${lgBadge((a.lg || "").split(",")[0])}</span>
       <span style="margin-left:8px;font-size:11px;opacity:.7">场次${a.p} · 三指标${a.tp} · 红${a.r}/黑${a.b}</span>
       <span class="tag ${d[1]}">${d[0]}</span>
     </summary><div class="avoid-item-body">${a.rs || ""}</div></details>`;
   };
-  const order = { R2: 0, R1: 1, B1: 2, B2: 3 };
-  hits.sort((x, y) => order[x.g] - order[y.g]);
+  const order = { R2: 0, R1: 1, N: 2, B1: 3, B2: 4 };
+  const ord = (g) => (order[g] === undefined ? 9 : order[g]);
+  hits.sort((x, y) => ord(x.g) - ord(y.g));
   resBox.style.display = "block";
   sections.forEach(s => s.style.display = "none");
   if (hits.length) {
@@ -1120,7 +1132,10 @@ function renderAvoidSearch(q) {
 /* ---------- 入口 ---------- */
 function renderAll() {
   try {
+  // 自愈：复盘数据可能异步后到（data-review-history），每次渲染前幂等合并一次（2026-09-12 竞态修复）
+  try { if (typeof mergeReviewExtra === "function") mergeReviewExtra(); } catch (e) {}
   const b = BATCHES[currentKey];
+  renderCalendar();   // 历史批次异步到达后随之刷新（2026-09-12）
   renderBatchHeader();
   renderGlobal();
   renderSiteStats();

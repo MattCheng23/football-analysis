@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>赛前预测 · 足球分析预测站</title>
-<meta name="description" content="规则驱动足球预测模型 V11.43：每场给出方向、比分 TOP3、半全场、总进球与冷门预警，数据双源核验，赛后逐场复盘。">
+<meta name="description" content="规则驱动足球预测模型 V11.46：每场给出方向、比分 TOP3、半全场、总进球与冷门预警，数据双源核验，赛后逐场复盘。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="赛前预测 · 足球分析预测站">
-<meta property="og:description" content="规则驱动足球预测模型 V11.43：方向 / 比分 TOP3 / 半全场 / 总进球 / 冷门预警，数据双源核验。">
+<meta property="og:description" content="规则驱动足球预测模型 V11.46：方向 / 比分 TOP3 / 半全场 / 总进球 / 冷门预警，数据双源核验。">
 <meta property="og:image" content="images/wechat_qr.png">
 <meta name="theme-color" content="#0f766e">
-<link rel="stylesheet" href="css/style.css?v202609110252">
+<link rel="stylesheet" href="css/style.css?v202609120545">
 <link rel="preload" href="fonts/SmileySans-page.woff2" as="font" type="font/woff2" crossorigin>
 <script>
 /* 主题初始化：读取本地偏好，防闪烁 */
@@ -40,9 +40,9 @@
       </div>
     </div>
     <h1>⚽ 足球分析预测站 · 赛前预测</h1>
-    <div class="sub">规则驱动预测模型 V11.43 ｜ 联赛参数 v2.2 ｜ 日历选择日期回顾历史批次 ｜ 数据双源核验</div>
+    <div class="sub">规则驱动预测模型 V11.46 ｜ 联赛参数 v2.2 ｜ 日历选择日期回顾历史批次 ｜ 数据双源核验</div>
     <div class="header-hero-stats">
-      <span class="header-hero-stat">🧠 模型 <b>V11.43</b></span>
+      <span class="header-hero-stat">🧠 模型 <b>V11.46</b></span>
       <span class="header-hero-stat">📊 联赛参数 <b>v2.2</b></span>
       <span class="header-hero-stat">🗂️ 样本库 <b>4000+</b></span>
       <span class="header-hero-stat">🔒 数据 <b>双源核验</b></span>
@@ -79,14 +79,37 @@
       <span>🐧 QQ：1099365940</span>
     </div>
   </div>
-  <div class="footer-note">足球分析预测站 · V11.43 · 联赛参数 v2.2 · 数据双源核验 · 样本库 4000+ 场</div>
+  <div class="footer-note">足球分析预测站 · V11.46 · 联赛参数 v2.2 · 数据双源核验 · 样本库 4000+ 场</div>
   <div class="footer-disclaimer">⚠️ 免责声明：本站为个人足球数据分析研究用途，预测内容基于历史统计模型，不构成任何投注建议。请理性参考，切勿沉迷。数据来源：FotMob / 竞彩官方 / 懂球帝 等公开渠道。</div>
 </div>
 
-<script src="js/data.js?v202609110252"></script>
-<script src="js/app.js?v202609110252"></script>
+<script src="js/data-core.js?v202609120545"></script>
+<script>
+/* 历史批次异步加载（2026-09-12 提速改造：data.js 1.8MB 拆为 core 186KB + history 首屏后注入） */
+(function () {
+  function L() {
+    var s = document.createElement("script");
+    s.src = "js/data-history.js?h=f33601c172";
+    s.onload = function () {
+      try {
+        var q = location.search.indexOf("date=");
+        if (q >= 0) {
+          var d = location.search.substr(q + 5, 10);
+          if (typeof BATCHES !== "undefined" && BATCHES[d] && typeof selectDate === "function") { selectDate(d); return; }
+        }
+      } catch (e) {}
+      try { if (typeof mergeReviewExtra === "function") mergeReviewExtra(); } catch (e) {}
+      try { if (typeof renderAll === "function") renderAll(); } catch (e) {}
+    };
+    document.head.appendChild(s);
+  }
+  if (document.readyState === "complete") { setTimeout(L, 300); }
+  else { window.addEventListener("load", function () { setTimeout(L, 300); }); }
+})();
+</script>
+<script src="js/app.js?v202609120545"></script>
 </body>
 <!-- 密码门临时关闭（2026-09-08 用户要求）；恢复：去掉注释即可
-<script src="js/gate.js?v202609110252"></script>
+<script src="js/gate.js?v202609120545"></script>
 -->
 </html>
