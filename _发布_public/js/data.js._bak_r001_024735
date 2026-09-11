@@ -3575,10 +3575,9 @@ const BATCHES = {
   },
 
   "2026-09-10": {
-    title: "周四批 7 场（V11.44·首战）",
-    model: "规则驱动模型 V11.44",
-    reviewed: true,
-    reviewedCount: 1,
+    title: "周四批 7 场（V11.43·首战）",
+    model: "规则驱动模型 V11.43",
+    reviewed: false,
     updated: "2026-09-10",
     predict: {
       matches: [
@@ -4050,9 +4049,9 @@ const TEAM_RATING = [
 
 
 const GLOBAL_STATS = {
-  dir: "338/516", dirPct: "65.5%",
-  score: "164/516", scorePct: "31.8%",
-  ht: "320/516", htPct: "62.0%",
-  ou: "134/288", ouPct: "46.5%", ouNote: "自8/18批起累计",
-  updated: "2026-09-10-001复盘（首场）"
+  dir: "337/515", dirPct: "65.4%",
+  score: "163/515", scorePct: "31.7%",
+  ht: "319/515", htPct: "61.9%",
+  ou: "133/287", ouPct: "46.3%", ouNote: "自8/18批起累计",
+  updated: "2026-09-10-006~015复盘（批末）"
 };

@@ -500,7 +500,9 @@ function renderReview(batch) {
   const ouKpi = `<div class="kpi" style="background:rgba(217,119,6,.08);border-color:#d97706"><div class="num">${ouH}/${ouN} <span style="font-size:12px">${ouPct}</span></div><div class="lbl">⚽ 总进球命中</div></div>`;
   // 部分复盘 KPI：统一 x/y + 百分比（2026-08-23 用户要求：与总进球同款）
   const statCell = (hit, total) => total ? `${hit}/${total} <span style="font-size:12px">${Math.round(100 * hit / total)}%</span>` : `0/0 <span style="font-size:12px">—</span>`;
-  const statusTag = batch.reviewed
+  // 2026-09-11 修正：reviewed=true 但 reviewedCount<总数（逐场复盘进行中）时，禁标「完整复盘」
+  const partial = Number.isFinite(batch.reviewedCount) && batch.reviewedCount < totalN;
+  const statusTag = (batch.reviewed && !partial)
     ? `<span class="tag tag-green">完整复盘</span>`
     : `<span class="tag tag-yellow">部分复盘（已确认 ${confirmedN}/${totalN} 场）</span>`;
   // 2026-09-06 修复：batch.stats 缺失（近期 7 批遗漏）曾致 kpi 渲染 TypeError=整段被吞——无 stats 时走部分式 KPI 兜底
