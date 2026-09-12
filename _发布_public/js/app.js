@@ -227,6 +227,29 @@ function renderPredict(batch) {
   };
   // 全文加粗渲染：**X** → <b>X</b>，展开后重点一目了然
   const logicHtml = (l) => (l || "").replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+  // 结构化逐行渲染（2026-09-12 用户纠正：展开后密密麻麻一整坨 → 逐段/逐行显示，长段自动断点）
+  const logicBlocks = (l) => {
+    if (!l) return "-";
+    const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const b = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+    const out = [];
+    String(l).split(/\n+/).forEach(par => {
+      const t = par.trim();
+      if (!t) return;
+      (t.match(/[^①②③④⑤⑥⑦⑧⑨⑩]+|[①②③④⑤⑥⑦⑧⑨⑩][^①②③④⑤⑥⑦⑧⑨⑩]*/g) || [t]).forEach(seg => {
+        let s = seg.trim();
+        if (!s) return;
+        if (s.length > 240) {   // 老格式长段：按 **标签** 或 ； 断点
+          (s.split(/(?=\*\*[^*\n]{1,26}\*\*)/) || [s]).forEach(x => { const y = x.trim(); if (y) out.push(y); });
+        } else out.push(s);
+      });
+    });
+    return out.map(s => {
+      const plain = s.replace(/\*/g, "");
+      const key = /^(判定|结论|要点|方向|让位)/.test(plain) || /^\*\*(判定|结论|要点|方向|让位)/.test(s);
+      return `<div class="lm-line${key ? " is-key" : ""}">${b(s)}</div>`;
+    }).join("");
+  };
   // 展开=结构化要点（8/23 用户要求：点开后也是精简重点、关键信息要全、不展示天气）
   // 提取策略：加粗段优先匹配，加粗外全文补位（022 等场次伤停段不在加粗内）——四行=核心/关键/判定/重点
   const logicDetail = (l) => {
@@ -277,7 +300,7 @@ function renderPredict(batch) {
     root.innerHTML = `<div class="lm-card" onclick="event.stopPropagation()">
       <div class="lm-head"><b>📍 ${d.no}　${d.teams}</b><span class="lm-close" onclick="document.getElementById('lm-root').remove()">✕ 关闭</span></div>
       <div class="lm-body"><div class="lm-keys">${dt(d.lg)}</div>
-      <details class="lm-full"><summary>展开完整逻辑（小字，备查）</summary><div class="lm-full-body">${hl(d.lg)}</div></details></div>
+      <details class="lm-full" open><summary>完整逻辑（逐行·关键信息）</summary><div class="lm-full-body">${logicBlocks(d.lg)}</div></details></div>
     </div>`;
     root.addEventListener("click", () => root.remove());
     document.body.appendChild(root);
@@ -302,7 +325,7 @@ function renderPredict(batch) {
     <td data-l="概率" data-sf>${(() => { const v = coldProbOf(c); return v === null ? "-" : v + "%"; })()}</td><td data-l="场次" data-sf>${c.no} ${c.teams}${coldVerifyOf(c)}</td><td data-l="冷门方向">${shortDir(c.dir)}</td>
     <td data-l="核心逻辑" data-sf><details>
       <summary>${cut(c.logic || "-", 30)}</summary>
-      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicHtml(c.logic)}</div>
+      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicBlocks(c.logic)}</div>
     </details></td>
   </tr>`).join("");
 
@@ -334,7 +357,7 @@ function renderPredict(batch) {
     <td data-l="概率"><span class="num">${(() => { const v = alertProbOf(a); return v === null ? "-" : v + "%"; })()}</span></td>
     <td data-l="核心逻辑" data-sf><details>
       <summary>${cut(a.logic, 30) || "-"}</summary>
-      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicHtml(a.logic)}</div>
+      <div style="margin-top:6px;font-size:12.5px;color:var(--sub);line-height:1.8">${logicBlocks(a.logic)}</div>
     </details></td>
   </tr>`).join("");
 

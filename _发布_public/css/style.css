@@ -1058,6 +1058,16 @@ display: flex; align-items: center; justify-content: center;
 .lm-full summary { cursor: pointer; font-size: 13px; color: var(--sub); padding: 8px 0; }
 .lm-full[open] summary { color: var(--primary); }
 .lm-full-body { margin-top: 8px; font-size: 13.5px; color: var(--ink); line-height: 2; border-top: 1px dashed var(--border); padding-top: 10px; }
+/* 展开内容结构化渲染（2026-09-12 用户纠正：展开后密密麻麻一整段 → 逐标签成行 + 左侧引导线） */
+.lm-full-body { white-space: pre-wrap; }
+.lm-line { display: block; padding: 5px 0 5px 10px; border-left: 2px solid var(--border); margin: 5px 0; }
+.lm-line:hover { border-left-color: var(--primary); background: var(--hover); border-radius: 0 6px 6px 0; }
+.lm-line.is-key { border-left-color: var(--primary); background: color-mix(in srgb, var(--primary) 7%, transparent); }
+.lm-line.is-key b { color: var(--primary-dark); }
+.lm-sub { display: block; padding: 3px 0 3px 26px; margin: 2px 0; color: var(--sub); }
+.lm-sec { display: block; margin: 12px 0 4px; font-size: 12.5px; letter-spacing: .4px; color: var(--primary); font-weight: 700; }
+.lm-sec:first-child { margin-top: 2px; }
+.lm-keys .lm-line { font-size: 14.5px; }
 /* 原文可读性优化（2026-09-09：深色正文 + 主色加粗 + 段间距） */
 .lm-full-body b { color: var(--primary-dark); font-weight: 700; }
 .lm-full-body { letter-spacing: .1px; }
