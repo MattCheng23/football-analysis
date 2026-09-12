@@ -57,7 +57,7 @@ const BATCH_META = {
   "2026-09-09": { title: "周三批 15 场（V11.42·首战）", model: "规则驱动模型 V11.42", reviewed: true, updated: "2026-09-09", n: 57 },
   "2026-09-10": { title: "周四批 7 场（V11.44·首战）", model: "规则驱动模型 V11.44", reviewed: true, updated: "2026-09-10", n: 25 },
   "2026-09-11": { title: "周五批 12 场（V11.46·首战）", model: "规则驱动模型 V11.46", reviewed: true, updated: "2026-09-11", n: 31 },
-  "2026-09-12": { title: "周六批 10 场（V11.46·双档配额首用）", model: "规则驱动模型 V11.46", reviewed: false, updated: "2026-09-12", n: 27 },
+  "2026-09-12": { title: "周六批 10 场（V11.46·双档配额首用）", model: "规则驱动模型 V11.46", reviewed: true, updated: "2026-09-12", n: 27 },
 };
 
 const BATCHES = {
@@ -65,7 +65,8 @@ const BATCHES = {
   "2026-09-12": {
     title: "周六批 10 场（V11.46·双档配额首用）",
     model: "规则驱动模型 V11.46",
-    reviewed: false,
+    reviewed: true,
+    reviewedCount: 2,
     updated: "2026-09-12",
     predict: {
       matches: [
@@ -538,9 +539,9 @@ const TEAM_RATING = [
 
 
 const GLOBAL_STATS = {
-  dir: "349/534", dirPct: "65.4%",
-  score: "166/534", scorePct: "31.1%",
-  ht: "328/534", htPct: "61.4%",
-  ou: "142/306", ouPct: "46.4%", ouNote: "自8/18批起累计",
-  updated: "2026-09-11-012复盘"
+  dir: "351/536", dirPct: "65.5%",
+  score: "168/536", scorePct: "31.3%",
+  ht: "330/536", htPct: "61.6%",
+  ou: "144/308", ouPct: "46.8%", ouNote: "自8/18批起累计",
+  updated: "2026-09-12-001/002复盘"
 };
