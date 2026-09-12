@@ -3438,7 +3438,7 @@ const BATCHES = {
     title: "周二批 12 场（V11.41·首战）",
     model: "规则驱动模型 V11.41",
     reviewed: true,
-    reviewedCount: 12,
+    reviewedCount: 0,
     updated: "2026-09-08",
     predict: {
       matches: [
@@ -3674,7 +3674,7 @@ const BATCHES = {
     title: "周六批 30 场（V11.46·双档配额首用）",
     model: "规则驱动模型 V11.46",
     reviewed: true,
-    reviewedCount: 6,
+    reviewedCount: 11,
     updated: "2026-09-12",
     predict: {
       matches: [

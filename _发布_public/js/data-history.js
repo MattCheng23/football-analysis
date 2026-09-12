@@ -3434,7 +3434,7 @@ Object.assign(BATCHES, {
     title: "周二批 12 场（V11.41·首战）",
     model: "规则驱动模型 V11.41",
     reviewed: true,
-    reviewedCount: 12,
+    reviewedCount: 0,
     updated: "2026-09-08",
     predict: {
       matches: [
