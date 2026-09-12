@@ -3674,7 +3674,7 @@ const BATCHES = {
     title: "周六批 30 场（V11.46·双档配额首用）",
     model: "规则驱动模型 V11.46",
     reviewed: true,
-    reviewedCount: 2,
+    reviewedCount: 3,
     updated: "2026-09-12",
     predict: {
       matches: [
