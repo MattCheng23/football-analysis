@@ -14,7 +14,7 @@ def load_matches():
     dj = (R / "data.js").read_text(encoding='utf-8')
     k = dj.index('"2026-09-12": {')
     nxt = re.search(r'\n  "20\d{2}-\d{2}-\d{2}": \{', dj[k + 10:])
-    blk = dj[k: k + 10 + (nxt.start() if nxt else 60000)]
+    blk = dj[k: k + 10 + (nxt.start() if nxt else len(dj) - k)]   # 0912 为末批，兜底须到文件尾（60000 会截断尾部场次）
     mi = blk.find('matches: [')
     op = blk.index('[', mi)
     depth = 0
