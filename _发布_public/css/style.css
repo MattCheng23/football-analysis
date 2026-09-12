@@ -12,6 +12,8 @@
 --sub: #5a6b80;   /* P0-2 亮色次要文字（#fdfeff 上 ≈5.3:1） */
 --primary: #4a7bb5;
 --primary-dark: #3a6697;
+--primary-solid: #3a6697;   /* P0-1 实心主色底（白字 5.95:1） */
+--on-primary: #ffffff;
 --primary-soft: rgba(74, 123, 181, .08);
 --gold: #5aa3a8;
 --gold-bright: #6fb4b9;
@@ -34,7 +36,7 @@
 --header-glow: rgba(111, 180, 185, .24);
 --toggle-bg: #dde8f4;
 --toggle-ink: #3a6697;
---footer-ink: #8ba0b6;
+--footer-ink: #55657a;   /* P0-2 页脚（叠 opacity .7 后仍 ≥4.5:1） */
 --footer-line: rgba(74, 123, 181, .14);
 --mono: "Consolas", "SF Mono", "Cascadia Mono", "Menlo", "Courier New", monospace;
 --font-body: "Smiley Sans Oblique", "Segoe UI", "HarmonyOS Sans SC", "MiSans", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
@@ -51,6 +53,8 @@ html.dark { /* 次风格=赛博 HUD：深空黑 + 霓虹青/荧光粉（保留�
 --sub: #8fa3bd;   /* P0-2 暗色次要文字（#0b1120 上 ≈6.6:1） */
 --primary: #00e5ff;
 --primary-dark: #00b8d4;
+--primary-solid: #00e5ff;   /* P0-1 实心主色底（深字 12.19:1） */
+--on-primary: #04141a;
 --primary-soft: rgba(0, 229, 255, .08);
 --gold: #ff2d78;
 --gold-bright: #ff6a9f;
@@ -73,7 +77,7 @@ html.dark { /* 次风格=赛博 HUD：深空黑 + 霓虹青/荧光粉（保留�
 --header-glow: rgba(0, 229, 255, .14);
 --toggle-bg: #0e1628;
 --toggle-ink: #00e5ff;
---footer-ink: #4e6886;
+--footer-ink: #9fb2c9;   /* P0-2 页脚（暗色） */
 --footer-line: rgba(0, 229, 255, .14);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -369,7 +373,7 @@ transition: all .15s; line-height: 1.35; font-weight: 600;
 .batch-overview .bo-c b { color: #c2544e; }
 .batch-overview .bo-done b { color: var(--primary); }
 .batch-overview .bo-lg { display: inline-flex; align-items: center; gap: 4px; }
-.batch-overview .bo-lg .lg { font-size: 11px; padding: 1.5px 8px; }
+.batch-overview .bo-lg .lg { font-size: 12px; padding: 1.5px 8px; }
 .batch-overview .bo-lg b { font-family: var(--font-num); font-size: 12.5px; }
 .batch-overview .bo-done {
 background: color-mix(in srgb, var(--primary) 7%, transparent);
@@ -477,7 +481,7 @@ html.dark .rv-badge { color: var(--primary); }
 .rv-flags { display: flex; gap: 4px; margin-top: 5px; }
 .rv-flag {
 display: inline-flex; align-items: center; justify-content: center;
-font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 5px;
+font-size: 12px; font-weight: 800; padding: 1px 7px; border-radius: 5px;
 font-family: var(--font-num); letter-spacing: .3px; line-height: 1.5;
 }
 .rv-hit { background: var(--risk-ok-bg); color: var(--risk-ok); border: 1px solid color-mix(in srgb, var(--risk-ok) 30%, transparent); }
@@ -533,7 +537,7 @@ align-items: center; justify-content: center; pointer-events: none;
 font-size: 21px; font-family: var(--font-num); font-weight: 700; color: var(--primary);
 font-variant-numeric: tabular-nums; letter-spacing: .5px; line-height: 1.15;
 }
-.ring-num span { font-size: 11px; color: var(--sub); margin-top: 2px; }
+.ring-num span { font-size: 12px; color: var(--sub); margin-top: 2px; }
 html.dark .ring-num b { text-shadow: 0 0 12px rgba(76, 195, 221, .2); }
 .prob-bar { display: flex; align-items: center; gap: 10px; }
 .prob-track { flex: 1; height: 8px; background: var(--thead-bg); border-radius: 6px; overflow: hidden; }
@@ -578,7 +582,7 @@ margin: 14px 0 18px; padding: 14px 16px;
 background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow);
 }
 .avoid-league h4 { margin: 0 0 10px; font-size: 13.5px; color: var(--ink); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-.avoid-league-hint { font-size: 11px; color: var(--sub); font-weight: 400; }
+.avoid-league-hint { font-size: 12px; color: var(--sub); font-weight: 400; }
 /* 联赛分级条形列表（2026-08-23 重排：全量排序+分级配色+图例） */
 .avoid-lg-grid {
 display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 26px; margin-top: 12px;
@@ -594,7 +598,7 @@ padding-top: 12px; border-top: 1px dashed var(--border);
 .avoid-lbar-fill.mid { background: linear-gradient(90deg, color-mix(in srgb, var(--risk-mid) 45%, transparent), var(--risk-mid)); }
 .avoid-lbar-fill.low { background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 38%, transparent), var(--primary)); }
 .avoid-lbar-num { min-width: 44px; font-size: 13px; font-weight: 800; color: var(--ink); white-space: nowrap; }
-.avoid-lg-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin-top: 12px; font-size: 11px; color: var(--sub); }
+.avoid-lg-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin-top: 12px; font-size: 12px; color: var(--sub); }
 .avoid-lg-legend-note { opacity: .8; }
 .lgdot { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 5px; }
 .lgdot-hot { background: var(--risk-high); }
@@ -612,7 +616,7 @@ border-radius: 12px; box-shadow: var(--shadow); transition: border-color .15s;
 .avoid-sec > summary:hover { border-color: var(--primary); }
 .avoid-sec.sec-high > summary { color: var(--risk-high); border-left: 4px solid var(--risk-high); }
 .avoid-sec.sec-watch > summary { color: var(--risk-mid); border-left: 4px solid var(--risk-mid); }
-.avoid-sec-hint { margin-left: auto; font-size: 11px; font-weight: 400; color: var(--sub); }
+.avoid-sec-hint { margin-left: auto; font-size: 12px; font-weight: 400; color: var(--sub); }
 .avoid-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; margin-top: 12px; }
 .avoid-item { background: var(--card); border: 1px solid var(--border); border-radius: 11px; box-shadow: var(--shadow); transition: border-color .15s; overflow: hidden; }
 .avoid-item:hover { border-color: var(--primary); }
@@ -641,15 +645,15 @@ html.dark .avoid-stat.st-blue .avoid-stat-num { color: #7db1ff; }
 .avoid-lg-cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .avoid-lg-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px 3px 4px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; transition: border-color .15s; }
 .avoid-lg-badge:hover { border-color: var(--primary); }
-.avoid-lg-cnt { font-size: 11px; font-weight: 800; color: var(--risk-mid); }
+.avoid-lg-cnt { font-size: 12px; font-weight: 800; color: var(--risk-mid); }
 .avoid-lg-badge.lgc-mid .avoid-lg-cnt { color: var(--risk-mid); }
 .avoid-lg-badge.lgc-hot { border-color: color-mix(in srgb, var(--risk-high) 50%, transparent); background: color-mix(in srgb, var(--risk-high) 6%, var(--card)); }
 .avoid-lg-badge.lgc-hot .avoid-lg-cnt { color: var(--risk-high); }
 .avoid-item-name { font-size: 14px; font-weight: 800; color: var(--ink); }
 .m-team { font-size: 14px; font-weight: 800; font-family: var(--font-title); color: var(--ink); letter-spacing: .3px; }
 .avoid-item-lg { margin-left: auto; }
-.avoid-item-lg .lg { font-size: 11px; padding: 1.5px 8px; }
-.avoid-item-arrow { font-size: 11px; color: var(--sub); transition: transform .2s; }
+.avoid-item-lg .lg { font-size: 12px; padding: 1.5px 8px; }
+.avoid-item-arrow { font-size: 12px; color: var(--sub); transition: transform .2s; }
 .avoid-item[open] .avoid-item-arrow { transform: rotate(90deg); }
 .avoid-item-body {
 font-size: 12.5px; color: var(--ink); line-height: 1.65;
@@ -727,7 +731,7 @@ width: 5px; height: 5px; border-radius: 50%; z-index: 2;
 .cal-dot.done { background: var(--risk-ok); box-shadow: 0 0 0 1.5px var(--card); }
 .cal-dot.pending { background: var(--gold); box-shadow: 0 0 0 1.5px var(--card); }
 .cal-cell.current .cal-dot.done, .cal-cell.current .cal-dot.pending { background: #fff; }
-.cal-legend { display: flex; gap: 14px; justify-content: center; font-size: 11px; color: var(--sub); margin-top: 10px; }
+.cal-legend { display: flex; gap: 14px; justify-content: center; font-size: 12px; color: var(--sub); margin-top: 10px; }
 .cal-legend span { display: inline-flex; align-items: center; gap: 5px; }
 .cal-legend .cal-dot { position: static; transform: none; width: 8px; height: 8px; }
 .cal-legend .cal-dot.done { box-shadow: none; }
@@ -746,12 +750,12 @@ display: block; font-family: var(--font-num); font-size: 22px; font-weight: 700;
 color: var(--primary); font-variant-numeric: tabular-nums; letter-spacing: 1px;
 }
 html.dark .site-stat .ss-num { text-shadow: 0 0 12px rgba(76, 195, 221, .2); }
-.site-stat .ss-lbl { display: block; font-size: 11px; color: var(--sub); margin-top: 2px; letter-spacing: .5px; }
+.site-stat .ss-lbl { display: block; font-size: 12px; color: var(--sub); margin-top: 2px; letter-spacing: .5px; }
 .trend-row { display: flex; gap: 8px; align-items: flex-end; height: 130px; margin-top: 14px; padding: 10px 6px 0; }
 .trend-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; min-width: 0; }
 .trend-bar { width: 72%; background: linear-gradient(180deg, #16a34a, #4ade80); border-radius: 5px 5px 0 0; min-height: 5px; transition: height .3s; }
 html.dark .trend-bar { background: linear-gradient(180deg, #22c55e, #4ade80); box-shadow: 0 0 8px rgba(34, 197, 94, .35); }
-.trend-lbl { font-size: 11px; font-weight: 700; color: var(--primary); font-family: var(--font-num); }
+.trend-lbl { font-size: 12px; font-weight: 700; color: var(--primary); font-family: var(--font-num); }
 .trend-date { font-size: 11.5px; color: var(--sub); max-width: 44px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 th.sort-on { position: relative; }
 th.sort-on::after {
@@ -795,7 +799,7 @@ border-radius: 22px; padding: 5px 15px; font-size: 12.5px; color: var(--ink);
 transition: all .15s; box-shadow: var(--shadow);
 }
 .footer-author .author-contact span:hover { border-color: var(--gold); color: var(--primary); transform: translateY(-1px); }
-.footer-note { opacity: .7; font-size: 11.5px; }
+.footer-note { opacity: 1; font-size: 11.5px; }
 .footer-disclaimer {
 max-width: 720px; margin: 14px auto 0; padding: 10px 16px;
 font-size: 11.5px; line-height: 1.7; opacity: .75;
@@ -928,7 +932,7 @@ header.site .sub { font-size: 12px; margin-bottom: 6px; }
 .table-wrap tbody tr.rv-row { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px 6px; }
 .table-wrap tbody tr.rv-row td[data-l="场次"], .table-wrap tbody tr.rv-row td[data-l="赛果（半场）"] { grid-column: 1 / -1; }
 .table-wrap tbody tr.rv-row td { font-size: 12px; }
-.table-wrap tbody tr.rv-row td .tag { font-size: 11px; padding: 2px 5px; max-width: 100%; }
+.table-wrap tbody tr.rv-row td .tag { font-size: 12px; padding: 2px 5px; max-width: 100%; }
 }
 @media (max-width: 480px) {
 .card { padding: 12px 10px; }
@@ -949,7 +953,7 @@ html.dark body { background: #fff !important; color: #000 !important; }
 html.dark .card { background: #fff !important; }
 html.dark .card::before, html.dark .card::after { display: none; }
 }
-.match-time{color:#8a94a6;font-size:13.5px;letter-spacing:.3px}
+.match-time{color:var(--sub);font-size:13.5px;letter-spacing:.3px}
 .mt-line{display:flex;align-items:center;gap:8px;margin-top:4px;line-height:1.4}
 details { position: relative; }
 details > summary {
@@ -990,7 +994,7 @@ background: var(--gold-bg); color: var(--gold-deep);
 transition: transform .15s, box-shadow .15s;
 }
 .updlog-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-hover); }
-.updlog-btn b { background: #dc2626; color: #fff; border-radius: 10px; padding: 0 6px; font-size: 11px; line-height: 16px; }
+.updlog-btn b { background: #dc2626; color: #fff; border-radius: 10px; padding: 0 6px; font-size: 12px; line-height: 16px; }
 .updlog-dropdown {
 position: absolute; top: calc(100% + 8px); right: 0; z-index: 50;
 width: min(480px, calc(100vw - 32px));
@@ -1709,7 +1713,7 @@ html.dark .dir-pill {
     align-items: center;
     gap: 6px;
   }
-  .batch-header .badge { font-size: 11px !important; padding: 4px 10px !important; }
+  .batch-header .badge { font-size: 12px !important; padding: 4px 10px !important; }
   .batch-nav { padding: 6px 12px !important; font-size: 12.5px !important; min-height: 34px; }
 
   /* ---- 5. 等级筛选：横滑单行 ---- */
@@ -1820,10 +1824,10 @@ html.dark .dir-pill {
   /* ② 头部：再压缩（标题+副标题+徽章一行搞定） */
   header.site { padding: 12px 0 14px !important; }
   header.site h1 { font-size: 19px !important; margin-bottom: 4px !important; }
-  header.site .sub { font-size: 11px; -webkit-line-clamp: 1; margin-bottom: 8px !important; }
+  header.site .sub { font-size: 12px; -webkit-line-clamp: 1; margin-bottom: 8px !important; }
   .header-top { margin-bottom: 6px; }
   .header-hero-stats { margin-top: 8px !important; gap: 6px !important; }
-  .header-hero-stat { padding: 5px 11px !important; font-size: 11px !important; }
+  .header-hero-stat { padding: 5px 11px !important; font-size: 12px !important; }
   .header-hero-stat b { font-size: 12px; }
 
   /* ③ 卡片：更紧凑 */
@@ -1835,7 +1839,7 @@ html.dark .dir-pill {
   .kpi.ring-kpi { padding: 12px 8px !important; }
   .ring-wrap svg { width: 82px !important; height: 82px !important; }
   .ring-num b { font-size: 19px !important; }
-  .ring-num span { font-size: 10.5px !important; }
+  .ring-num span { font-size: 12px !important; }
   .kpi .lbl, .ring-kpi .lbl { font-size: 11.5px !important; }
 
   /* ⑤ 口径切换：触控友好 */
@@ -1903,7 +1907,7 @@ html.dark .dir-pill {
   .table-wrap tbody td::before {
     content: attr(data-l);
     display: block;
-    font-size: 10px;
+    font-size: 11.5px;
     font-weight: 600;
     letter-spacing: .3px;
     color: var(--sub);
@@ -1934,7 +1938,7 @@ html.dark .dir-pill {
   .table-wrap tbody td.score-nums,
   .table-wrap tbody td[data-l="总进球"] { font-size: 13px !important; font-weight: 700 !important; letter-spacing: .3px; }
   .table-wrap tbody td[data-l="半全场 TOP3"] { font-size: 12.5px !important; font-weight: 600 !important; }
-  .table-wrap tbody td[data-l="方向"] .dir-pill { font-size: 11px !important; padding: 2px 8px !important; }
+  .table-wrap tbody td[data-l="方向"] .dir-pill { font-size: 12px !important; padding: 2px 8px !important; }
   /* 假赛分环形：紧凑（浮动位置见上方绝对定位） */
   .table-wrap tbody td[data-l="假赛分"] .risk-ring { width: 32px !important; height: 32px !important; }
   .table-wrap tbody td[data-l="假赛分"] .risk-ring b { font-size: 11.5px !important; }
@@ -1944,7 +1948,7 @@ html.dark .dir-pill {
   .table-wrap tbody td[data-l="信号"] { grid-column: 1 / -1; }
   /* 复盘表里的判定胶囊：紧凑 inline */
   .table-wrap tbody td .tag, .table-wrap tbody td .hit-tag {
-    font-size: 11px !important;
+    font-size: 12px !important;
     padding: 1px 7px !important;
     border-radius: 6px !important;
   }
@@ -1966,8 +1970,8 @@ html.dark .dir-pill {
 
   /* ---- 页脚：两行紧凑 ---- */
   .footer-author .author-contact { gap: 10px; }
-  .footer-author .author-contact span { font-size: 11px; padding: 4px 10px; }
-  .footer-note, .footer-disclaimer { font-size: 10.5px; line-height: 1.7; }
+  .footer-author .author-contact span { font-size: 12px; padding: 4px 10px; }
+  .footer-note, .footer-disclaimer { font-size: 12px; line-height: 1.7; }
 }
 
 /* ============================================================
@@ -2412,7 +2416,7 @@ html.dark .viz-donut::after { background: rgba(11,17,32,.92); }
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-.viz-donut-inner span { font-size: 10.5px; color: var(--sub); letter-spacing: .5px; }
+.viz-donut-inner span { font-size: 12px; color: var(--sub); letter-spacing: .5px; }
 
 /* 图例 */
 .viz-legend { display: flex; flex-direction: column; gap: 9px; min-width: 190px; }
@@ -2479,7 +2483,7 @@ html.dark .viz-kpi { background: rgba(14,22,40,.6); border-color: rgba(0,229,255
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-.viz-kpi span { font-size: 11px; color: var(--sub); letter-spacing: .3px; white-space: nowrap; }
+.viz-kpi span { font-size: 12px; color: var(--sub); letter-spacing: .3px; white-space: nowrap; }
 
 @media (max-width: 900px) {
   .viz-panel { gap: 16px; }
