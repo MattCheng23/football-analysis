@@ -187,7 +187,7 @@ function renderPredict(batch) {
     const revHt = m.ht.replace(/([胜负平]{2})\*/g, '<span class="rev-score">$1*</span>');
     const lv = (m.dir.match(/([ABC])级/) || [])[1] || "";
     return `<tr data-lvl="${lv.toLowerCase()}">
-    <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${m.home} vs ${m.away}</b><span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span><span class="match-time" style="font-size:11px;flex-shrink:0">🕐 ${m.time || "-"}</span></span></td>
+    <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${m.home} vs ${m.away}</b><span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span><span class="match-time" style="font-size:12px;flex-shrink:0">🕐 ${m.time || "-"}</span></span></td>
     <td class="${lvlClass(m.dir)}" data-l="方向"><span class="dir-pill">${shortDir(m.dir)}</span></td>
     <td class="score-nums" data-l="比分 TOP3">${revHtml}</td>
     <td data-l="半全场 TOP3">${revHt}</td>
@@ -360,7 +360,7 @@ function renderPredict(batch) {
 
   // 核心逻辑速览：自动提取关键信息（方向/伤停/天气）预览 + 点击展开全文（加粗渲染）
   const logicRows = sorted.map(m => `<tr>
-    <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${m.home} vs ${m.away}</b>${m.time ? `<span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span><span class="match-time" style="font-size:11px;flex-shrink:0">🕐 ${m.time}</span>` : ""}</span></td>
+    <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${m.home} vs ${m.away}</b>${m.time ? `<span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span><span class="match-time" style="font-size:12px;flex-shrink:0">🕐 ${m.time}</span>` : ""}</span></td>
     <td data-l="核心逻辑" data-sf><button class="logic-btn" data-no="${m.no}" data-teams="${m.home} vs ${m.away}" data-lg="${(m.logic || "").replace(/"/g, "&quot;")}" onclick="openLogicModal(this)">${logicKey(m.logic)}</button></td>
   </tr>`).join("");
 
@@ -558,7 +558,7 @@ function renderReview(batch) {
     const nms = (m.teams || "").split(" vs ");
     const homeNm = nms[0] || "", awayNm = nms[1] || "";
     return `<tr class="rv-row${m.d === "ok" ? " ok-row" : ""}">
-      <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${homeNm} vs ${awayNm}</b><span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span>${pm && pm.time ? `<span class="match-time" style="font-size:11px;flex-shrink:0">🕐 ${pm.time}</span>` : ""}</span></td>
+      <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${homeNm} vs ${awayNm}</b><span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span>${pm && pm.time ? `<span class="match-time" style="font-size:12px;flex-shrink:0">🕐 ${pm.time}</span>` : ""}</span></td>
       <td data-l="赛果（半场）" data-sf><b>${m.score}</b></td>
       <td data-l="方向">${dTag(m.d)}</td>
       <td data-l="比分">${hitTag(sTop)}</td>
@@ -736,7 +736,7 @@ function renderLeagueStats() {
     if (m.s === "ok") map[lg].s++;
     if (m.h === "ok") map[lg].h++;
   });
-  const cell = (ok, t) => `${ok}/${t} <span style="font-size:11px;color:var(--sub)">(${Math.round(100 * ok / Math.max(1, t))}%)</span>`;
+  const cell = (ok, t) => `${ok}/${t} <span style="font-size:12px;color:var(--sub)">(${Math.round(100 * ok / Math.max(1, t))}%)</span>`;
   const rows = Object.keys(map).sort((a, z) => map[z].t - map[a].t).map(lg => {
     const r = map[lg];
     return `<tr>
@@ -1020,7 +1020,7 @@ function renderAvoid() {
         <span class="avoid-item-ic">${d.ic}</span>
         <span class="avoid-item-name">${a.t}</span>
         <span class="avoid-item-lg">${lgBadge((a.lg || "").split(",")[0])}</span>
-        <span style="margin-left:8px;font-size:11px;opacity:.7">${meta}</span>
+        <span style="margin-left:8px;font-size:12px;opacity:.7">${meta}</span>
         <span class="tag ${d.cls}">${d.tag}</span>
         <span class="avoid-item-arrow">▸</span>
       </summary>
@@ -1111,7 +1111,7 @@ function renderAvoidSearch(q) {
       <span class="avoid-item-ic">${d[0].split(" ")[0]}</span>
       <span class="avoid-item-name">${a.t}</span>
       <span class="avoid-item-lg">${lgBadge((a.lg || "").split(",")[0])}</span>
-      <span style="margin-left:8px;font-size:11px;opacity:.7">场次${a.p} · 三指标${a.tp} · 红${a.r}/黑${a.b}</span>
+      <span style="margin-left:8px;font-size:12px;opacity:.7">场次${a.p} · 三指标${a.tp} · 红${a.r}/黑${a.b}</span>
       <span class="tag ${d[1]}">${d[0]}</span>
     </summary><div class="avoid-item-body">${a.rs || ""}</div></details>`;
   };
