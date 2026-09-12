@@ -538,9 +538,9 @@ const TEAM_RATING = [
 
 
 const GLOBAL_STATS = {
-  dir: "348/533", dirPct: "65.3%",
-  score: "166/533", scorePct: "31.1%",
-  ht: "328/533", htPct: "61.5%",
-  ou: "142/305", ouPct: "46.6%", ouNote: "自8/18批起累计",
-  updated: "2026-09-11-011复盘"
+  dir: "349/534", dirPct: "65.4%",
+  score: "166/534", scorePct: "31.1%",
+  ht: "328/534", htPct: "61.4%",
+  ou: "142/306", ouPct: "46.4%", ouNote: "自8/18批起累计",
+  updated: "2026-09-11-012复盘"
 };
