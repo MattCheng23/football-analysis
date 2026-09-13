@@ -3775,7 +3775,7 @@ const BATCHES = {
     title: "周日批 22 场（V11.47·大比分义务档首用）",
     model: "规则驱动模型 V11.47",
     reviewed: true,
-    reviewedCount: 8,
+    reviewedCount: 9,
     updated: "2026-09-13",
     predict: {
       matches: [
