@@ -1001,7 +1001,9 @@ function lgCls(lg) { return LG_CLS[lg] || "lg-other"; }
 function lgBadge(lg, small) {
   return `<span class="lg ${small ? "lg-sm " : ""}${lgCls(lg)}">${lg || ""}</span>`;
 }
-/* 球队参赛赛事徽标（2026-09-13：一支队可能跨多个赛事，红黑榜以队伍为单位，不再固定到单一联赛） */
+/* 球队参赛赛事徽标（2026-09-13：一支队可能跨多个赛事，红黑榜以队伍为单位，不再固定到单一联赛）
+   注：2026-09-13 二次修正——红黑榜改成「只显示队名」（用户反馈联赛徽标堆砌太乱），
+   故榜单/搜索结果不再渲染赛事徽标；本函数保留供其他需要多赛事并列的场景使用。 */
 function lgList(lg, small) {
   const arr = String(lg || "").split(",").map(x => x.trim()).filter(Boolean);
   if (!arr.length) return `<span class="lg ${small ? "lg-sm " : ""}lg-other">—</span>`;
@@ -1021,7 +1023,6 @@ function renderAvoid() {
     <div class="avoid-tbar">
       <span class="avoid-tbar-no">${i + 1}</span>
       <span class="avoid-tbar-name">${a.t}</span>
-      <span class="avoid-tbar-lg">${lgList(a.lg, true)}</span>
       <div class="avoid-tbar-track"><div class="avoid-tbar-fill ${a.g === "B2" ? "hot" : "mid"}" style="width:${Math.round(100 * a.b / rankMax)}%"></div></div>
       <span class="avoid-tbar-num" title="黑${a.b} · 红${a.r} · 场次${a.p} · 三指标${a.tp}">黑${a.b}<span class="avoid-tbar-sub"> ·红${a.r} ·${a.p}场</span></span>
       <span class="tag ${a.g === "B2" ? "tag-red" : "tag-yellow"}">${a.g === "B2" ? "🔴 黑榜" : "🟡 偏黑"}</span>
@@ -1046,7 +1047,6 @@ function renderAvoid() {
       <summary>
         <span class="avoid-item-ic">${d.ic}</span>
         <span class="avoid-item-name">${a.t}</span>
-        <span class="avoid-item-lg">${lgList(a.lg)}</span>
         <span style="margin-left:8px;font-size:12px;opacity:.7">${meta}</span>
         <span class="tag ${d.cls}">${d.tag}</span>
         <span class="avoid-item-arrow">▸</span>
@@ -1084,7 +1084,7 @@ function renderAvoid() {
 
       <!-- 队伍黑榜排名（2026-09-13 替换原「黑榜+偏黑联赛分布」：红黑榜以队伍为单位） -->
       <div class="avoid-rank" id="avoidRank">
-        <h4>🔴 队伍黑榜排名 <span class="avoid-league-hint">（按黑分降序·同分按场次；一支队跨多赛事时并列展示全部参赛赛事。共 ${rankTeams.length} 队有黑分记录）</span></h4>
+        <h4>🔴 队伍黑榜排名 <span class="avoid-league-hint">（按黑分降序·同分按场次。共 ${rankTeams.length} 队有黑分记录）</span></h4>
         ${rankTeams.length ? `<div class="avoid-rank-grid">${rankBody}</div>
         <div class="avoid-lg-legend"><span class="lgdot lgdot-hot"></span>🔴 黑榜（黑≥3）　<span class="lgdot lgdot-mid"></span>🟡 偏黑（黑1-2）　<span class="avoid-lg-legend-note">（黑分=演戏/剧本嫌疑计分，累计自各批复盘；点队伍可展开其完整记录）</span></div>` : '<div class="note">暂无黑分记录</div>'}
       </div>
@@ -1155,7 +1155,6 @@ function renderAvoidSearch(q) {
     return `<details class="avoid-item ${d[2]}"><summary>
       <span class="avoid-item-ic">${d[0].split(" ")[0]}</span>
       <span class="avoid-item-name">${a.t}${note ? `<span class="avoid-alias-note">${note}</span>` : ""}</span>
-      <span class="avoid-item-lg">${lgList(a.lg)}</span>
       <span style="margin-left:8px;font-size:12px;opacity:.7">场次${a.p} · 三指标${a.tp} · 红${a.r}/黑${a.b}</span>
       <span class="tag ${d[1]}">${d[0]}</span>
     </summary><div class="avoid-item-body">${a.rs || ""}</div></details>`;
