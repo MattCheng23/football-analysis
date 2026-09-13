@@ -1058,7 +1058,7 @@ function renderAvoid() {
   el.innerHTML = `
     <div class="card">
       <h2><span class="icon">🚨</span> 队伍红黑总榜（R358 · 假赛风险评估）</h2>
-      <div class="note">赛前分析看双方评级：双红榜=放心正路；任一黑方参与=抓鬼重点。红榜=正路稳定不演戏（三指标全中），黑榜=演戏/剧本嫌疑（避雷/危险信号）。当前 ${R.length} 队（7/21-8/16 全 26 批次聚合），中性 ${n.length} 队未展示。</div>
+      <div class="note">赛前分析看双方评级：双红榜=放心正路；任一黑方参与=抓鬼重点。红榜=正路稳定不演戏（三指标全中），黑榜=演戏/剧本嫌疑（避雷/危险信号）。当前 ${R.length} 队（7/21-9/12 已复盘批次聚合·同队简称/全称已归并），中性 ${n.length} 队未展示。</div>
 
       <!-- 队伍搜索 -->
       <div class="avoid-search">
