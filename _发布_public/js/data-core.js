@@ -58,15 +58,15 @@ const BATCH_META = {
   "2026-09-10": { title: "周四批 7 场（V11.44·首战）", model: "规则驱动模型 V11.44", reviewed: true, updated: "2026-09-10", n: 25 },
   "2026-09-11": { title: "周五批 12 场（V11.46·首战）", model: "规则驱动模型 V11.46", reviewed: true, updated: "2026-09-11", n: 31 },
   "2026-09-12": { title: "周六批 30 场（V11.46·双档配额首用）", model: "规则驱动模型 V11.46", reviewed: true, updated: "2026-09-12", n: 86 },
-  "2026-09-13": { title: "周日批 22 场（V11.47·大比分义务档首用）", model: "规则驱动模型 V11.47", reviewed: false, updated: "2026-09-13", n: 68 },
+  "2026-09-13": { title: "周日批 22 场（V11.47·大比分义务档首用）", model: "规则驱动模型 V11.47", reviewed: true, updated: "2026-09-13", n: 68 },
 };
 
 const BATCHES = {
   "2026-09-13": {
     title: "周日批 22 场（V11.47·大比分义务档首用）",
     model: "规则驱动模型 V11.47",
-    reviewed: false,
-    reviewedCount: 0,
+    reviewed: true,
+    reviewedCount: 2,
     updated: "2026-09-13",
     predict: {
       matches: [
