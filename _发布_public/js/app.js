@@ -1135,17 +1135,19 @@ function renderAvoidSearch(q) {
     return;
   }
   // 命中匹配（队名归一化：简称/全称经 TEAM_ALIAS 互认，2026-09-13 修复「简称全称分裂」导致搜不到）
+  // 2026-09-13 二次修正：原实现用「子串包含」双向匹配，短别名（如 利雅得/佐加/AIK/胡巴）会把
+  // 不相关队误标「别名匹配」（搜「利雅得体育」时 利雅得新月 被误标）。改为：只有「关键词本身是
+  // 某别名的键（或以键为前缀）」时，才把该别名的正名标注为别名命中。
   const AL = (typeof TEAM_ALIAS !== "undefined") ? TEAM_ALIAS : {};
-  const alt = new Set([kw]);
-  Object.keys(AL).forEach(a => {
-    const al = a.toLowerCase(), cl = String(AL[a]).toLowerCase();
-    if (al.includes(kw) || kw.includes(al)) alt.add(cl);
-    if (cl.includes(kw) || kw.includes(cl)) alt.add(al);
+  const targets = new Set();
+  Object.keys(AL).forEach(k => {
+    const kl = k.toLowerCase();
+    if (kl === kw || kl.indexOf(kw) === 0 || kl.includes(kw)) targets.add(String(AL[k]).toLowerCase());
   });
   const hitOf = (a) => {
     const t = (a.t || "").toLowerCase(), lg = (a.lg || "").toLowerCase();
     if (t.includes(kw) || lg.includes(kw)) return "";
-    for (const k of alt) { if (k !== kw && t.includes(k)) return "（别名匹配）"; }
+    if (targets.has(t)) return "（别名匹配）";
     return null;
   };
   const hits = R.map(a => [a, hitOf(a)]).filter(x => x[1] !== null);
