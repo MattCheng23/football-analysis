@@ -604,6 +604,26 @@ padding-top: 12px; border-top: 1px dashed var(--border);
 .lgdot-hot { background: var(--risk-high); }
 .lgdot-mid { background: var(--risk-mid); }
 .lgdot-low { background: var(--primary); }
+
+/* ═══ 队伍黑榜排名（2026-09-13 替换「黑榜+偏黑联赛分布」：红黑榜以队伍为单位）═══ */
+.avoid-rank { margin: 18px 0 6px; padding: 16px 18px; border-radius: var(--r-lg); background: var(--card); border: 1px solid var(--border); }
+.avoid-rank h4 { margin: 0 0 12px; font-size: 13.5px; color: var(--ink); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.avoid-rank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+@media (max-width: 860px) { .avoid-rank-grid { grid-template-columns: 1fr; } }
+.avoid-rank-col { display: flex; flex-direction: column; gap: 8px; }
+.avoid-tbar { display: flex; align-items: center; gap: 8px; }
+.avoid-tbar-no { flex: 0 0 22px; text-align: right; font-size: 11.5px; font-weight: 800; color: var(--sub); font-variant-numeric: tabular-nums; }
+.avoid-tbar-name { flex: 0 0 96px; font-size: 12.5px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.avoid-tbar-lg { flex: 0 0 auto; max-width: 132px; display: flex; flex-wrap: wrap; gap: 3px; overflow: hidden; }
+.avoid-tbar-lg .lg-sm { font-size: 10px; padding: 1px 5px; }
+.avoid-tbar-track { flex: 1 1 40px; min-width: 32px; height: 14px; border-radius: 7px; background: color-mix(in srgb, var(--border) 55%, transparent); overflow: hidden; }
+.avoid-tbar-fill { height: 100%; border-radius: 7px; transition: width .5s; }
+.avoid-tbar-fill.hot { background: linear-gradient(90deg, color-mix(in srgb, var(--risk-high) 42%, transparent), var(--risk-high)); }
+.avoid-tbar-fill.mid { background: linear-gradient(90deg, color-mix(in srgb, var(--risk-mid) 45%, transparent), var(--risk-mid)); }
+.avoid-tbar-num { flex: 0 0 auto; font-size: 12px; font-weight: 800; color: var(--ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.avoid-tbar-sub { font-weight: 500; color: var(--sub); font-size: 11px; }
+.avoid-tbar .tag { flex: 0 0 auto; font-size: 10.5px; padding: 1px 6px; }
+.avoid-alias-note { margin-left: 6px; font-size: 11px; font-weight: 500; color: var(--sub); }
 .avoid-sec { margin-top: 16px; }
 .avoid-sec > summary {
 cursor: pointer; list-style: none; user-select: none;

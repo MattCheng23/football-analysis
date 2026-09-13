@@ -1001,6 +1001,12 @@ function lgCls(lg) { return LG_CLS[lg] || "lg-other"; }
 function lgBadge(lg, small) {
   return `<span class="lg ${small ? "lg-sm " : ""}${lgCls(lg)}">${lg || ""}</span>`;
 }
+/* 球队参赛赛事徽标（2026-09-13：一支队可能跨多个赛事，红黑榜以队伍为单位，不再固定到单一联赛） */
+function lgList(lg, small) {
+  const arr = String(lg || "").split(",").map(x => x.trim()).filter(Boolean);
+  if (!arr.length) return `<span class="lg ${small ? "lg-sm " : ""}lg-other">—</span>`;
+  return arr.map(x => lgBadge(x, small)).join("");
+}
 function renderAvoid() {
   const el = document.getElementById("avoid-view");
   if (!el) return;
@@ -1008,24 +1014,22 @@ function renderAvoid() {
   const by = (g) => R.filter(x => x.g === g);
   const r2 = by("R2"), r1 = by("R1"), n = by("N"), b1 = by("B1"), b2 = by("B2");
 
-  // —— 联赛分布（黑榜+偏黑 = 假球重灾区，2026-08-23 重排：全量排序条形+分级配色+图例）——
-  const leagueCnt = {};
-  b2.concat(b1).forEach(a => {
-    (a.lg || "未知").split(",").forEach(lg => { leagueCnt[lg.trim()] = (leagueCnt[lg.trim()] || 0) + 1; });
-  });
-  const lgEntries = Object.entries(leagueCnt).sort((x, y) => y[1] - x[1]);
-  const lgMax = Math.max(1, ...lgEntries.map(([, c]) => c));
-  const lgTier = (cnt) => cnt >= 7 ? "hot" : (cnt >= 4 ? "mid" : "low");
-  const lgRow = ([lg, cnt], rank) => `
-    <div class="avoid-lbar">
-      <span class="avoid-lbar-lg">${lgBadge(lg, true)}</span>
-      <div class="avoid-lbar-track"><div class="avoid-lbar-fill ${lgTier(cnt)}" style="width:${Math.round(100 * cnt / lgMax)}%"></div></div>
-      <span class="avoid-lbar-num" title="${lg} · 黑榜+偏黑 ${cnt} 队">${rank <= 3 ? "🔥" : ""}×${cnt}</span>
+  // —— 队伍黑榜排名（2026-09-13 用户拍板：红黑榜以「队伍」为单位＝每队一个数据库；原「黑榜+偏黑联赛分布」下线）——
+  const rankTeams = b2.concat(b1).slice().sort((x, y) => (y.b - x.b) || (y.p - x.p) || (y.tp - x.tp));
+  const rankMax = Math.max(1, ...rankTeams.map(a => a.b));
+  const rankRow = (a, i) => `
+    <div class="avoid-tbar">
+      <span class="avoid-tbar-no">${i + 1}</span>
+      <span class="avoid-tbar-name">${a.t}</span>
+      <span class="avoid-tbar-lg">${lgList(a.lg, true)}</span>
+      <div class="avoid-tbar-track"><div class="avoid-tbar-fill ${a.g === "B2" ? "hot" : "mid"}" style="width:${Math.round(100 * a.b / rankMax)}%"></div></div>
+      <span class="avoid-tbar-num" title="黑${a.b} · 红${a.r} · 场次${a.p} · 三指标${a.tp}">黑${a.b}<span class="avoid-tbar-sub"> ·红${a.r} ·${a.p}场</span></span>
+      <span class="tag ${a.g === "B2" ? "tag-red" : "tag-yellow"}">${a.g === "B2" ? "🔴 黑榜" : "🟡 偏黑"}</span>
     </div>`;
-  const lgRows = lgEntries.map((e, i) => lgRow(e, i + 1));
-  const lgHalf = Math.ceil(lgRows.length / 2);
-  const lgBars = [lgRows.slice(0, lgHalf).join(""), lgRows.slice(lgHalf).join("")]
-    .map(c => `<div class="avoid-lg-col">${c}</div>`).join("");
+  const rankRows = rankTeams.map((a, i) => rankRow(a, i));
+  const rankHalf = Math.ceil(rankRows.length / 2);
+  const rankBody = [rankRows.slice(0, rankHalf).join(""), rankRows.slice(rankHalf).join("")]
+    .map(c => `<div class="avoid-rank-col">${c}</div>`).join("");
 
   // —— 单队折叠条目 ——
   const ITEM_DEF = {
@@ -1042,7 +1046,7 @@ function renderAvoid() {
       <summary>
         <span class="avoid-item-ic">${d.ic}</span>
         <span class="avoid-item-name">${a.t}</span>
-        <span class="avoid-item-lg">${lgBadge((a.lg || "").split(",")[0])}</span>
+        <span class="avoid-item-lg">${lgList(a.lg)}</span>
         <span style="margin-left:8px;font-size:12px;opacity:.7">${meta}</span>
         <span class="tag ${d.cls}">${d.tag}</span>
         <span class="avoid-item-arrow">▸</span>
@@ -1078,11 +1082,11 @@ function renderAvoid() {
         <div class="avoid-stat st-index"><div class="avoid-stat-num">${R.length ? Math.round(100 * (b1.length + b2.length) / R.length) : 0}%</div><div class="avoid-stat-lbl">⚠️ 风险指数</div></div>
       </div>
 
-      <!-- 联赛分布可视化（全量排序条形+分级配色，2026-08-23 重排） -->
-      <div class="avoid-league" id="avoidLeague">
-        <h4>📊 黑榜+偏黑联赛分布 <span class="avoid-league-hint">（假球重灾区 = 黑榜+偏黑队伍最多的联赛，按数量排序，柱条与联赛一一对应）</span></h4>
-        ${lgBars ? `<div class="avoid-lg-grid">${lgBars}</div>
-        <div class="avoid-lg-legend"><span class="lgdot lgdot-hot"></span>≥7 队 重灾区　<span class="lgdot lgdot-mid"></span>4-6 队 中等　<span class="lgdot lgdot-low"></span>≤3 队 较低　<span class="avoid-lg-legend-note">（黑榜+偏黑合并计数，多联赛队伍重复计入；🔥 = 前三）</span></div>` : '<div class="note">暂无数据</div>'}
+      <!-- 队伍黑榜排名（2026-09-13 替换原「黑榜+偏黑联赛分布」：红黑榜以队伍为单位） -->
+      <div class="avoid-rank" id="avoidRank">
+        <h4>🔴 队伍黑榜排名 <span class="avoid-league-hint">（按黑分降序·同分按场次；一支队跨多赛事时并列展示全部参赛赛事。共 ${rankTeams.length} 队有黑分记录）</span></h4>
+        ${rankTeams.length ? `<div class="avoid-rank-grid">${rankBody}</div>
+        <div class="avoid-lg-legend"><span class="lgdot lgdot-hot"></span>🔴 黑榜（黑≥3）　<span class="lgdot lgdot-mid"></span>🟡 偏黑（黑1-2）　<span class="avoid-lg-legend-note">（黑分=演戏/剧本嫌疑计分，累计自各批复盘；点队伍可展开其完整记录）</span></div>` : '<div class="note">暂无黑分记录</div>'}
       </div>
 
       <!-- 红榜·稳定（默认展开） -->
@@ -1122,7 +1126,7 @@ function renderAvoidSearch(q) {
   const kw = (q || "").trim().toLowerCase();
   // 2026-09-13：搜索时一并收起「统计仪表盘 + 联赛分布」——否则命中卡片被顶到页面下方需滚动
   const dash = document.getElementById("avoidDash");
-  const lgBox = document.getElementById("avoidLeague");
+  const lgBox = document.getElementById("avoidRank");
   if (!kw) {
     resBox.style.display = "none";
     sections.forEach(s => s.style.display = "");
@@ -1130,29 +1134,42 @@ function renderAvoidSearch(q) {
     if (lgBox) lgBox.style.display = "";
     return;
   }
-  // 命中匹配（队名/联赛）
-  const hits = R.filter(a => (a.t || "").toLowerCase().includes(kw) || (a.lg || "").toLowerCase().includes(kw));
+  // 命中匹配（队名归一化：简称/全称经 TEAM_ALIAS 互认，2026-09-13 修复「简称全称分裂」导致搜不到）
+  const AL = (typeof TEAM_ALIAS !== "undefined") ? TEAM_ALIAS : {};
+  const alt = new Set([kw]);
+  Object.keys(AL).forEach(a => {
+    const al = a.toLowerCase(), cl = String(AL[a]).toLowerCase();
+    if (al.includes(kw) || kw.includes(al)) alt.add(cl);
+    if (cl.includes(kw) || kw.includes(cl)) alt.add(al);
+  });
+  const hitOf = (a) => {
+    const t = (a.t || "").toLowerCase(), lg = (a.lg || "").toLowerCase();
+    if (t.includes(kw) || lg.includes(kw)) return "";
+    for (const k of alt) { if (k !== kw && t.includes(k)) return "（别名匹配）"; }
+    return null;
+  };
+  const hits = R.map(a => [a, hitOf(a)]).filter(x => x[1] !== null);
   const ITEM_DEF = { R2: ["⭐ 红榜", "tag-green", "red"], R1: ["🟢 偏红", "tag-blue", "blue"], N: ["⚪ 中性", "tag-gray", "neutral"], B1: ["🟡 偏黑", "tag-yellow", "watch"], B2: ["🔴 黑榜", "tag-red", "high"] };
-  const itemHtml = (a, g) => {
+  const itemHtml = (a, g, note) => {
     const d = ITEM_DEF[g] || ITEM_DEF.N;   // 中性/未知档兜底（2026-09-12 修复：N 档 220 队搜索命中即 TypeError 崩）
     return `<details class="avoid-item ${d[2]}"><summary>
       <span class="avoid-item-ic">${d[0].split(" ")[0]}</span>
-      <span class="avoid-item-name">${a.t}</span>
-      <span class="avoid-item-lg">${lgBadge((a.lg || "").split(",")[0])}</span>
+      <span class="avoid-item-name">${a.t}${note ? `<span class="avoid-alias-note">${note}</span>` : ""}</span>
+      <span class="avoid-item-lg">${lgList(a.lg)}</span>
       <span style="margin-left:8px;font-size:12px;opacity:.7">场次${a.p} · 三指标${a.tp} · 红${a.r}/黑${a.b}</span>
       <span class="tag ${d[1]}">${d[0]}</span>
     </summary><div class="avoid-item-body">${a.rs || ""}</div></details>`;
   };
   const order = { R2: 0, R1: 1, N: 2, B1: 3, B2: 4 };
   const ord = (g) => (order[g] === undefined ? 9 : order[g]);
-  hits.sort((x, y) => ord(x.g) - ord(y.g));
+  hits.sort((x, y) => ord(x[0].g) - ord(y[0].g));
   resBox.style.display = "block";
   sections.forEach(s => s.style.display = "none");
   if (dash) dash.style.display = "none";
   if (lgBox) lgBox.style.display = "none";
   if (hits.length) {
     empty.style.display = "none";
-    grid.innerHTML = hits.map(a => itemHtml(a, a.g)).join("");
+    grid.innerHTML = hits.map(([a, note]) => itemHtml(a, a.g, note)).join("");
   } else {
     empty.style.display = "block";
     grid.innerHTML = "";
