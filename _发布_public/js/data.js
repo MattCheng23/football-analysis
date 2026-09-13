@@ -9,6 +9,7 @@ const BATCHES = {
     model: "V10.37",
     predictDate: "2026-08-12",
     reviewed: true,
+  reviewedCount: 7,
     stats: { dir: "6/7", dirPct: "85.7%", score: "3/7", scorePct: "42.9%", ht: "6/7", htPct: "85.7%" },
     predict: {
       matches: [
@@ -42,6 +43,7 @@ const BATCHES = {
     model: "V10.2",
     predictDate: "2026-08-13",
     reviewed: true,
+  reviewedCount: 3,
     stats: { dir: "2/3", dirPct: "66.7%", score: "2/3", scorePct: "66.7%", ht: "1/3", htPct: "33.3%" },
     predict: {
       matches: [
@@ -67,6 +69,7 @@ const BATCHES = {
     model: "V10.37",
     predictDate: "2026-08-05",
     reviewed: true,
+  reviewedCount: 5,
     stats: { dir: "3/5", dirPct: "60%", score: "2/5", scorePct: "40%", ht: "4/5", htPct: "80%" },
     predict: {
       matches: [
@@ -96,6 +99,7 @@ const BATCHES = {
     model: "V8-V9",
     predictDate: "2026-07-21",
     reviewed: true,
+  reviewedCount: 3,
     stats: { dir: "0/3", dirPct: "0%", score: "1/3", scorePct: "33%", ht: "3/3", htPct: "100%" },
     predict: {
       matches: [
@@ -121,6 +125,7 @@ const BATCHES = {
     model: "V8-V9",
     predictDate: "2026-07-22",
     reviewed: true,
+  reviewedCount: 7,
     stats: { dir: "3/7", dirPct: "43%", score: "2/7", scorePct: "29%", ht: "4/7", htPct: "57%" },
     predict: {
       matches: [
@@ -154,6 +159,7 @@ const BATCHES = {
     model: "V8-V9",
     predictDate: "2026-07-23",
     reviewed: true,
+  reviewedCount: 9,
     stats: { dir: "3/9", dirPct: "33%", score: "0/9", scorePct: "0%", ht: "0/9", htPct: "0%" },
     predict: {
       matches: [
@@ -191,6 +197,7 @@ const BATCHES = {
     model: "V8-V9",
     predictDate: "2026-07-24",
     reviewed: true,
+  reviewedCount: 5,
     stats: { dir: "1/5", dirPct: "20%", score: "2/5", scorePct: "40%", ht: "0/5", htPct: "0%" },
     predict: {
       matches: [
@@ -220,6 +227,7 @@ const BATCHES = {
     model: "V8-V9",
     predictDate: "2026-07-25",
     reviewed: true,
+  reviewedCount: 9,
     stats: { dir: "4/9", dirPct: "44%", score: "4/9", scorePct: "44%", ht: "6/9", htPct: "67%" },
     predict: {
       matches: [
@@ -257,6 +265,7 @@ const BATCHES = {
     model: "V8-V9",
     predictDate: "2026-07-26",
     reviewed: true,
+  reviewedCount: 19,
     stats: { dir: "10/19", dirPct: "52.6%", score: "9/19", scorePct: "47.4%", ht: "14/19", htPct: "73.7%" },
     predict: {
       matches: [
@@ -314,6 +323,7 @@ const BATCHES = {
     model: "V8-V9",
     predictDate: "2026-07-27",
     reviewed: true,
+  reviewedCount: 3,
     stats: { dir: "1/3", dirPct: "33%", score: "1/3", scorePct: "33%", ht: "3/3", htPct: "100%" },
     predict: {
       matches: [
@@ -341,6 +351,7 @@ const BATCHES = {
     model: "V8-V9",
     predictDate: "2026-07-28",
     reviewed: true,
+  reviewedCount: 3,
     stats: { dir: "2/3", dirPct: "66.7%", score: "0/3", scorePct: "0%", ht: "3/3", htPct: "100%" },
     predict: {
       matches: [
@@ -366,6 +377,7 @@ const BATCHES = {
     model: "V8-V9",
     predictDate: "2026-07-29",
     reviewed: true,
+  reviewedCount: 2,
     stats: { dir: "2/2", dirPct: "100%", score: "1/2", scorePct: "50%", ht: "2/2", htPct: "100%" },
     predict: {
       matches: [
@@ -391,6 +403,7 @@ const BATCHES = {
     model: "V9.6",
     predictDate: "2026-07-30",
     reviewed: true,
+  reviewedCount: 5,
     stats: { dir: "2/5", dirPct: "40%", score: "1/5", scorePct: "20%", ht: "3/5", htPct: "60%" },
     predict: {
       matches: [
@@ -420,6 +433,7 @@ const BATCHES = {
     model: "V10.1",
     predictDate: "2026-07-31",
     reviewed: true,
+  reviewedCount: 6,
     stats: { dir: "2/6", dirPct: "33.3%", score: "0/6", scorePct: "0%", ht: "2/6", htPct: "33.3%" },
     predict: {
       matches: [
@@ -451,6 +465,7 @@ const BATCHES = {
     model: "V9.6",
     predictDate: "2026-08-01",
     reviewed: true,
+  reviewedCount: 10,
     stats: { dir: "6/10", dirPct: "60%", score: "4/10", scorePct: "40%", ht: "8/10", htPct: "80%" },
     predict: {
       matches: [
@@ -490,6 +505,7 @@ const BATCHES = {
     model: "V8.x",
     predictDate: "2026-08-02",
     reviewed: true,
+  reviewedCount: 20,
     stats: { dir: "15/20", dirPct: "75%", score: "9/20", scorePct: "45%", ht: "17/20", htPct: "85%" },
     predict: {
       matches: [
@@ -549,6 +565,7 @@ const BATCHES = {
     model: "V8.x",
     predictDate: "2026-08-03",
     reviewed: true,
+  reviewedCount: 3,
     stats: { dir: "1/3", dirPct: "33.3%", score: "0/3", scorePct: "0%", ht: "2/3", htPct: "66.7%" },
     predict: {
       matches: [
@@ -574,6 +591,7 @@ const BATCHES = {
     model: "V9.x",
     predictDate: "2026-08-04",
     reviewed: true,
+  reviewedCount: 4,
     stats: { dir: "3/4", dirPct: "75%", score: "2/4", scorePct: "50%", ht: "4/4", htPct: "100%" },
     predict: {
       matches: [
@@ -601,6 +619,7 @@ const BATCHES = {
     model: "V10.2",
     predictDate: "2026-08-07",
     reviewed: true,
+  reviewedCount: 14,
     stats: { dir: "7/14", dirPct: "50%", score: "2/14", scorePct: "14.3%", ht: "4/14", htPct: "28.6%" },
     predict: {
       matches: [
@@ -648,6 +667,7 @@ const BATCHES = {
     model: "V10.2",
     predictDate: "2026-08-08",
     reviewed: true,
+  reviewedCount: 25,
     stats: { dir: "16/25", dirPct: "64%", score: "12/25", scorePct: "48%", ht: "17/25", htPct: "68%" },
     predict: {
       matches: [
@@ -717,6 +737,7 @@ const BATCHES = {
     model: "V10.1",
     predictDate: "2026-08-06",
     reviewed: true,
+  reviewedCount: 4,
     stats: { dir: "2/4", dirPct: "50%", score: "2/4", scorePct: "50%", ht: "1/4", htPct: "25%" },
     predict: {
       matches: [
@@ -744,6 +765,7 @@ const BATCHES = {
     model: "V10.3.x",
     predictDate: "2026-08-09",
     reviewed: true,
+  reviewedCount: 13,
     stats: { dir: "9/13", dirPct: "69.2%", score: "6/13", scorePct: "46.2%", ht: "7/13", htPct: "53.8%" },
     predict: {
       matches: [
@@ -789,6 +811,7 @@ const BATCHES = {
     model: "V10.3.x",
     predictDate: "2026-08-10",
     reviewed: true,
+  reviewedCount: 8,
     stats: { dir: "6/8", dirPct: "75%", score: "6/8", scorePct: "75%", ht: "6/8", htPct: "75%" },
     predict: {
       matches: [
@@ -824,6 +847,7 @@ const BATCHES = {
     model: "V9.x",
     predictDate: "2026-08-11",
     reviewed: true,
+  reviewedCount: 5,
     stats: { dir: "3/5", dirPct: "60%", score: "2/5", scorePct: "40%", ht: "4/5", htPct: "80%" },
     predict: {
       matches: [
@@ -854,6 +878,7 @@ const BATCHES = {
     predictDate: "2026-08-14",
     reviewDate: "2026-08-15",
     reviewed: true,
+  reviewedCount: 21,
     stats: { dir: "15/21", dirPct: "71.4%", score: "4/21", scorePct: "19%", ht: "13/21", htPct: "61.9%" },
     predict: {
       matches: [
@@ -987,6 +1012,7 @@ const BATCHES = {
     updated: "2026-08-16 05:45",
     reviewDate: "2026-08-16",
     reviewed: true,
+  reviewedCount: 14,
     stats: { dir: "8/14", dirPct: "57.1%", score: "5/14", scorePct: "35.7%", ht: "5/14", htPct: "35.7%" },
     predict: {
       matches: [
@@ -1075,6 +1101,7 @@ const BATCHES = {
     predictDate: "2026-08-16",
     updated: "2026-08-16 18:05",
     reviewed: true,
+  reviewedCount: 18,
     stats: { dir: "8/18", dirPct: "44.4%", score: "2/18", scorePct: "11.1%", ht: "7/18", htPct: "38.9%" },
     predict: {
       matches: [
@@ -1204,6 +1231,8 @@ const BATCHES = {
               ], avoidHigh: [], avoidWatch: [] }
   },
   "2026-08-17": {
+  reviewed: true,
+  reviewedCount: 6,
     title: "8月17 周一批次",
     model: "V10.37",
     predictDate: "2026-08-17",
@@ -1279,6 +1308,8 @@ const BATCHES = {
       ] }
   },
   "2026-08-18": {
+  reviewed: true,
+  reviewedCount: 4,
     title: "8月18 周二批次",
     model: "V10.40",
     predictDate: "2026-08-18",
@@ -1332,6 +1363,8 @@ const BATCHES = {
       ] }
   },
   "2026-08-19": {
+  reviewed: true,
+  reviewedCount: 6,
     title: "8月19 周三批次",
     model: "V10.40+",
     predictDate: "2026-08-19",
@@ -1406,6 +1439,8 @@ const BATCHES = {
       ] }
   },
   "2026-08-20": {
+  reviewed: true,
+  reviewedCount: 9,
     title: "8月20 周四批次",
     model: "V10.40+",
     predictDate: "2026-08-20",
@@ -1505,6 +1540,8 @@ const BATCHES = {
       ], avoidHigh: [], avoidWatch: [] }
   },
   "2026-08-21": {
+  reviewed: true,
+  reviewedCount: 9,
     title: "8月21 周五批次",
     model: "规则驱动模型 V10.40",
     updated: "05:04",
@@ -1606,6 +1643,8 @@ const BATCHES = {
     title: "8月22 周六批次",
     model: "规则驱动模型 V10.40",
     reviewed: true,
+  
+  reviewedCount: 20,
     updated: "05:31",
     predict: {
       matches: [
@@ -1788,6 +1827,7 @@ const BATCHES = {
     title: "8月23 周日批次",
     model: "规则驱动模型 V11.3",
     reviewed: true,
+  reviewedCount: 16,
     updated: "12:38",
     predict: {
       matches: [
@@ -1943,6 +1983,7 @@ const BATCHES = {
     title: "8月24 周一批次",
     model: "规则驱动模型 V11.7",
     reviewed: true,
+  reviewedCount: 8,
     updated: "09:10",
     predict: {
       matches: [
@@ -2029,6 +2070,7 @@ const BATCHES = {
     title: "8月25 周二批次",
     model: "规则驱动模型 V11.9",
     reviewed: true,
+  reviewedCount: 9,
     stats: { dir: "7/9", dirPct: "77.8%", score: "2/9", scorePct: "22.2%", ht: "7/9", htPct: "77.8%", ou: "5/9", ouPct: "55.6%", updated: "2026-08-26 09:30" },
     updated: "11:48",
     predict: {
@@ -2126,6 +2168,7 @@ const BATCHES = {
     title: "8月26 周三批次",
     model: "规则驱动模型 V11.10",
     reviewed: true,
+reviewedCount: 10,
     updated: "12:50",
     predict: {
       matches: [
@@ -2220,6 +2263,7 @@ const BATCHES = {
     title: "8月27 周四批次",
     model: "规则驱动模型 V11.16",
     reviewed: true,
+reviewedCount: 9,
     updated: "09:00",
     predict: {
       matches: [
@@ -2278,6 +2322,8 @@ const BATCHES = {
     updates: [{ t: "09:00", x: "周四批 9 场定稿发布（组长终裁 V11.16 全因素+用户授权定版；analyst/qc/scout 三工作组回归融合；001 降 B 双选/008 V11.16-1 六球档 5-0/005 双方 B1 撤核中性）" }]
   },
     "2026-08-28": {
+    reviewed: true,
+    reviewedCount: 7,
       title: "8月28 周五批次",
       model: "V11.21v3 基线保护",
       updated: "20:45",
@@ -2361,6 +2407,8 @@ const BATCHES = {
       ], avoidHigh: [], avoidWatch: [] }
     },
     "2026-08-29": {
+    reviewed: true,
+    reviewedCount: 21,
       title: "8月29 周六批次",
       model: "V11.27 档位上探",
       updated: "09:45",
@@ -2577,6 +2625,7 @@ const BATCHES = {
       model: "V11.29 反制扫描",
       updated: "01:19",
       reviewed: true,
+    reviewedCount: 18,
       stats: { dir: "13/18", dirPct: "72.2%", score: "3/18", scorePct: "16.7%", ht: "11/18", htPct: "61.1%" },
       predict: { matches: [
         { no: "002", home: "济州SK", away: "大田市民", league: "韩职", lg: "lg-k1", time: "18:30",
@@ -2773,6 +2822,7 @@ const BATCHES = {
       model: "V11.30 全因素",
       updated: "14:45",
       reviewed: true,
+    reviewedCount: 10,
       stats: { dir: "8/10", dirPct: "80.0%", score: "4/10", scorePct: "40.0%", ht: "8/10", htPct: "80.0%" },
       predict: { matches: [
         { no: "001", home: "国际图尔库", away: "库奥皮奥", league: "芬超", lg: "lg-fin", time: "次日 00:00",
@@ -2894,6 +2944,8 @@ const BATCHES = {
       }
     },
     "2026-09-01": {
+    reviewed: true,
+    reviewedCount: 10,
       title: "9月1 周二批次",
       model: "V11.31 全因素",
       updated: "--:--",
@@ -3019,6 +3071,7 @@ const BATCHES = {
     title: "9月2 周三批次",
     model: "V11.32 全因素（结构优化版）",
     reviewed: true,
+reviewedCount: 13,
     updated: "16:52",
     predict: {
       matches: [
@@ -3112,6 +3165,7 @@ const BATCHES = {
     title: "周四批 001-007（V11.33）",
     model: "V11.33",
     reviewed: true,
+  reviewedCount: 7,
     updated: "2026-09-03",
     predict: {
       matches: [
@@ -3159,6 +3213,7 @@ const BATCHES = {
     title: "周五批 10 场（V11.34·002-013，乙级/美职已剔本地）",
     model: "V11.34",
     reviewed: true,
+  reviewedCount: 10,
     updated: "2026-09-04",
     predict: {
       matches: [
@@ -3214,6 +3269,7 @@ const BATCHES = {
     title: "周六批 29 场（V11.35）",
     model: "规则驱动模型 V11.35",
     reviewed: true,
+  reviewedCount: 29,
     updated: "2026-09-05",
     predict: {
       matches: [
@@ -3316,6 +3372,7 @@ const BATCHES = {
     title: "周日批 24 场（V11.38.1·双轨制首战）",
     model: "规则驱动模型 V11.38.1-5D",
     reviewed: true,
+  reviewedCount: 24,
     updated: "2026-09-06",
     predict: {
       matches: [
@@ -3394,6 +3451,7 @@ const BATCHES = {
     title: "周一批 9 场（V11.40·新流程首战）",
     model: "规则驱动模型 V11.40",
     reviewed: true,
+  reviewedCount: 9,
     updated: "2026-09-07",
     predict: {
       matches: [
@@ -3438,7 +3496,7 @@ const BATCHES = {
     title: "周二批 12 场（V11.41·首战）",
     model: "规则驱动模型 V11.41",
     reviewed: true,
-    reviewedCount: 0,
+    reviewedCount: 12,
     updated: "2026-09-08",
     predict: {
       matches: [
