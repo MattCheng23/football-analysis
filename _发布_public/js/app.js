@@ -1062,8 +1062,14 @@ function renderAvoid() {
         <button class="avoid-search-clear" onclick="document.getElementById('avoidSearchInput').value='';renderAvoidSearch('')" title="清空">✕</button>
       </div>
 
+      <!-- 搜索结果（2026-09-13 上移至搜索框正下方：原位置在联赛分布之后，搜索后必须滚到页面底部才能看到命中） -->
+      <div id="avoidSearchResult" style="display:none">
+        <div class="avoid-grid" id="avoidSearchGrid"></div>
+        <div class="note" id="avoidSearchEmpty" style="display:none">未找到匹配队伍，换个关键词试试</div>
+      </div>
+
       <!-- 统计仪表盘（含风险指数，2026-08-23 丰富） -->
-      <div class="avoid-dash">
+      <div class="avoid-dash" id="avoidDash">
         <div class="avoid-stat st-green"><div class="avoid-stat-num">${r2.length}</div><div class="avoid-stat-lbl">⭐ 红榜·稳定</div></div>
         <div class="avoid-stat st-blue"><div class="avoid-stat-num">${r1.length}</div><div class="avoid-stat-lbl">🟢 偏红</div></div>
         <div class="avoid-stat st-batch"><div class="avoid-stat-num">${n.length}</div><div class="avoid-stat-lbl">⚪ 中性</div></div>
@@ -1073,16 +1079,10 @@ function renderAvoid() {
       </div>
 
       <!-- 联赛分布可视化（全量排序条形+分级配色，2026-08-23 重排） -->
-      <div class="avoid-league">
+      <div class="avoid-league" id="avoidLeague">
         <h4>📊 黑榜+偏黑联赛分布 <span class="avoid-league-hint">（假球重灾区 = 黑榜+偏黑队伍最多的联赛，按数量排序，柱条与联赛一一对应）</span></h4>
         ${lgBars ? `<div class="avoid-lg-grid">${lgBars}</div>
         <div class="avoid-lg-legend"><span class="lgdot lgdot-hot"></span>≥7 队 重灾区　<span class="lgdot lgdot-mid"></span>4-6 队 中等　<span class="lgdot lgdot-low"></span>≤3 队 较低　<span class="avoid-lg-legend-note">（黑榜+偏黑合并计数，多联赛队伍重复计入；🔥 = 前三）</span></div>` : '<div class="note">暂无数据</div>'}
-      </div>
-
-      <!-- 搜索结果（搜索时显示，替代分组） -->
-      <div id="avoidSearchResult" style="display:none">
-        <div class="avoid-grid" id="avoidSearchGrid"></div>
-        <div class="note" id="avoidSearchEmpty" style="display:none">未找到匹配队伍，换个关键词试试</div>
       </div>
 
       <!-- 红榜·稳定（默认展开） -->
@@ -1120,9 +1120,14 @@ function renderAvoidSearch(q) {
   const sections = document.querySelectorAll(".avoid-sec");
   if (!resBox || !grid) return;
   const kw = (q || "").trim().toLowerCase();
+  // 2026-09-13：搜索时一并收起「统计仪表盘 + 联赛分布」——否则命中卡片被顶到页面下方需滚动
+  const dash = document.getElementById("avoidDash");
+  const lgBox = document.getElementById("avoidLeague");
   if (!kw) {
     resBox.style.display = "none";
     sections.forEach(s => s.style.display = "");
+    if (dash) dash.style.display = "";
+    if (lgBox) lgBox.style.display = "";
     return;
   }
   // 命中匹配（队名/联赛）
@@ -1143,6 +1148,8 @@ function renderAvoidSearch(q) {
   hits.sort((x, y) => ord(x.g) - ord(y.g));
   resBox.style.display = "block";
   sections.forEach(s => s.style.display = "none");
+  if (dash) dash.style.display = "none";
+  if (lgBox) lgBox.style.display = "none";
   if (hits.length) {
     empty.style.display = "none";
     grid.innerHTML = hits.map(a => itemHtml(a, a.g)).join("");
