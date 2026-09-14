@@ -194,7 +194,7 @@ function renderPredict(batch) {
     return `<tr data-lvl="${lv.toLowerCase()}">
     <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${m.home} vs ${m.away}</b><span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span><span class="match-time" style="font-size:12px;flex-shrink:0">🕐 ${m.time || "-"}</span></span></td>
     <td class="${lvlClass(m.dir)}" data-l="方向"><span class="dir-pill">${shortDir(m.dir)}</span></td>
-    <td class="score-nums" data-l="比分 TOP3">${revHtml}</td>
+    <td class="score-nums" data-l="比分 TOP4">${revHtml}</td>
     <td data-l="半全场 TOP3">${revHt}</td>
     <td data-l="总进球">${ouDisp(m.ou)}</td>
     <td data-l="假赛分">${riskTag(m.risk || 0)}</td>
@@ -214,6 +214,10 @@ function renderPredict(batch) {
   // 关键信息提取（8/21 用户要求：大段逻辑→简洁关键信息；8/23 再精简：只展示重点核心=方向段+次优先段，各截 30 字，｜ 连接；无加粗段退回 24 字截断）
   const logicKey = (l) => {
     if (!l) return "-";
+    // ★ 2026-09-14（用户）：外层摘要**直接给结论**——此前拼的是加粗段落标题（"近况（主客分离）""天气…"），
+    //   既杂乱又没有可用信息。改为优先抽取结尾的「**结论：方向 · 比分 · 半全场 · 总进球**」。
+    const cj = l.match(/\*\*结论[：:]\s*([\s\S]{4,240}?)\*\*/);
+    if (cj) return cj[1].replace(/\s+/g, " ").trim();
     const segs = [];
     const re = /\*\*(.+?)\*\*/g;
     let m;
