@@ -183,8 +183,13 @@ function renderPredict(batch) {
     batch.review.results.forEach(rv => { reviewOf[rv.no] = rv; });
   }
   const rows = sorted.map(m => {
-    const revHtml = m.scores.replace(/(\d+-\d+)\*/g, '<span class="rev-score">$1*</span>');
-    const revHt = m.ht.replace(/([胜负平]{2})\*/g, '<span class="rev-score">$1*</span>');
+    // 反向星号归一（2026-09-14：用户报 002 网页反向比分显示异常）——
+    // 本项目星号规范＝尾随（0-1*，全库 67 例）；但历史上出现过前导写法（*0-1），
+    // 而本函数只匹配「数字-数字 + *」，前导写法会完全不染色。
+    // 故渲染前先把任意位置的星号归一为尾随，再套既有染色逻辑（防御性，兼容两种写法）。
+    const normRev = s => (s || "").replace(/\*(\d+-\d+|[胜负平]{2})/g, "$1*");
+    const revHtml = normRev(m.scores).replace(/(\d+-\d+)\*/g, '<span class="rev-score">$1*</span>');
+    const revHt = normRev(m.ht).replace(/([胜负平]{2})\*/g, '<span class="rev-score">$1*</span>');
     const lv = (m.dir.match(/([ABC])级/) || [])[1] || "";
     return `<tr data-lvl="${lv.toLowerCase()}">
     <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${m.home} vs ${m.away}</b><span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span><span class="match-time" style="font-size:12px;flex-shrink:0">🕐 ${m.time || "-"}</span></span></td>
@@ -492,7 +497,9 @@ function renderReview(batch) {
   };
   const topOf = (actual, listStr) => {
     // 忽略反向项星号（0-1* 命中实际 0-1 也应计入 TOP N，2026-08-23 修复：011 诺丁汉 0-1* 命中未显示）
-    const items = (listStr || "").split("/").map(s => s.trim().replace(/\*$/, ""));
+    // 2026-09-14：改为剥离「任意位置」星号——原只 strip 尾随（/\*$/），当前导写法（*0-1）出现时
+    // 会比对不上实际比分 → 命中被静默漏计（0914-002 实证）。位置不敏感才能两种写法都算命中。
+    const items = (listStr || "").split("/").map(s => s.trim().replace(/\*/g, ""));
     const i = items.indexOf(actual);
     return i >= 0 ? i + 1 : null;
   };
