@@ -194,7 +194,7 @@ function renderPredict(batch) {
     return `<tr data-lvl="${lv.toLowerCase()}">
     <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${m.home} vs ${m.away}</b><span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span><span class="match-time" style="font-size:12px;flex-shrink:0">🕐 ${m.time || "-"}</span></span></td>
     <td class="${lvlClass(m.dir)}" data-l="方向"><span class="dir-pill">${shortDir(m.dir)}</span></td>
-    <td class="score-nums" data-l="比分 TOP4">${revHtml}</td>
+    <td class="score-nums" data-l="比分 TOP3">${revHtml}</td>
     <td data-l="半全场 TOP3">${revHt}</td>
     <td data-l="总进球">${ouDisp(m.ou)}</td>
     <td data-l="假赛分">${riskTag(m.risk || 0)}</td>
