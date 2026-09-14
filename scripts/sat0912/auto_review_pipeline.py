@@ -155,20 +155,36 @@ def fm_date_status(date="20260912"):
 
 
 def official_scores():
-    """官方快照解析（fetch_official_snap.py 生成 official_snap_2.txt）
-    格式：周六NNN ｜ 联赛 ｜ 09-12HH:MM ｜ 主队 ｜ 主FT ｜ : ｜ 客FT ｜ 客队 ｜ 主HT ｜ : ｜ 客HT ｜ 加时 ｜ 状态
+    """官方第二源（**只用终场**，两条通道按可信度合并）
+
+    ① 主通道：官方「赛果开奖」页 → official_final_scores.json（verify_dual_0912.py 生成）
+       字段 {no: {date, lg, teams, ht:(h,a), ft:(h,a)}}，**该页只列已开奖终场**，done 恒 True。
+    ② 兜底通道：比分直播快照 official_snap_2.txt（**含进行中比分**）→ 仅当状态为「直播结束」
+       才接受；进行中（69' / 64' …）的行一律丢弃。
+
+    ⚠ 2026-09-12 事故：兜底通道曾把 012-017 的**进行中**比分当终场比对，
+       造成 014/015 假「双源不一致」。故本函数对兜底通道强制 done 门。
     """
-    p = O / "official_snap_2.txt"
-    if not p.exists():
-        return {}
-    t = p.read_text(encoding="utf-8")
     out = {}
-    pat = re.compile(r"周六(\d{3})\|([^|]+)\|([\d\-]+[\d:]*)\|([^|]+)\|(\d+)\|:\|(\d+)\|([^|]+)\|(\d*)\|:\|(\d*)\|([^|]*)\|([^|]+)")
-    for m in pat.finditer(t):
-        no, lg, tm, h, hf, af, a, hh, ah, extra, st = (x.strip() for x in m.groups())
-        out[no] = {"home": h, "away": a, "ft": (int(hf), int(af)),
-                   "ht": (int(hh), int(ah)) if hh.isdigit() and ah.isdigit() else None,
-                   "status": st, "done": ("直播结束" in st or "完" in st)}
+    pj = O / "official_final_scores.json"
+    if pj.exists():
+        try:
+            for no, r in json.loads(pj.read_text(encoding="utf-8")).items():
+                out[no] = {"home": "", "away": "", "ft": tuple(r["ft"]), "ht": tuple(r["ht"]),
+                           "status": "已完成（赛果开奖）", "done": True, "src": "sgkj"}
+        except Exception as e:
+            print("  ⚠ official_final_scores.json 解析失败：%s" % e)
+    p = O / "official_snap_2.txt"
+    if p.exists():
+        t = p.read_text(encoding="utf-8")
+        pat = re.compile(r"周六(\d{3})\|([^|]+)\|([\d\-]+[\d:]*)\|([^|]+)\|(\d+)\|:\|(\d+)\|([^|]+)\|(\d*)\|:\|(\d*)\|([^|]*)\|([^|]+)")
+        for m in pat.finditer(t):
+            no, lg, tm, h, hf, af, a, hh, ah, extra, st = (x.strip() for x in m.groups())
+            if no in out:
+                continue  # 赛果开奖优先
+            out[no] = {"home": h, "away": a, "ft": (int(hf), int(af)),
+                       "ht": (int(hh), int(ah)) if hh.isdigit() and ah.isdigit() else None,
+                       "status": st, "done": ("直播结束" in st), "src": "bfzb"}
     return out
 
 
@@ -239,11 +255,12 @@ def main():
         a = parse(no, j)
         v = verdicts(no, tickets[no], a)
         ok2 = True
-        if o.get("ft"):
+        # ⚠ 只在官方侧**确认终场**（done）时才比对；进行中比分不得当终场（2026-09-12 事故）
+        if o.get("done") and o.get("ft"):
             if (o["ft"][0], o["ft"][1]) != (a["hs"], a["as"]):
                 ok2 = False
                 mism.append("%s(FM %d-%d vs 官方 %d-%d)" % (no, a["hs"], a["as"], o["ft"][0], o["ft"][1]))
-        if o.get("ht") and (o["ht"][0], o["ht"][1]) != a["ht"]:
+        if o.get("done") and o.get("ht") and (o["ht"][0], o["ht"][1]) != a["ht"]:
             mism.append("%s半场(FM %d-%d vs 官方 %d-%d)" % (no, a["ht"][0], a["ht"][1], o["ht"][0], o["ht"][1]))
         flag = "✅" if ok2 else "❌双源不一致"
         print("  %s %s %s-%s（半场 %d-%d）%d/4 d=%s s=%s h=%s ou=%s %s%s" % (

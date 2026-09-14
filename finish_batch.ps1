@@ -1,4 +1,4 @@
-# 赛后一键收尾脚本（红黑榜刷新 → TEAM_RATING 更新 → 一键发布 → Git 备份）
+﻿# 赛后一键收尾脚本（红黑榜刷新 → TEAM_RATING 更新 → 一键发布 → Git 备份）
 # 前置：该批 results/evidence 已写入 data.js（复盘时完成）
 # 用法：.\finish_batch.ps1
 $ErrorActionPreference = 'Stop'
@@ -13,6 +13,17 @@ python "$tmp\redblack_analyze.py"
 if ($LASTEXITCODE -ne 0) { throw "redblack_analyze.py 失败" }
 
 Write-Host "[2/5] 替换 data.js 中 TEAM_RATING 段..." -ForegroundColor Cyan
+# TEAM_RATING 覆盖前自动备份（2026-09-13 加：本步会用 redblack_analyze.py 的整体重算结果
+# 覆盖手工维护的 TEAM_RATING，9/7 之后逐场手写的「重审/豁免/撤销」判定不在生成器里，故先留底）
+$bkDir = "D:\Cola\足球分析学习\_backup\team_rating"
+New-Item -ItemType Directory -Force -Path $bkDir | Out-Null
+$bkFile = Join-Path $bkDir ("TEAM_RATING_" + (Get-Date -Format "yyyyMMddHHmmss") + ".js")
+$curData = Get-Content $dataJs -Raw -Encoding UTF8
+if ($curData -match "(?s)const TEAM_RATING = \[.*?\];") {
+    Set-Content -Path $bkFile -Value $Matches[0] -Encoding UTF8
+    Write-Host "  已备份现有 TEAM_RATING → $bkFile" -ForegroundColor Yellow
+    Write-Host "  ⚠️ 注意：本次覆盖将丢失 9/7 之后手工写入的复盘判定（重审/豁免/撤销），如需保留请改用人工维护" -ForegroundColor Red
+}
 $tr = Get-Content "$tmp\team_rating.js" -Raw -Encoding UTF8
 $data = Get-Content $dataJs -Raw -Encoding UTF8
 if ($data -notmatch 'const TEAM_RATING') {

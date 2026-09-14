@@ -139,9 +139,12 @@ nx = re.search(r'\n  "2026-\d\d-\d\d": \{', dr2[b0b + 10:])
 b1b = b0b + 10 + nx.start() if nx else len(dr2)
 true_cnt = len(re.findall(r'no: "\d+", teams: "[^"]*",[\s\S]{0,200}?score: "\d+-\d+"', dr2[b0b:b1b]))
 dj = dj_path.read_text(encoding="utf-8")
-m = re.search(r"reviewedCount: (\d+),", dj[b0b:])
+# ⚠ 2026-09-12 事故：原用 data-review.js 的偏移 b0b 去索引 data.js → 命中错误批次（曾把 0912 的
+#   reviewedCount 写成 09-08 批的值）。此处改为在 data.js 内独立定位 0912 块。
+dj0 = dj.index('"2026-09-12": {')
+m = re.search(r"reviewedCount: (\d+),", dj[dj0:])
 cur = int(m.group(1))
-dj = dj[:b0b + m.start()] + ("reviewedCount: %d," % true_cnt) + dj[b0b + m.end():]
+dj = dj[:dj0 + m.start()] + ("reviewedCount: %d," % true_cnt) + dj[dj0 + m.end():]
 dj_path.write_text(dj, encoding="utf-8", newline="\n")
 print("reviewedCount %d → %d（按 0912 块实际条目数校正）" % (cur, true_cnt))
 
