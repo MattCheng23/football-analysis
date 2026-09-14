@@ -66,7 +66,7 @@ const BATCHES = {
   "2026-09-14": {
     title: "周一批 11 场（V11.53 系列·0-0 专项审计后首批）",
     model: "规则驱动模型 V11.53",
-    reviewed: false,
+    reviewed: false, reviewedCount: 1,
     predictDate: "2026-09-14",
     predict: {
       matches: [
