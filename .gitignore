@@ -30,3 +30,10 @@ __pycache__/
 *._bak*
 *.draft
 *.draft.json
+
+# 2026-09-16：坏的子模块引用（github 上显示为打不开的链接）
+# 该路径以 gitlink(mode 160000) 形式存在但仓库无 .gitmodules，
+# CI 的 actions/checkout 会报 "No url found for submodule path"。
+# 已从索引移除；本地克隆保留。技能库实体内容见同目录 `技能库_skills安装版/`，
+# 上游：https://github.com/mattpocock/skills
+07_技能学习/技能库_mattpocock完整仓库/
