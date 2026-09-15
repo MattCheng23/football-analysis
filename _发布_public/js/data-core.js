@@ -512,9 +512,9 @@ const TEAM_ALIAS = {"AEK雅典": "雅典AEK", "AIK": "AIK索尔纳", "FC首尔":
 
 
 const GLOBAL_STATS = {
-  dir: "351/536", dirPct: "65.5%",
-  score: "168/536", scorePct: "31.3%",
-  ht: "330/536", htPct: "61.6%",
-  ou: "144/308", ouPct: "46.8%", ouNote: "自8/18批起累计",
-  updated: "2026-09-12-001/002复盘"
+  dir: "380/571", dirPct: "66.5%",
+  score: "180/571", scorePct: "31.5%",
+  ht: "357/571", htPct: "62.5%",
+  ou: "157/343", ouPct: "45.8%", ouNote: "自8/18批起累计",
+  updated: "2026-09-14-0913/0914复盘"
 };
