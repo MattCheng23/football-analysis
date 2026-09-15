@@ -306,9 +306,17 @@ function renderPredict(batch) {
     const root = document.createElement("div");
     root.id = "lm-root";
     root.className = "lm-mask";
+    // 近5 战绩（逐场）——结构化字段 formH/formA（2026-09-15 新增；缺字段的老批自动不渲染）
+    const fmtForm = (s) => (s || "").split(" ｜ ").filter(Boolean)
+      .map(x => x.replace(/(\d+-\d+)\s*([胜平负])/, (_, sc, r) =>
+        `${sc} <b style="color:${r === "胜" ? "#2e9e5b" : r === "负" ? "#d9534f" : "var(--sub)"}">${r}</b>`)).join("<br>");
+    const fh = d.fh || "", fa = d.fa || "";
+    const formBlock = (fh || fa) ? `<details class="lm-full" open><summary>近5 战绩（逐场：日期 主客 对手 比分）</summary><div class="lm-full-body" style="font-size:12.5px;line-height:1.9">
+      <b>主队</b><br>${fh ? fmtForm(fh) : "（源数据不足·未列）"}<br><b>客队</b><br>${fa ? fmtForm(fa) : "（源数据不足·未列）"}</div></details>` : "";
     root.innerHTML = `<div class="lm-card" onclick="event.stopPropagation()">
       <div class="lm-head"><b>📍 ${d.no}　${d.teams}</b><span class="lm-close" onclick="document.getElementById('lm-root').remove()">✕ 关闭</span></div>
       <div class="lm-body"><div class="lm-keys">${dt(d.lg)}</div>
+      ${formBlock}
       <details class="lm-full" open><summary>完整逻辑（逐行·关键信息）</summary><div class="lm-full-body">${logicBlocks(d.lg)}</div></details></div>
     </div>`;
     root.addEventListener("click", () => root.remove());
@@ -391,9 +399,17 @@ function renderPredict(batch) {
   </tr>`).join("");
 
   // 核心逻辑速览：自动提取关键信息（方向/伤停/天气）预览 + 点击展开全文（加粗渲染）
+  // ★ 2026-09-15：新增「近5 战绩」结构化字段（formH/formA，逐场 日期/主客/对手/比分）——
+  //   用户三次点名的「近期5场具体战绩显示不全面」在此闭合：明细由数据字段承载，
+  //   logic 仍保持 ≤2000 字（两条用户规则同时满足）。
+  const formSum = (s) => {
+    const w = ((s || "").match(/胜/g) || []).length, d = ((s || "").match(/平/g) || []).length,
+          l = ((s || "").match(/负/g) || []).length;
+    return (w || d || l) ? `${w}胜${d}平${l}负` : "";
+  };
   const logicRows = sorted.map(m => `<tr>
     <td data-l="场次" data-sf><span style="display:inline-flex;align-items:center;gap:5px;max-width:100%;white-space:nowrap"><span class="no-badge">${m.no}</span><b class="m-team" style="font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis">${m.home} vs ${m.away}</b>${m.time ? `<span class="lg ${m.lg}" style="font-size:10.5px;flex-shrink:0">${shortLeague(m.league)}</span><span class="match-time" style="font-size:12px;flex-shrink:0">🕐 ${m.time}</span>` : ""}</span></td>
-    <td data-l="核心逻辑" data-sf><button class="logic-btn" data-no="${m.no}" data-teams="${m.home} vs ${m.away}" data-lg="${(m.logic || "").replace(/"/g, "&quot;")}" onclick="openLogicModal(this)">${logicKey(m.logic)}</button></td>
+    <td data-l="核心逻辑" data-sf><button class="logic-btn" data-no="${m.no}" data-teams="${m.home} vs ${m.away}" data-lg="${(m.logic || "").replace(/"/g, "&quot;")}" data-fh="${(m.formH || "").replace(/"/g, "&quot;")}" data-fa="${(m.formA || "").replace(/"/g, "&quot;")}" onclick="openLogicModal(this)">${logicKey(m.logic)}${(m.formH || m.formA) ? ` <span style="color:var(--sub)">｜近5：主${formSum(m.formH) || "?"} 客${formSum(m.formA) || "?"}</span>` : ""}</button></td>
   </tr>`).join("");
 
   el.innerHTML = `
