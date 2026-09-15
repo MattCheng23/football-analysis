@@ -1,0 +1,52 @@
+双授权说明（Dual License）
+==========================
+
+本仓库同时包含「代码」与「内容」两类材料，采用不同的授权条款。
+
+--------------------------------------------------------------------------
+一、代码（MIT License）
+--------------------------------------------------------------------------
+
+适用对象：所有 .py / .ps1 / .js / .html / .css 源文件，以及构建与部署脚本。
+
+Copyright (c) 2026 MattCheng23
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+--------------------------------------------------------------------------
+二、内容（保留所有权利 · All Rights Reserved）
+--------------------------------------------------------------------------
+
+适用对象：所有 .md 文档、模型规则体系、回测台账与数据文件（含 JSON/CSV）、
+复盘报告、分析结论、以及本仓库中的图像与其他非代码材料。
+
+上述内容版权归作者所有。**允许**出于学习、研究与个人参考目的的阅读与引用
+（引用时请注明来源）；**未经书面许可，禁止**：
+
+  · 商业性使用（含以本仓库规则体系或数据为基础提供付费服务）
+  · 整体或实质性部分的再发布、再分发
+  · 用于训练商业模型或构建衍生产品
+
+--------------------------------------------------------------------------
+三、免责声明
+--------------------------------------------------------------------------
+
+本仓库为个人数据工程与建模实践的技术展示，**不构成任何投注建议**。
+所有历史命中率均为已发生赛事的对账统计结果，**不代表未来表现**。
+任何人基于本仓库内容所作决策及其后果，由决策者自行承担。
