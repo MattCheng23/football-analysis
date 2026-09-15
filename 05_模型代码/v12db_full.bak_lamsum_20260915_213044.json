@@ -6434,11 +6434,10 @@
   "scores": "1-1 / 2-1 / 2-2",
   "ht": "平平/平胜/胜胜",
   "ou": "总进球 3·4",
-  "lam": 2.6,
+  "lam": 2.5,
   "lam_src": "logic 显式双值",
   "lam_h": 1.4,
-  "lam_a": 1.2,
-  "lam_sum_src": "sync_lam_sum 2026-09-15（分侧为准·严格解校验）"
+  "lam_a": 1.2
  },
  {
   "date": "2026-08-27",
@@ -10559,11 +10558,10 @@
   "scores": "2-1 / 1-1 / 3-1",
   "ht": "胜胜/平胜/负平",
   "ou": "总进球 2·3",
-  "lam": 2.85,
+  "lam": 3.95,
   "lam_src": "logic 显式双值",
   "lam_h": 1.75,
-  "lam_a": 1.1,
-  "lam_sum_src": "sync_lam_sum 2026-09-15（分侧为准·严格解校验）"
+  "lam_a": 1.1
  },
  {
   "date": "2026-09-11",
@@ -10848,11 +10846,10 @@
   "scores": "1-1 / 2-1 / 0-1*",
   "ht": "胜胜/平平/负负",
   "ou": "总进球 2·3",
-  "lam": 2.4,
+  "lam": 3.5,
   "lam_src": "logic 显式双值",
   "lam_h": 1.3,
-  "lam_a": 1.1,
-  "lam_sum_src": "sync_lam_sum 2026-09-15（分侧为准·严格解校验）"
+  "lam_a": 1.1
  },
  {
   "date": "2026-09-13",
@@ -14717,11 +14714,10 @@
   "scores": "1-2 / 1-1 / 1-3",
   "ht": "平平/负平/负负",
   "ou": "总进球 3·4",
-  "lam": 2.8,
+  "lam": 2.15,
   "lam_h": 0.95,
   "lam_a": 1.85,
-  "lam_src": "data.js logic（lam 字段·高·2026-09-15 回填）",
-  "lam_sum_src": "sync_lam_sum 2026-09-15（分侧为准·严格解校验）"
+  "lam_src": "data.js logic（lam 字段·高·2026-09-15 回填）"
  },
  {
   "date": "2026-09-15",
@@ -14742,11 +14738,10 @@
   "scores": "1-1 / 2-1 / 3-1",
   "ht": "平平/胜平/胜胜",
   "ou": "总进球 3·4",
-  "lam": 3.15,
+  "lam": 2.88,
   "lam_h": 2.0,
   "lam_a": 1.15,
-  "lam_src": "data.js logic（lam 字段·高·2026-09-15 回填）",
-  "lam_sum_src": "sync_lam_sum 2026-09-15（分侧为准·严格解校验）"
+  "lam_src": "data.js logic（lam 字段·高·2026-09-15 回填）"
  },
  {
   "date": "2026-09-15",
@@ -14767,82 +14762,9 @@
   "scores": "1-2 / 0-2 / 1-3",
   "ht": "负负/平负/胜负",
   "ou": "总进球 3·4",
-  "lam": 3.25,
+  "lam": 3.9,
   "lam_h": 0.95,
   "lam_a": 2.3,
-  "lam_src": "data.js logic（lam 字段·高·2026-09-15 回填）",
-  "lam_sum_src": "sync_lam_sum 2026-09-15（分侧为准·严格解校验）"
- },
- {
-  "date": "2026-09-15",
-  "no": "005",
-  "teams": "北京国安 3-1 浦项制铁",
-  "league": "亚冠精英",
-  "lgc": "lg-acle",
-  "act": "3-1（2-1）",
-  "act_balls": 4,
-  "ht_state": 1,
-  "dir_hit": "ok",
-  "score_hit": "ok",
-  "ht_hit": "no",
-  "ou_hit": "ok",
-  "home": "北京国安",
-  "away": "浦项制铁",
-  "dir": "主胜/平（B级）",
-  "scores": "1-1 / 2-1 / 3-1",
-  "ht": "平平/平胜/胜平",
-  "ou": "总进球 3·4",
-  "lam": 3.2,
-  "lam_h": 1.95,
-  "lam_a": 1.25,
-  "lam_src": "data.js logic（lam 字段·高·2026-09-15 回填）"
- },
- {
-  "date": "2026-09-15",
-  "no": "004",
-  "teams": "柔佛 1-1 布里兰",
-  "league": "亚冠精英",
-  "lgc": "lg-acle",
-  "act": "1-1（1-1）",
-  "act_balls": 2,
-  "ht_state": 0,
-  "dir_hit": "ok",
-  "score_hit": "ok",
-  "ht_hit": "ok",
-  "ou_hit": "ok",
-  "home": "柔佛",
-  "away": "布里兰",
-  "dir": "主胜/平（B级）",
-  "scores": "1-1 / 1-0 / 2-2",
-  "ht": "平平/平胜/胜平",
-  "ou": "总进球 2·3",
-  "lam": 2.7,
-  "lam_h": 1.55,
-  "lam_a": 1.15,
-  "lam_src": "data.js logic（lam 字段·高·2026-09-15 回填）"
- },
- {
-  "date": "2026-09-15",
-  "no": "006",
-  "teams": "阿布扎比艾因 4-0 利雅得胜利",
-  "league": "亚冠精英",
-  "lgc": "lg-acle",
-  "act": "4-0（1-0）",
-  "act_balls": 4,
-  "ht_state": 1,
-  "dir_hit": "no",
-  "score_hit": "no",
-  "ht_hit": "no",
-  "ou_hit": "ok",
-  "home": "阿布扎比艾因",
-  "away": "利雅得胜利",
-  "dir": "客胜/平（B级）",
-  "scores": "1-1 / 1-2 / 2-2",
-  "ht": "平平/负平/平负",
-  "ou": "总进球 3·4",
-  "lam": 3.45,
-  "lam_h": 1.6,
-  "lam_a": 1.85,
   "lam_src": "data.js logic（lam 字段·高·2026-09-15 回填）"
  }
 ]
