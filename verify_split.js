@@ -1,6 +1,8 @@
 // verify_split.js — 验证拆分后 BATCHES 键集合/场次数与源 data.js 完全一致
+// 2026-09-16：路径由硬编码绝对路径改为相对本文件 —— 本地与 CI（Linux runner）通用。
 const fs = require("fs");
-const B = "D:\\Cola\\足球分析学习\\_发布_public\\js\\";
+const path = require("path");
+const B = path.join(__dirname, "_发布_public", "js") + path.sep;
 
 function evalWith(files) {
   const code = files.map(f => fs.readFileSync(B + f, "utf8")).join("\n") +
@@ -72,4 +74,3 @@ if (fails.length) {
 } else {
   console.log("GUARD OK: 拆分包与源等价 + 档位映射完整 ✅");
 }
-

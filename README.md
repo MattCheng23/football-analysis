@@ -9,6 +9,8 @@
 ![站点](https://img.shields.io/badge/线上-Cloudflare_Pages-f38020)
 ![更新](https://img.shields.io/badge/最后更新-2026--09--16-6e7781)
 
+[![数据校验](https://github.com/MattCheng23/football-analysis/actions/workflows/validate.yml/badge.svg)](https://github.com/MattCheng23/football-analysis/actions/workflows/validate.yml)
+
 **在线演示**：https://football-analysis-report.pages.dev
 
 ---

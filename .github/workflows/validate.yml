@@ -1,0 +1,61 @@
+name: 数据校验
+
+# 为什么跑这些：
+#   本项目历史上出现过两类真实事故 —— ① 数据文件被写坏（`}};` 语法错，犯过两次）
+#   ② 拆分包与源文件不同步（部署后首屏空白）。这两类都能在推送时机械拦下。
+#
+# 本地等价命令（无需等 CI）：
+#   node --check _发布_public/js/data.js
+#   node verify_split.js
+#   python scripts/ci_validate.py
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: 语法 · 数据 · 拆分守卫
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 检出
+        uses: actions/checkout@v4
+
+      - name: 设置 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: JS 语法（站点数据 + 根目录脚本）
+        shell: bash
+        run: |
+          set -e
+          n=0
+          for f in _发布_public/js/*.js *.js; do
+            [ -f "$f" ] || continue
+            node --check "$f"
+            n=$((n+1))
+          done
+          if [ "$n" -eq 0 ]; then
+            echo "❌ 未匹配到任何 JS 文件（防呆：不得在空结果上判通过）"
+            exit 1
+          fi
+          echo "✅ JS 语法通过（$n 个文件）"
+
+      - name: 拆分等价性守卫（verify_split.js）
+        run: node verify_split.js
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Python 语法 + JSON 有效性
+        run: python scripts/ci_validate.py
