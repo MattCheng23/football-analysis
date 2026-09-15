@@ -445,6 +445,8 @@ background: #6f7f95;
 .lg-copaLib { background: #5fa37c; }  /* 解放者杯 官方 */
 .lg-dfb     { background: #9e7ba6; }  /* 德国杯 官方 */
 .lg-asean   { background: #5fa37c; }  /* 东南亚锦标赛 官方（参照解放者杯绿） */
+.lg-acle    { background: #2f6f8f; }  /* 亚冠精英（ACL Elite，2026-09-15 登记专属键：原借用 lg-ucl 深红） */
+.lg-asian   { background: #9a6b2f; }  /* 亚运男足/女足（Asian Games，2026-09-15 登记专属键：原借用 lg-uecl 紫） */
 .lg-sm { padding: 1px 7px; font-size: 11.5px; border-radius: 4px; letter-spacing: .3px; white-space: nowrap; }
 .lg-other { background: #6f7f95; }
 .dir-win     { background: var(--risk-ok-bg); color: var(--risk-ok); font-weight: 700; white-space: nowrap; border-radius: 6px; border: 1px solid color-mix(in srgb, var(--risk-ok) 30%, transparent); }

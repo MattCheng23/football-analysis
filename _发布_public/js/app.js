@@ -1022,7 +1022,8 @@ const LG_CLS = {
   "意甲": "lg-sa", "德甲": "lg-bundes", "德超杯": "lg-bundes", "法甲": "lg-ligue1",
   "英联杯": "lg-champ", "德国杯": "lg-dfb", "巴西杯": "lg-bras", "解放者杯": "lg-copaLib",
   "韩国杯": "lg-k1", "亚冠": "lg-k1", "欧协": "lg-uel", "欧协联": "lg-uel",
-  "欧罗巴资格赛": "lg-uel", "欧联": "lg-uel"
+  "欧罗巴资格赛": "lg-uel", "欧联": "lg-uel",
+  "亚冠精英": "lg-acle", "亚运男足": "lg-asian", "亚运女足": "lg-asian"
 };
 function lgCls(lg) { return LG_CLS[lg] || "lg-other"; }
 function lgBadge(lg, small) {
