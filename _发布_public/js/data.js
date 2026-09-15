@@ -3974,7 +3974,7 @@ reviewedCount: 13,
   "2026-09-15": {
     title: "周二批 14 场（V11.53 系列·λ 落库首批）",
     model: "规则驱动模型 V11.53",
-    reviewed: false, reviewedCount: 5,
+    reviewed: false, reviewedCount: 6,
     predictDate: "2026-09-15",
     predict: {
       matches: [
