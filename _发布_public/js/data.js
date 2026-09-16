@@ -4054,7 +4054,7 @@ reviewedCount: 13,
   "2026-09-16": {
     title: "周三批 17 场（V11.53 系列·C46/C47 首用·cal3 三口径落库首批）",
     model: "规则驱动模型 V11.53",
-    reviewed: true, reviewedCount: 9,
+    reviewed: true, reviewedCount: 10,
     predictDate: "2026-09-16",
     predict: {
       matches: [
