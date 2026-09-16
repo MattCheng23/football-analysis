@@ -143,6 +143,8 @@ python "05_模型代码/<回测脚本>.py"
 
 ## 规则版本演进
 
+**当前版本**：[`v11.53`](https://github.com/MattCheng23/football-analysis/releases/tag/v11.53) —— 含硬条款清单、支撑批次的实测证据、以及本版的两处「反向结论」（撤回与降级）
+
 ```
 V3.1.3（世界杯原型）
    ↓
