@@ -515,6 +515,22 @@ function renderReview(batch) {
     const h = m[3] > m[4] ? "胜" : m[3] < m[4] ? "负" : "平";
     return h + f;
   };
+  // ★ 2026-09-17 修：比分命中必须走「31 档可投面板」桶——见下方 PANEL_*／toPanel()。
+  //   事故：0916-013 实际 7-2 属「胜其它」档、票面第 3 档正是「胜其它」，判定位 s=ok（机械引擎走 to_panel），
+  //   但本页用字面比对 → 行显示 ❌、而批次 KPI 计 ✅ → 同一页「行 vs 统计」撕裂（用户 2026-09-17 报「批次命中统计显示不对」）。
+  //   规则与 _tmp_football\five_dim_baseline.py 的 to_panel() 同源：主胜不在 12 固定档 → 胜其它；平不在 4 档 → 平其它；客胜同理 → 负其它。
+  //   旧批回归（59 批全量）：修复前全站仅 2 处不符（同一条 0916-013，因当前批与历史文件各一份），修复后 0 处。
+  const PANEL_HOME = ["1-0", "2-0", "2-1", "3-0", "3-1", "3-2", "4-0", "4-1", "4-2", "5-0", "5-1", "5-2"];
+  const PANEL_DRAW = ["0-0", "1-1", "2-2", "3-3"];
+  const PANEL_AWAY = ["0-1", "0-2", "1-2", "0-3", "1-3", "2-3", "0-4", "1-4", "2-4", "0-5", "1-5", "2-5"];
+  const toPanel = s => {
+    const m = (s || "").match(/^(\d+)-(\d+)$/);
+    if (!m) return s;
+    const hh = +m[1], aa = +m[2];
+    if (hh > aa) return PANEL_HOME.indexOf(s) >= 0 ? s : "胜其它";
+    if (hh === aa) return PANEL_DRAW.indexOf(s) >= 0 ? s : "平其它";
+    return PANEL_AWAY.indexOf(s) >= 0 ? s : "负其它";
+  };
   const topOf = (actual, listStr) => {
     // 忽略反向项星号（0-1* 命中实际 0-1 也应计入 TOP N，2026-08-23 修复：011 诺丁汉 0-1* 命中未显示）
     // 2026-09-14：改为剥离「任意位置」星号——原只 strip 尾随（/\*$/），当前导写法（*0-1）出现时
@@ -587,7 +603,7 @@ function renderReview(batch) {
   const rows = r.results.slice().sort((a, b) => parseInt(a.no) - parseInt(b.no)).map(m => {
     const pm = pMatches.find(x => x.no === m.no);
     const scoreMain = m.score.split("（")[0];
-    const sTop = pm ? topOf(scoreMain, pm.scores) : null;
+    const sTop = pm ? topOf(toPanel(scoreMain), pm.scores) : null; // ★ 2026-09-17：先归一到 31 档面板桶再比对（7-2 → 胜其它），与判定位 s 同源
     const hTop = pm ? topOf(htFromScore(m.score), pm.ht) : null;
     const hCell = hTop ? hitTag(hTop) : (m.h === "ok" ? okT : noT); // 无半场数据时按 h 判定
     const aw = alertOf(m);
