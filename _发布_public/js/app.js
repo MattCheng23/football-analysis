@@ -537,7 +537,12 @@ function renderReview(batch) {
   };
 
   const pMatches = (batch.predict && Array.isArray(batch.predict.matches)) ? batch.predict.matches : [];
-  const totalN = pMatches.length;
+  // ★ 2026-09-17 修：**延期/取消场次不计入「已确认」分母**。
+  //   事故：0916 批 014（莱万特 vs 毕尔巴鄂）延期，`reviewedCount=16` 而 `totalN=17`
+  //   ⇒ `partial` 恒为 true ⇒ 该批次**永久显示「复盘中 16/17」**、永远拿不到「完整复盘」标签，
+  //   且批次 KPI 里混进一个不是命中指标的「已确认场次」。判定值机器回源：全库无 PP 状态字段，故由 data.js 显式声明。
+  const postponed = (batch && Array.isArray(batch.postponed)) ? batch.postponed : [];
+  const totalN = pMatches.length - postponed.length;
   const confirmedN = r.results.length;
   // 控分排查结论仅本地保留（合规），网页只展示演戏排查部分
   const cleanTxt = t => (t || "").split("控分排查：")[0].trim();
@@ -561,9 +566,11 @@ function renderReview(batch) {
   const statCell = (hit, total) => total ? `${hit}/${total} <span style="font-size:12px">${Math.round(100 * hit / total)}%</span>` : `0/0 <span style="font-size:12px">—</span>`;
   // 2026-09-11 修正：reviewed=true 但 reviewedCount<总数（逐场复盘进行中）时，禁标「完整复盘」
   const partial = Number.isFinite(batch.reviewedCount) && batch.reviewedCount < totalN;
+  // ★ 2026-09-17：延期场次显式标注（否则「完整复盘」会让读者以为 17 场都踢了）
+  const ppTxt = postponed.length ? `（另有 ${postponed.length} 场延期：${postponed.join('/')}）` : "";
   const statusTag = (batch.reviewed && !partial)
-    ? `<span class="tag tag-green">完整复盘</span>`
-    : `<span class="tag tag-yellow">部分复盘（已确认 ${confirmedN}/${totalN} 场）</span>`;
+    ? `<span class="tag tag-green">完整复盘</span>${ppTxt ? `<span class="tag tag-yellow">${ppTxt}</span>` : ""}`
+    : `<span class="tag tag-yellow">部分复盘（已确认 ${confirmedN}/${totalN} 场）${ppTxt}</span>`;
   // 2026-09-06 修复：batch.stats 缺失（近期 7 批遗漏）曾致 kpi 渲染 TypeError=整段被吞——无 stats 时走部分式 KPI 兜底
   const bs = batch.stats;
   const kpiHtml = bs ? `

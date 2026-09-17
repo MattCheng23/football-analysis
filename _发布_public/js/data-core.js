@@ -69,6 +69,7 @@ const BATCHES = {
     title: "周三批 17 场（V11.53 系列·C46/C47 首用·cal3 三口径落库首批）",
     model: "规则驱动模型 V11.53",
     reviewed: true, reviewedCount: 16,
+    postponed: ["014"],  // 2026-09-17 立：014 莱万特 vs 毕尔巴鄂＝延期(PP)，不计入「已确认」分母（见 app.js totalN）
     predictDate: "2026-09-16",
     predict: {
       matches: [
