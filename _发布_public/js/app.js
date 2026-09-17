@@ -1000,11 +1000,14 @@ function renderBatchHeader() {
         <span class="badge badge-soft" style="margin-left:auto">模型 <b style="color:var(--primary)">${b.model}</b></span>
         ${(() => {
           // 复盘进度（2026-09-09 优化：批级 reviewed=true 但只复了部分场次时，显示真实进度避免"已复盘"误导）
-          const total = ms.length;
-          const done = Number.isFinite(b.reviewedCount) ? b.reviewedCount : (b.reviewed ? total : 0);
+          // ★ 2026-09-17 修：**延期的场次不计入分母**——否则 0916 批（014 延期）会永久显示「🔍 复盘中 16/17」。
+          const ppN = Array.isArray(b.postponed) ? b.postponed.length : 0;
+          const total = ms.length - ppN;
+          const ppTxt = ppN ? `（${ppN} 场延期）` : "";
+          const done = Number.isFinite(b.reviewedCount) ? Math.min(b.reviewedCount, total) : (b.reviewed ? total : 0);
           if (!b.reviewed) return `<span class="badge badge-gold">📋 待复盘</span>`;
-          if (total && done < total) return `<span class="badge badge-solid" style="background:linear-gradient(135deg,#b45309,#d97706)">🔍 复盘中 ${done}/${total}</span>`;
-          return `<span class="badge badge-solid" style="background:linear-gradient(135deg,#15803d,#22a55a)">✅ 已复盘${total ? ` ${done}/${total}` : ""}</span>`;
+          if (total && done < total) return `<span class="badge badge-solid" style="background:linear-gradient(135deg,#b45309,#d97706)">🔍 复盘中 ${done}/${total}${ppTxt}</span>`;
+          return `<span class="badge badge-solid" style="background:linear-gradient(135deg,#15803d,#22a55a)">✅ 已复盘${total ? ` ${done}/${total}` : ""}${ppTxt}</span>`;
         })()}
         <button class="batch-nav" onclick="selectDate('${nextK}')" ${nextK ? "" : "disabled"} title="${nextK ? fmtDate(nextK) : ""}">下批 ›</button>
         ${updDrop}
