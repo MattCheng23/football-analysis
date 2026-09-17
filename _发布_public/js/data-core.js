@@ -69,7 +69,7 @@ const BATCHES = {
   "2026-09-17": {
     title: "周四批 11 场（V11.53 系列）",
     model: "规则驱动模型 V11.53",
-    reviewed: true, reviewedCount: 4,
+    reviewed: true, reviewedCount: 5,
     predictDate: "2026-09-17",
     predict: {
       matches: [
