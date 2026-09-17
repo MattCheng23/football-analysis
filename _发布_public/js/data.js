@@ -4149,7 +4149,7 @@ reviewedCount: 13,
   "2026-09-17": {
     title: "周四批 11 场（V11.53 系列）",
     model: "规则驱动模型 V11.53",
-    reviewed: true, reviewedCount: 8,
+    reviewed: true, reviewedCount: 9,
     predictDate: "2026-09-17",
     predict: {
       matches: [
