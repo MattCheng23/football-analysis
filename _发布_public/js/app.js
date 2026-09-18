@@ -324,7 +324,15 @@ function renderPredict(batch) {
   };
 
   // 冷门风险（数据全比赛覆盖；按概率从高到低排序（2026-09-09 用户拍板：概率为主信息+等级并入逻辑文本，风险等级列删除）；逻辑列预览 30 字 + 点击展开）
-  const coldProbOf = c => { const m = (c.logic || "").match(/[（(]约?\s*(\d+(?:\.\d+)?)%/); return m ? parseFloat(m[1]) : null; };
+  // ★2026-09-18 修：原实现取 logic 里**第一个** `（NN%` —— 而规范写法是「（泊松 X%）」（check_coldrisk.py CR-3 要求），
+  //   括号后隔着「泊松」二字 → 正则跳过它、命中后面第一个括号百分比（如让出成本 7.77%），**冷门概率整列长期误显**。
+  //   修法：优先取「泊松 X%」，取不到才回退首个括号百分比。
+  const coldProbOf = c => {
+    const s = c.logic || "";
+    let m = s.match(/泊松\s*([\d.]+)\s*%/);
+    if (!m) m = s.match(/[（(]约?\s*(\d+(?:\.\d+)?)%/);
+    return m ? parseFloat(m[1]) : null;
+  };
   // 已复盘的预警 → 命中标注（2026-08-23 丰富：预测页预警行直接看验证结果）
   const resDir = s => { const m = (s || "").match(/(\d+)-(\d+)/); if (!m) return ""; const h = +m[1], a = +m[2]; return h > a ? "主胜" : h < a ? "客胜" : "平局"; };
   const coldVerifyOf = c => {
