@@ -4196,7 +4196,7 @@ reviewedCount: 13,
   "2026-09-18": {
     title: "周五批 14 场（V11.53 系列·冷门预警 S1 首批）",
     model: "规则驱动模型 V11.53",
-    reviewed: true, reviewedCount: 3,
+    reviewed: true, reviewedCount: 4,
     predictDate: "2026-09-18",
     predict: {
       matches: [
