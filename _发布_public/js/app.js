@@ -342,8 +342,9 @@ function renderPredict(batch) {
     const hit = actual === c.dir;
     return `<span class="rv-flag ${hit ? "rv-hit" : "rv-miss"}" style="margin-left:8px">${hit ? "✅ 命中" : "未触发"}</span>`;
   };
+  // 2026-09-19 S2 口径：低＝只登记不报警、无＝低于基准 ⇒ 均不进预警表（用户点名「几乎全部场次都有冷门预警」）
   const coldRows = (p.coldRisk || [])
-    .filter(c => c.lvTxt !== "低")
+    .filter(c => c.lvTxt !== "低" && c.lvTxt !== "无")
     .slice()
     .sort((a, b) => (coldProbOf(b) ?? -1) - (coldProbOf(a) ?? -1))
     .map(c => `<tr>
@@ -440,12 +441,12 @@ function renderPredict(batch) {
     </div>
 
     <div class="card">
-      <h2><span class="icon">🌡️</span> 冷门风险（${(p.coldRisk || []).length} 场全量）</h2>
+      <h2><span class="icon">🌡️</span> 冷门风险（预警 ${(p.coldRisk || []).filter(c => c.lvTxt !== "低" && c.lvTxt !== "无").length} 场 / 登记 ${(p.coldRisk || []).length} 场）</h2>
       <div class="table-wrap"><table>
         <thead><tr><th>概率</th><th>场次</th><th>冷门方向</th><th>核心逻辑</th></tr></thead>
         <tbody>${coldRows}</tbody>
       </table></div>
-      <div class="note">数据覆盖全部比赛，按概率从高到低排序（等级并入逻辑文本开头）。</div>
+      <div class="note">S2 口径（2026-09-19 起）：按<strong>方向集覆盖 cov</strong>分级——cov&lt;50%＝高、50–60%＝中等、60–70%＝低（只登记不报警）、≥70%＝无；另按 λ比（&lt;1.2 上调／≥2.0 下调）与 coldP≥32% 三级调节。仅「高/中等」进表，按概率从高到低排序。</div>
     </div>
 
     <div class="card">
@@ -847,7 +848,9 @@ function renderColdVerify() {
   if (!el || !BATCHES[currentKey] || !BATCHES[currentKey].reviewed) return;
   const b = BATCHES[currentKey];
   const hit = [], miss = [];
-  b.predict.coldRisk.forEach(c => {
+  // 2026-09-19 S2：预警命中率只在「真正的预警」（高/中等）上结算，低/无只登记
+  const warnRows = (b.predict.coldRisk || []).filter(c => c.lvTxt !== "低" && c.lvTxt !== "无");
+  warnRows.forEach(c => {
     const m = b.review.results.find(x => x.no === c.no);
     if (!m) return;
     const actual = resultDir(m.score);
@@ -860,7 +863,7 @@ function renderColdVerify() {
     <td>${c.ok ? `<span class="tag tag-green">✅ 命中</span>` : `<span class="tag tag-gray">未触发</span>`}</td>
   </tr>`;
   el.innerHTML = `
-    <div class="lead">冷门预警验证：预测方向与实际赛果一致 = 爆冷命中。${hit.length}/${b.predict.coldRisk.length} 场预警命中。</div>
+    <div class="lead">冷门预警验证：预测方向与实际赛果一致 = 爆冷命中。${hit.length}/${warnRows.length} 场预警命中（S2 口径：只计高/中等；低/无仅登记）。</div>
     <div class="table-wrap"><table>
       <thead><tr><th>概率</th><th>场次</th><th>预警方向</th><th>实际</th><th>验证</th></tr></thead>
       <tbody>${hit.map(row).join("")}${miss.map(row).join("")}</tbody>
