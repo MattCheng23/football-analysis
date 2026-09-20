@@ -72,7 +72,7 @@ const BATCHES = {
   "2026-09-20": {
     title: "周日批 30 场（V11.53 系列·C56v3/C57/C58 首批）",
     model: "规则驱动模型 V11.53",
-    reviewed: true, reviewedCount: 18,
+    reviewed: true, reviewedCount: 19,
     predictDate: "2026-09-20",
     predict: {
       matches: [
