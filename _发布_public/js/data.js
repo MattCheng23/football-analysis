@@ -4319,7 +4319,7 @@ reviewedCount: 13,
   "2026-09-20": {
     title: "周日批 30 场（V11.53 系列·C56v3/C57/C58 首批）",
     model: "规则驱动模型 V11.53",
-    reviewed: false, reviewedCount: 0,
+    reviewed: true, reviewedCount: 2,
     predictDate: "2026-09-20",
     predict: {
       matches: [

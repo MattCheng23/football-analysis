@@ -65,14 +65,14 @@ const BATCH_META = {
   "2026-09-17": { title: "周四批 11 场（V11.53 系列）", model: "规则驱动模型 V11.53", reviewed: true, updated: "", n: 23 },
   "2026-09-18": { title: "周五批 14 场（V11.53 系列·冷门预警 S1 首批）", model: "规则驱动模型 V11.53", reviewed: true, updated: "", n: 28 },
   "2026-09-19": { title: "周六批 30 场（V11.53 系列·C56v3/C57/C58 首批）", model: "规则驱动模型 V11.53", reviewed: true, updated: "", n: 60 },
-  "2026-09-20": { title: "周日批 30 场（V11.53 系列·C56v3/C57/C58 首批）", model: "规则驱动模型 V11.53", reviewed: false, updated: "", n: 74 },
+  "2026-09-20": { title: "周日批 30 场（V11.53 系列·C56v3/C57/C58 首批）", model: "规则驱动模型 V11.53", reviewed: true, updated: "", n: 74 },
 };
 
 const BATCHES = {
   "2026-09-20": {
     title: "周日批 30 场（V11.53 系列·C56v3/C57/C58 首批）",
     model: "规则驱动模型 V11.53",
-    reviewed: false, reviewedCount: 0,
+    reviewed: true, reviewedCount: 2,
     predictDate: "2026-09-20",
     predict: {
       matches: [
