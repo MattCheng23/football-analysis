@@ -37,3 +37,7 @@ __pycache__/
 # 已从索引移除；本地克隆保留。技能库实体内容见同目录 `技能库_skills安装版/`，
 # 上游：https://github.com/mattpocock/skills
 07_技能学习/技能库_mattpocock完整仓库/
+
+# 2026-09-21: backup copies + scratch verify outputs (local safety copies, not artifacts)
+*.bak*
+/_bs*.txt
